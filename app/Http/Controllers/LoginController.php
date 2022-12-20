@@ -64,7 +64,7 @@ class LoginController extends Controller
             $default = Project::all()->where('template', 'default')->unique('project_title');
             $user_profile = User::where('id', Auth::user()->id)->get();
             $project = $fetch->unique('project_title');
-            $fetchLimitProject = Project::limit(5)->orderByDesc('created_at')->get()->unique();
+            $fetchLimitProject = Project::limit(5)->orderByDesc('created_at')->get()->unique('project_title');
             $notification = Notification::join('users', 'users.id', '=', 'notifications.user_id')
                 ->where('user_id', Auth::user()->id)
                 ->orderByDesc('notifications.created_at')

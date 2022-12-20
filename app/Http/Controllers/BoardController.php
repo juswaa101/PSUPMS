@@ -3,17 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Board;
-use App\Http\Resources\BoardResource;
-use App\Models\Notification;
-use App\Models\Project;
-use App\Models\Report;
-use App\Models\User;
 use Exception;
-use Illuminate\Http\JsonResponse;
+use App\Models\User;
+use App\Models\Report;
+use App\Models\Project;
+use App\Models\Notification;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Models\BoardProgress;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\BoardResource;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class BoardController extends Controller
 {
@@ -83,6 +84,13 @@ class BoardController extends Controller
                     $userName = User::firstWhere('id', $user_id);
     
                     if ($board->save()) {
+                        // Create Board Progress
+                        BoardProgress::create([
+                            'board_id' => $board->id,
+                            'total_task' => 0,
+                            'total_task_done' => 0
+                        ]);
+
                         $users = Project::where('project_id', $request->segment(4))->first();
                         $all_users = Project::where('project_title', $users->project_title)->get();
                         Report::create(['user_id' => $user_id, 'project_id' => $request->segment(4), 'message' => ' assigned a board in ' . $project->project_title]);
@@ -172,7 +180,7 @@ class BoardController extends Controller
                 $board->name = $request->input('name');
     
                 $userName = User::firstWhere('id', $user_id);
-    
+
                 if ($board->save()) {
                     $users = Project::where('project_id', $request->segment(4))->first();
                     $all_users = Project::where('project_title', $users->project_title)->get();

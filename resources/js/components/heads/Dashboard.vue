@@ -184,15 +184,15 @@
                                     <div id="nav-home" aria-labelledby="nav-home-tab"
                                          class="tab-pane fade show active"
                                          role="tabpanel">
+                                        <div id="chartDiv" style="max-width: 840px; min-width:330px; height: 440px;margin: 0px auto"></div>
                                         <div class="container-fluid" v-if="boards.length !== 0">
-                                            <div id="chartDiv" style="max-width: 840px; min-width:330px; height: 440px;margin: 0px auto"></div>
                                             <main class="flexbox py-4">
                                                 <div class="row">
                                                     <div class="col text-uppercase" v-for="board in boards"
                                                          v-bind:key="board.id">
                                                         <div class="row align-items-start">
                                                             <div class="col">
-                                                                <h5 id="title-text">{{ board.name }}</h5>
+                                                                <h5 id="title-text">{{ board.name }} - {{ board.board_progress.total_task_done }} / {{  board.board_done.total_task }}</h5>
                                                             </div>
 
                                                             <div class="col">
@@ -210,9 +210,12 @@
                                                             <div class="col">
                                                                 <div class="progress">
                                                                     <div class="progress-bar bg-success text-light display-6 fs-6" 
-                                                                        :style="{ 'width' : '100%' }" 
+                                                                        :style="{ 'width' : (board.board_progress.total_task_done/board.board_done.total_task)*100 + '%' }" 
                                                                         role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                                                        1 / 5
+                                                                        {{ 
+                                                                            Number.isNaN(Math.floor((board.board_progress.total_task_done/board.board_progress.total_task)*100)) ? 0 + '%' :
+                                                                            Math.floor((board.board_progress.total_task_done/board.board_progress.total_task)*100) + '%' 
+                                                                        }}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -229,6 +232,18 @@
                                                                     <Task :id="task.id" draggable="true">
                                                                         <div class="card shadow-sm mt-2" :style="('backgroundColor:'+currentTaskColor)">
                                                                             <div class="card-body">
+                                                                                <div class="col">
+                                                                                    <div class="progress">
+                                                                                        <div class="progress-bar bg-success text-light display-6 fs-6" 
+                                                                                            :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
+                                                                                            role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                                                            {{ 
+                                                                                                Number.isNaN(Math.floor((task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100)) ? 0 + '%' :
+                                                                                                Math.floor((task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100) + '%' 
+                                                                                            }}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
                                                                                 <div class="dropdown text-end">
                                                                                     <i class="bx bx-dots-horizontal-rounded bx-md" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                                                                     <ul class="dropdown-menu" style="background-color:#E4E9F7;">
@@ -290,12 +305,18 @@
                                                                     </tr>
                                                                     <tr v-for="task in tasks" v-bind:key="task.id" v-if="board.id === task.board_id">
                                                                         <th scope="col">{{ task.name }}</th>
-                                                                        <th scope="col" v-if="user_assigned_task.length === 0">
-                                                                            <p class="text text-danger">No Assigned Members Yet!</p>
-                                                                        </th>
-                                                                        <th scope="col" v-else>
-                                                                            <p v-for="assigned_members in user_assigned_task">{{ assigned_members.full_name }}</p>
-                                                                        </th>
+                                                                        <th scope="col">
+                                                                            <div class="progress">
+                                                                                <div class="progress-bar bg-success text-light display-6 fs-6" 
+                                                                                :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
+                                                                                role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                                                    {{ 
+                                                                                        Number.isNaN(Math.floor((task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100)) ? 0 + '%' :
+                                                                                        Math.floor((task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100) + '%' 
+                                                                                    }}
+                                                                                </div>
+                                                                            </div>
+                                                                            </th>
                                                                         <th scope="col" v-if="task.task_due_date">{{ task.task_due_date }}</th>
                                                                         <th scope="col" v-else><p class="text text-danger">No Due Date Yet</p></th>
                                                                     </tr>
@@ -327,10 +348,10 @@
                         aria-label="Close"></button>
             </div>
             <div class="offcanvas-body" style="background-color: #E4E9F7;">
-                <div class="row">
-                    <div class="form-group">
+                <div class="row" v-if="logged.length != 0">
+                    <div class="form-group" v-for="(value, key, index) in logged" v-if="index < 1">
                         <div style="text-align: center;">
-                            <img :src="'/assets/login/psu.png'" alt="Profile" class="img-responsive mt-3" height="180"
+                            <img :src="'/assets/users/' + logged.image" alt="Profile" class="img-responsive mt-3" height="180"
                                  style="border-radius: 500px;"
                                  width="180"
                             >
@@ -557,8 +578,13 @@
                         </div>
                         <div class="col-md-12 mt-3">
                             <p>Project Members:</p>
-                            <div :key="key" :value="value" v-for="(value, key, index) in staff">
-                                <li class="mx-3">{{ value.name }}</li>
+                            <div v-if="staff.length != 0">
+                                <div :key="key" :value="value" v-for="(value, key, index) in staff">
+                                    <li class="mx-3">{{ value.name }}</li>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <li>No Project Members Yet!</li>
                             </div>
                         </div>
                     </div>
@@ -632,7 +658,7 @@
                         <div class="col-md-12">
                             <label class="form-label" for="">Project Start Date:</label>
                             <input type="date" name="project_start_date" id="project_start_date"
-                                    :min="item.project_start_date"
+                                    :min="item.project_start_date" disabled
                                    class="form-control" v-model="formEdit.project_start_date" @change="validationUpdateProjectError.project_start_date ? validationUpdateProjectError.project_start_date = null : null" required>
                             <span class="text text-danger" v-if="validationUpdateProjectError.project_start_date">{{ validationUpdateProjectError.project_start_date[0] }}</span>
                         </div>
@@ -640,13 +666,13 @@
                             <label class="form-label" for="description">Project End Date:</label>
                             <input type="date" name="project_end_date" id="project_end_date"
                                    class="form-control" v-model="formEdit.project_end_date"
-                                   :min="item.project_start_date"
+                                   :min="item.project_end_date"
                                    @change="validationUpdateProjectError.project_end_date ? validationUpdateProjectError.project_end_date = null : null" required>
                             <span class="text text-danger" v-if="validationUpdateProjectError.project_end_date">{{ validationUpdateProjectError.project_end_date[0] }}</span>
                         </div>
                     </div>
                     <button class="btn btn-warning mt-2 float-end" @click="updateProject()">YES</button>
-                    <button class="btn btn-secondary mt-2 mx-2 float-end" data-bs-dismiss="modal">CANCEL</button>
+                    <button class="btn btn-secondary mt-2 mx-2 float-end" data-bs-dismiss="offcanvas">CANCEL</button>
                 </div>
             </div>
         </div>
@@ -705,19 +731,6 @@
                         <h4 id="offcanvasWithBothOptionsLabel" class="offcanvas-title">
                             {{ show.name }}
                         </h4>
-                    </div>
-                    <div class="col-md-12 mt-4">
-                        <h4 class="display-4 fs-4 d-flex justify-content-start">Subtask Progress: {{ totalSubtaskCompleted }}/{{ totalSubtask  }}</h4>
-                        <div class="progress">
-                            <div class="progress-bar bg-success text-light display-6 fs-6" 
-                                :style="{ 'width' : (totalSubtaskCompleted/totalSubtask)*100 + '%' }" 
-                                role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                {{ 
-                                    Number.isNaN(Math.floor((totalSubtaskCompleted/totalSubtask)*100)) ? 0 + '%' :
-                                    Math.floor((totalSubtaskCompleted/totalSubtask)*100) + '%' 
-                                }}
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
@@ -1204,8 +1217,6 @@ export default {
                 "#FFFFFF"
             ],
             isSidebar: true,
-            totalSubtask: 0,
-            totalSubtaskCompleted: 0
         };
     },
     created() {
@@ -1222,7 +1233,7 @@ export default {
 
         this.formMembers.members = this.$currentUserArray;
     },
-    methods: {
+    methods: {                      
         //  board data handling
         fetchBoards() {
             fetch("/api/boards/" + this.$user_id + "/" + this.$project_id)
@@ -1374,6 +1385,7 @@ export default {
                                 allowEscapeKey: false
                             }).then((confirm) => {
                                 if(confirm.isConfirmed){
+                                    this.fetchBoards();
                                     this.fetchTasks();
                                 }
                             });
@@ -1413,6 +1425,7 @@ export default {
                         }).then((confirm) => {
                             if(confirm.isConfirmed) {
                                 this.fetchTasks();
+                                this.fetchBoards();
                             }
                         });
                     }
@@ -1443,6 +1456,7 @@ export default {
                         }).then((confirm) => {
                             if (confirm.isConfirmed) {
                                 this.fetchTasks();
+                                this.fetchBoards();
                             }
                         });
                     }
@@ -1527,7 +1541,7 @@ export default {
                         }).then((confirm) => {
                             if (confirm.isConfirmed) {
                                 this.fetchSubtask();
-                                this.showProgress(this.show.id);
+                                this.fetchTasks();
                             }
                         });
                     })
@@ -1544,7 +1558,7 @@ export default {
                 })
                     .then(() => {
                         this.fetchSubtask();
-                        this.showProgress(this.show.id);
+                        this.fetchTasks();
                         this.toggleEditSubtask = false;
                         this.addOrUpdateSubtask = false;
                         this.formSubtask.subtask_name = '';
@@ -1577,6 +1591,7 @@ export default {
                     axios.delete('/head/subtask/delete/' + id)
                         .then(() => {
                             this.fetchSubtask();
+                            this.fetchTasks();
                             this.toggleEditSubtask = false;
                             this.addOrUpdateSubtask = false;
                             this.formSubtask.subtask_name = '';
@@ -1597,7 +1612,7 @@ export default {
         fetchSubtask: function () {
             axios.get('/head/subtask/' + this.show.id + '/' + this.logged.id).then((response) => {
                 this.subtasks = response.data.data;
-                this.showProgress(this.show.id);
+                this.fetchTasks();
             });
         },
 
@@ -1762,7 +1777,7 @@ export default {
         },
         appendMembers: function () {
             this.staff.forEach(person => {
-                this.$currentUserArray.push(person.id);
+                this.$currentUserArray.push(person.user_id);
             });
         },
         updateMembers() {
@@ -1771,8 +1786,8 @@ export default {
             axios.put('/head/update-members/' + this.$project_id, this.formMembers)
                 .then(() => {
                     Swal.fire(
-                        'Member Updated!',
-                        'Member has been updated.',
+                        'Member Invited!',
+                        'Member has been invited to the project.',
                         'success'
                     ).then((confirm) => {
                         if (confirm.isConfirmed) {
@@ -1788,7 +1803,6 @@ export default {
         showModal(tasks) {
             this.clearAssignedUser();
             const vn = this;
-            this.showProgress(tasks.id);
             vn.show.id = tasks.id;
             vn.show.name = tasks.name
             vn.show.description = tasks.description
@@ -1852,7 +1866,7 @@ export default {
                 .then(() => {
                     Swal.fire(
                         'Task color updated!',
-                        'Taskk color has been changed!',
+                        'Task color has been changed!',
                         'success'
                     )
                     this.getTaskColor();
@@ -1863,13 +1877,6 @@ export default {
                         'Something went wrong!',
                         'error'
                     )
-                });
-        },
-        showProgress(task_id){
-            axios.get('/head/total-subtask/' + task_id).
-                then((response) =>{
-                    this.totalSubtask = response.data.totalCountSubtask;
-                    this.totalSubtaskCompleted = response.data.totalCountCompletedSubtask;
                 });
         },
         toggleFinishedProject(id) {
@@ -1943,13 +1950,17 @@ export default {
             sidebar.classList.toggle("close");
         });
         
-        var currentDate = '4/20/2020';
-        var thresholdDate = norm(currentDate);
+        var today = new Date()
+        var currentDate = (today.getMonth() +1) + "/" + today.getDate() + "/" + today.getFullYear();
+
+        var startDate = new Date(this.item.project_start_date);
+        var endDate = new Date(this.item.project_end_date);
+        var startDateFormatted = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+        var endDateFormatted = (endDate.getMonth() + 1) + "/" + endDate.getDate() + "/" + endDate.getFullYear();
 
         var chart = JSC.chart('chartDiv', {
             debug: true,
-            title_label_text:
-                'Project Beta from %min to %max',
+            title_label_text:'Project: ' + this.item.project_title + ' from ' + startDateFormatted + ' to ' + endDateFormatted,
             type: 'horizontal column solid',
             zAxis_scale_type: 'stacked',
             palette: ['#9adcfa', '#99e4ed', '#d0b6fa'],
@@ -1974,7 +1985,7 @@ export default {
                 outline_width: 0,
                 radius: 0,
                 label: {
-                    text: pointLabelText,
+                    text: 'Task',
                     placement: 'outside'
                 },
                 tooltip:
@@ -1993,110 +2004,24 @@ export default {
                     points: [
                         {
                             name: 'Initiate Project',
-                            y: ['1/1/2020', '3/15/2020']
+                            y: ['1/15/2023', '2/15/2023']
                         },
                         {
                             name: 'Project Assignments',
-                            y: ['1/1/2020', '1/25/2020']
+                            y: ['2/7/2023', '3/31/2023']
                         },
                         {
-                            name: 'Outlines/Scope',
-                            y: ['1/25/2020', '2/15/2020']
+                            name: 'Project Creation',
+                            y: ['4/7/2023', '4/19/2023']
                         },
                         {
-                            name: 'Business Alignment',
-                            y: ['2/15/2020', '3/15/2020']
-                        }
+                            name: 'Project Polishing',
+                            y: ['4/26/2023', '6/19/2023']
+                        },
                     ]
                 },
-                {
-                    name: 'Plan Project',
-                    points: [
-                        {
-                            name: 'Plan Project',
-                            y: ['3/15/2020', '5/20/2020']
-                        },
-                        {
-                            name: 'Determine Process',
-                            y: ['3/15/2020', '4/12/2020']
-                        },
-                        {
-                            name: 'Design Layouts',
-                            y: ['4/12/2020', '5/8/2020']
-                        },
-                        {
-                            name: 'Design Structure',
-                            y: ['5/8/2020', '5/20/2020']
-                        }
-                    ]
-                },
-                {
-                    name: 'Implement Project',
-                    points: [
-                        {
-                            name: 'Implement Project',
-                            y: ['5/20/2020', '7/28/2020']
-                        },
-                        {
-                            name: 'Designs',
-                            y: ['5/20/2020', '6/10/2020']
-                        },
-                        {
-                            name: 'Structures',
-                            y: ['6/10/2020', '6/15/2020']
-                        },
-                        {
-                            name: 'D&S Integration',
-                            y: ['6/15/2020', '7/28/2020']
-                        }
-                    ]
-                }
             ]
         });
-
-        /**
-         * Chooses the data point label icon based on the thresholdDate
-         * @param point
-         * @returns {*}
-         */
-        function pointLabelText(point) {
-            var pY = point.options('y');
-            var pRange = pY.map(norm);
-            if (thresholdDate > pRange[1]) {
-                return getIconText(
-                    'material/navigation/check',
-                    '#66BB6A',
-                    16
-                );
-            } else if (thresholdDate > pRange[0]) {
-                return getIconText(
-                    'material/notification/sync',
-                    '#FDD835',
-                    20
-                );
-            }
-            return getIconText(
-                'material/navigation/close',
-                '#FF5252',
-                16
-            );
-        }
-
-        function norm(d) {
-            return new Date(d).getTime();
-        }
-
-        function getIconText(name, color, size) {
-            return (
-                '<icon name=' +
-                name +
-                ' size=' +
-                size +
-                ' fill=' +
-                color +
-                '>'
-            );
-        }
     }
 };
 </script>

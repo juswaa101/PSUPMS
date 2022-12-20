@@ -45,6 +45,7 @@ export default {
                         .then(res => res.json())
                         .then(res => {
                             board_data = res.data;
+                            console.log(task_data);
                             //  get task based on id for updating new board's name
                             fetch("/api/task/" + user_id + "/" + project_id, {
                                 method: "put",
@@ -60,8 +61,8 @@ export default {
                                     task_start_date: task_data.task_start_date,
                                     task_due_date: task_data.task_due_date,
                                     privacy_status: task_data.privacy_status,
-                                    total_subtask: 0,
-                                    total_subtask_done: 0
+                                    total_subtask: task_data.total_subtask,
+                                    total_subtask_done: task_data.total_subtask_done
                                 }),
                                 headers: {
                                     "Content-Type": "application/json"

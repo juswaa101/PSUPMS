@@ -33,13 +33,14 @@ class KanbanController extends Controller
 
             $staff = DB::table('projects')
                 ->join('users', 'projects.id', '=', 'users.id')
+                ->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('projects.is_project_head', '=', 0)
-                ->select('*')
+                ->where('invitations.status', 1)
+                ->select(['*', 'users.id as user_id'])
                 ->get();
 
             $users = User::where('users.role', '!=', 'admin')->get();
-
             $user_head = User::join('projects', 'projects.id', '=', 'users.id')
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('users.role', '!=', 'admin')
@@ -103,12 +104,15 @@ class KanbanController extends Controller
 
             $staff = DB::table('projects')
                 ->join('users', 'projects.id', '=', 'users.id')
+                ->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('projects.is_project_head', '=', 0)
-                ->select('*')
+                ->where('invitations.status', 1)
+                ->select(['*', 'users.id as user_id'])
                 ->get();
 
-            $users = User::where('role', '!=', 'admin')->get();
+            $users = User::where('users.role', '!=', 'admin')->get();
+
             $user_head = User::join('projects', 'projects.id', '=', 'users.id')
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('users.role', '!=', 'admin')
@@ -187,9 +191,11 @@ class KanbanController extends Controller
             } else {
                 $project = Project::findOrFail($id);
                 $fetchQuery = DB::table('projects')->join('users', 'projects.id', '=', 'users.id')
+                    ->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
                     ->where('project_title', '=', $project->project_title)
                     ->where('users.role', '!=', 'admin')
                     ->where('is_project_head', '=', 0)
+                    ->where('invitations.status', 1)
                     ->get();
                 $currentMembers = [];
 
@@ -203,7 +209,7 @@ class KanbanController extends Controller
                         $project = Project::create([
                             'project_title' => $project->project_title,
                             'project_description' => $project->project_description,
-                            'project_template' => $project->project_template,
+                            'template' => $project->template,
                             'project_start_date' => $project->project_start_date,
                             'project_end_date' => $project->project_end_date,
                             'id' => $new_members,

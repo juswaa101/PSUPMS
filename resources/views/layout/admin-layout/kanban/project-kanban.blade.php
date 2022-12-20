@@ -549,19 +549,3 @@
         http.send();
     }
 </script>
-
-@if (isset(Auth::user()->role) && Auth::user()->role != "admin")
-    <script>
-        swal({
-            title: "Unauthorized Access",
-            text: "Unauthorized Access of the System",
-            type: "error",
-            confirmButtonColor: '#ff0000',
-            confirmButtonText: "Back",
-            closeOnConfirm: false,
-            allowOutsideClick: false
-        }).then(function () {
-            window.history.back();
-        });
-    </script>
-@endif

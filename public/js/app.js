@@ -5441,7 +5441,8 @@ __webpack_require__.r(__webpack_exports__);
         fetch("/api/board/" + e.target.id + "/" + user_id + "/" + project_id).then(function (res) {
           return res.json();
         }).then(function (res) {
-          board_data = res.data; //  get task based on id for updating new board's name
+          board_data = res.data;
+          console.log(task_data); //  get task based on id for updating new board's name
 
           fetch("/api/task/" + user_id + "/" + project_id, {
             method: "put",
@@ -5454,8 +5455,8 @@ __webpack_require__.r(__webpack_exports__);
               task_start_date: task_data.task_start_date,
               task_due_date: task_data.task_due_date,
               privacy_status: task_data.privacy_status,
-              total_subtask: 0,
-              total_subtask_done: 0
+              total_subtask: task_data.total_subtask,
+              total_subtask_done: task_data.total_subtask_done
             }),
             headers: {
               "Content-Type": "application/json"
@@ -5491,7 +5492,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 Vue.prototype.$currentUserArray = [];
-Vue.prototype.$currentAssignedTaskMember = []; //  get current user's id from meta tag
+Vue.prototype.$currentAssignedTaskMember = [];
+Vue.prototype.$boardColumn = [];
+Vue.prototype.$taskColumn = []; //  get current user's id from meta tag
 
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
@@ -5614,6 +5617,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         return res.json();
       }).then(function (res) {
         _this.boards = res.data;
+
+        _this.$boardColumn.push(res.data);
       });
     },
     deleteBoard: function deleteBoard(id) {
@@ -5739,7 +5744,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         return res.json();
       }).then(function (res) {
         _this5.tasks = res.data;
-        console.log(_this5.tasks);
+
+        _this5.$taskColumn.push(_this5.tasks);
       });
     },
     deleteTask: function deleteTask(id) {
@@ -5845,6 +5851,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this8.fetchTasks();
+
+              _this8.fetchBoards();
             }
           });
         }
@@ -5932,8 +5940,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this11.fetchSubtask();
-
-              _this11.showProgress(_this11.show.id);
             }
           });
         })["catch"](function (error) {
@@ -5947,8 +5953,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           task_id: this.show.id
         }).then(function () {
           _this11.fetchSubtask();
-
-          _this11.showProgress(_this11.show.id);
 
           _this11.toggleEditSubtask = false;
           _this11.addOrUpdateSubtask = false;
@@ -6001,8 +6005,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
 
       axios.get('/admin/subtask/' + this.show.id + '/' + this.logged.id).then(function (response) {
         _this13.subtasks = response.data.data;
-
-        _this13.showProgress(_this13.show.id);
       });
     },
     // comment data handling
@@ -6152,7 +6154,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       var _this20 = this;
 
       this.staff.forEach(function (person) {
-        _this20.$currentUserArray.push(person.id);
+        _this20.$currentUserArray.push(person.user_id);
       });
     },
     updateMembers: function updateMembers() {
@@ -6160,20 +6162,24 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
 
       this.formMembers.members = $('#selectMembers').val();
       console.log(this.formMembers.members);
-      axios.put('/admin/update-members/' + this.$project_id, this.formMembers).then(function () {
-        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Member Updated!', 'Member has been updated.', 'success').then(function (confirm) {
-          if (confirm.isConfirmed) {
-            location.reload();
-          }
+
+      try {
+        axios.put('/admin/update-members/' + this.$project_id, this.formMembers).then(function () {
+          sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Member Invited!', 'Member has been invited to the project.', 'success').then(function (confirm) {
+            if (confirm.isConfirmed) {
+              location.reload();
+            }
+          });
+        })["catch"](function (error) {
+          _this21.validationMemberError = error.response.data;
         });
-      })["catch"](function (error) {
-        _this21.validationMemberError = error.response.data;
-      });
+      } catch (e) {
+        console.log(e);
+      }
     },
     showModal: function showModal(tasks) {
       this.clearAssignedUser();
       var vn = this;
-      this.showProgress(tasks.id);
       vn.show.id = tasks.id;
       vn.show.name = tasks.name;
       vn.show.description = tasks.description;
@@ -6227,23 +6233,11 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       axios.put('/admin/task-color/update/' + this.$project_id, {
         'task_color': this.currentTaskColor
       }).then(function () {
-        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color updated!', 'Taskk color has been changed!', 'success');
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color updated!', 'Task color has been changed!', 'success');
 
         _this25.getTaskColor();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color not updated!', 'Something went wrong!', 'error');
-      });
-    },
-    showProgress: function showProgress(task_id) {
-      var _this26 = this;
-
-      axios.get('/admin/total-subtask/' + task_id).then(function (response) {
-        _this26.totalSubtask = response.data.totalCountSubtask;
-        _this26.totalSubtaskCompleted = response.data.totalCountCompletedSubtask;
-
-        _this26.fetchBoards();
-
-        _this26.fetchTasks();
       });
     },
     toggleFinishedProject: function toggleFinishedProject(id) {
@@ -6257,7 +6251,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     }
   },
   mounted: function mounted() {
-    var _this27 = this;
+    var _this26 = this;
 
     var inputElement = document.querySelector('input[id="upload_file"]');
     var pond = FilePond.create(inputElement, {
@@ -6281,10 +6275,10 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           },
           withCredentials: false,
           onload: function onload(response) {
-            _this27.fetchFiles();
+            _this26.fetchFiles();
           },
           ondata: function ondata(formData) {
-            formData.append('task_id', _this27.show.id);
+            formData.append('task_id', _this26.show.id);
             return formData;
           }
         }
@@ -6311,11 +6305,21 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     sidebarBtn === null || sidebarBtn === void 0 ? void 0 : sidebarBtn.addEventListener("click", function () {
       sidebar.classList.toggle("close");
     });
-    var currentDate = '4/20/2020';
-    var thresholdDate = norm(currentDate);
+    var tasks = [{
+      'name': '',
+      'y': ['', '']
+    }];
+    var task = this.$taskColumn;
+    console.log(task);
+    var today = new Date();
+    var currentDate = today.getMonth() + 1 + "/" + today.getDate() + "/" + today.getFullYear();
+    var startDate = new Date(this.item.project_start_date);
+    var endDate = new Date(this.item.project_end_date);
+    var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+    var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
     var chart = JSC.chart('chartDiv', {
       debug: true,
-      title_label_text: 'Project Beta from %min to %max',
+      title_label_text: 'Project: ' + this.item.project_title + ' from ' + startDateFormatted + ' to ' + endDateFormatted,
       type: 'horizontal column solid',
       zAxis_scale_type: 'stacked',
       palette: ['#9adcfa', '#99e4ed', '#d0b6fa'],
@@ -6337,7 +6341,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         outline_width: 0,
         radius: 0,
         label: {
-          text: pointLabelText,
+          text: 'Task',
           placement: 'outside'
         },
         tooltip: '<b>%name</b> %low - %high<br/>{days(%high-%low)} days'
@@ -6354,77 +6358,9 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       },
       series: [{
         name: 'Initiate Project',
-        points: [{
-          name: 'Initiate Project',
-          y: ['1/1/2020', '3/15/2020']
-        }, {
-          name: 'Project Assignments',
-          y: ['1/1/2020', '1/25/2020']
-        }, {
-          name: 'Outlines/Scope',
-          y: ['1/25/2020', '2/15/2020']
-        }, {
-          name: 'Business Alignment',
-          y: ['2/15/2020', '3/15/2020']
-        }]
-      }, {
-        name: 'Plan Project',
-        points: [{
-          name: 'Plan Project',
-          y: ['3/15/2020', '5/20/2020']
-        }, {
-          name: 'Determine Process',
-          y: ['3/15/2020', '4/12/2020']
-        }, {
-          name: 'Design Layouts',
-          y: ['4/12/2020', '5/8/2020']
-        }, {
-          name: 'Design Structure',
-          y: ['5/8/2020', '5/20/2020']
-        }]
-      }, {
-        name: 'Implement Project',
-        points: [{
-          name: 'Implement Project',
-          y: ['5/20/2020', '7/28/2020']
-        }, {
-          name: 'Designs',
-          y: ['5/20/2020', '6/10/2020']
-        }, {
-          name: 'Structures',
-          y: ['6/10/2020', '6/15/2020']
-        }, {
-          name: 'D&S Integration',
-          y: ['6/15/2020', '7/28/2020']
-        }]
+        points: tasks
       }]
     });
-    /**
-     * Chooses the data point label icon based on the thresholdDate
-     * @param point
-     * @returns {*}
-     */
-
-    function pointLabelText(point) {
-      var pY = point.options('y');
-      var pRange = pY.map(norm);
-
-      if (thresholdDate > pRange[1]) {
-        return getIconText('material/navigation/check', '#66BB6A', 16);
-      } else if (thresholdDate > pRange[0]) {
-        return getIconText('material/notification/sync', '#FDD835', 20);
-      }
-
-      return getIconText('material/navigation/close', '#FF5252', 16);
-    }
-
-    function norm(d) {
-      return new Date(d).getTime();
-    }
-
-    function getIconText(name, color, size) {
-      return '<icon name=' + name + ' size=' + size + ' fill=' + color + '>';
-    }
   }
 });
 
@@ -6496,7 +6432,7 @@ __webpack_require__.r(__webpack_exports__);
           return res.json();
         }).then(function (res) {
           board_data = res.data;
-          console.log(board_data); //  get task based on id for updating new board's name
+          console.log(task_data); //  get task based on id for updating new board's name
 
           fetch("/api/task/" + user_id + "/" + project_id, {
             method: "put",
@@ -6508,13 +6444,15 @@ __webpack_require__.r(__webpack_exports__);
               description: task_data.description,
               task_start_date: task_data.task_start_date,
               task_due_date: task_data.task_due_date,
-              privacy_status: task_data.privacy_status
+              privacy_status: task_data.privacy_status,
+              total_subtask: task_data.total_subtask,
+              total_subtask_done: task_data.total_subtask_done
             }),
             headers: {
               "Content-Type": "application/json"
             }
           }).then(function (res) {
-            return res.json();
+            res.json();
           })["catch"](function (err) {
             return console.log(err);
           });
@@ -6644,9 +6582,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       currentTaskColor: "#FFFFFF",
       currentBoardColor: "#FFFFFF",
       colors: ["#F44336", "#E91E63", "#673AB7", "#2196F3", "#4CAF50", "#8BC34A", "#FFC107", "#424242", "#FFFFFF"],
-      isSidebar: true,
-      totalSubtask: 0,
-      totalSubtaskCompleted: 0
+      isSidebar: true
     };
   },
   created: function created() {
@@ -6822,6 +6758,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
               allowEscapeKey: false
             }).then(function (confirm) {
               if (confirm.isConfirmed) {
+                _this6.fetchBoards();
+
                 _this6.fetchTasks();
               }
             });
@@ -6862,6 +6800,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this7.fetchTasks();
+
+              _this7.fetchBoards();
             }
           });
         }
@@ -6894,6 +6834,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this8.fetchTasks();
+
+              _this8.fetchBoards();
             }
           });
         }
@@ -6982,7 +6924,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             if (confirm.isConfirmed) {
               _this11.fetchSubtask();
 
-              _this11.showProgress(_this11.show.id);
+              _this11.fetchTasks();
             }
           });
         })["catch"](function (error) {
@@ -6997,7 +6939,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         }).then(function () {
           _this11.fetchSubtask();
 
-          _this11.showProgress(_this11.show.id);
+          _this11.fetchTasks();
 
           _this11.toggleEditSubtask = false;
           _this11.addOrUpdateSubtask = false;
@@ -7032,6 +6974,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           axios["delete"]('/head/subtask/delete/' + id).then(function () {
             _this12.fetchSubtask();
 
+            _this12.fetchTasks();
+
             _this12.toggleEditSubtask = false;
             _this12.addOrUpdateSubtask = false;
             _this12.formSubtask.subtask_name = '';
@@ -7049,7 +6993,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       axios.get('/head/subtask/' + this.show.id + '/' + this.logged.id).then(function (response) {
         _this13.subtasks = response.data.data;
 
-        _this13.showProgress(_this13.show.id);
+        _this13.fetchTasks();
       });
     },
     // comment data handling
@@ -7199,7 +7143,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       var _this20 = this;
 
       this.staff.forEach(function (person) {
-        _this20.$currentUserArray.push(person.id);
+        _this20.$currentUserArray.push(person.user_id);
       });
     },
     updateMembers: function updateMembers() {
@@ -7208,7 +7152,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       this.formMembers.members = $('#selectMembers').val();
       console.log(this.formMembers.members);
       axios.put('/head/update-members/' + this.$project_id, this.formMembers).then(function () {
-        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Member Updated!', 'Member has been updated.', 'success').then(function (confirm) {
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Member Invited!', 'Member has been invited to the project.', 'success').then(function (confirm) {
           if (confirm.isConfirmed) {
             location.reload();
           }
@@ -7220,7 +7164,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     showModal: function showModal(tasks) {
       this.clearAssignedUser();
       var vn = this;
-      this.showProgress(tasks.id);
       vn.show.id = tasks.id;
       vn.show.name = tasks.name;
       vn.show.description = tasks.description;
@@ -7274,36 +7217,28 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       axios.put('/head/task-color/update/' + this.$project_id, {
         'task_color': this.currentTaskColor
       }).then(function () {
-        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color updated!', 'Taskk color has been changed!', 'success');
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color updated!', 'Task color has been changed!', 'success');
 
         _this25.getTaskColor();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color not updated!', 'Something went wrong!', 'error');
       });
     },
-    showProgress: function showProgress(task_id) {
-      var _this26 = this;
-
-      axios.get('/head/total-subtask/' + task_id).then(function (response) {
-        _this26.totalSubtask = response.data.totalCountSubtask;
-        _this26.totalSubtaskCompleted = response.data.totalCountCompletedSubtask;
-      });
-    },
     toggleFinishedProject: function toggleFinishedProject(id) {
-      var _this27 = this;
+      var _this26 = this;
 
       axios.get('/head/finish-project/' + id).then(function (response) {
         console.log(response);
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project Finished!', 'Your project is set to finished.', 'success').then(function (confirm) {
           if (confirm.isConfirmed) {
-            window.location.href = "/head/dashboard/" + _this27.logged.id;
+            window.location.href = "/head/dashboard/" + _this26.logged.id;
           }
         });
       });
     }
   },
   mounted: function mounted() {
-    var _this28 = this;
+    var _this27 = this;
 
     var inputElement = document.querySelector('input[id="upload_file"]');
     var pond = FilePond.create(inputElement, {
@@ -7327,10 +7262,10 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           },
           withCredentials: false,
           onload: function onload(response) {
-            _this28.fetchFiles();
+            _this27.fetchFiles();
           },
           ondata: function ondata(formData) {
-            formData.append('task_id', _this28.show.id);
+            formData.append('task_id', _this27.show.id);
             return formData;
           }
         }
@@ -7357,11 +7292,15 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     sidebarBtn === null || sidebarBtn === void 0 ? void 0 : sidebarBtn.addEventListener("click", function () {
       sidebar.classList.toggle("close");
     });
-    var currentDate = '4/20/2020';
-    var thresholdDate = norm(currentDate);
+    var today = new Date();
+    var currentDate = today.getMonth() + 1 + "/" + today.getDate() + "/" + today.getFullYear();
+    var startDate = new Date(this.item.project_start_date);
+    var endDate = new Date(this.item.project_end_date);
+    var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+    var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
     var chart = JSC.chart('chartDiv', {
       debug: true,
-      title_label_text: 'Project Beta from %min to %max',
+      title_label_text: 'Project: ' + this.item.project_title + ' from ' + startDateFormatted + ' to ' + endDateFormatted,
       type: 'horizontal column solid',
       zAxis_scale_type: 'stacked',
       palette: ['#9adcfa', '#99e4ed', '#d0b6fa'],
@@ -7383,7 +7322,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         outline_width: 0,
         radius: 0,
         label: {
-          text: pointLabelText,
+          text: 'Task',
           placement: 'outside'
         },
         tooltip: '<b>%name</b> %low - %high<br/>{days(%high-%low)} days'
@@ -7402,75 +7341,19 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         name: 'Initiate Project',
         points: [{
           name: 'Initiate Project',
-          y: ['1/1/2020', '3/15/2020']
+          y: ['1/15/2023', '2/15/2023']
         }, {
           name: 'Project Assignments',
-          y: ['1/1/2020', '1/25/2020']
+          y: ['2/7/2023', '3/31/2023']
         }, {
-          name: 'Outlines/Scope',
-          y: ['1/25/2020', '2/15/2020']
+          name: 'Project Creation',
+          y: ['4/7/2023', '4/19/2023']
         }, {
-          name: 'Business Alignment',
-          y: ['2/15/2020', '3/15/2020']
-        }]
-      }, {
-        name: 'Plan Project',
-        points: [{
-          name: 'Plan Project',
-          y: ['3/15/2020', '5/20/2020']
-        }, {
-          name: 'Determine Process',
-          y: ['3/15/2020', '4/12/2020']
-        }, {
-          name: 'Design Layouts',
-          y: ['4/12/2020', '5/8/2020']
-        }, {
-          name: 'Design Structure',
-          y: ['5/8/2020', '5/20/2020']
-        }]
-      }, {
-        name: 'Implement Project',
-        points: [{
-          name: 'Implement Project',
-          y: ['5/20/2020', '7/28/2020']
-        }, {
-          name: 'Designs',
-          y: ['5/20/2020', '6/10/2020']
-        }, {
-          name: 'Structures',
-          y: ['6/10/2020', '6/15/2020']
-        }, {
-          name: 'D&S Integration',
-          y: ['6/15/2020', '7/28/2020']
+          name: 'Project Polishing',
+          y: ['4/26/2023', '6/19/2023']
         }]
       }]
     });
-    /**
-     * Chooses the data point label icon based on the thresholdDate
-     * @param point
-     * @returns {*}
-     */
-
-    function pointLabelText(point) {
-      var pY = point.options('y');
-      var pRange = pY.map(norm);
-
-      if (thresholdDate > pRange[1]) {
-        return getIconText('material/navigation/check', '#66BB6A', 16);
-      } else if (thresholdDate > pRange[0]) {
-        return getIconText('material/notification/sync', '#FDD835', 20);
-      }
-
-      return getIconText('material/navigation/close', '#FF5252', 16);
-    }
-
-    function norm(d) {
-      return new Date(d).getTime();
-    }
-
-    function getIconText(name, color, size) {
-      return '<icon name=' + name + ' size=' + size + ' fill=' + color + '>';
-    }
   }
 });
 
@@ -7774,8 +7657,6 @@ var render = function render() {
       "aria-labelledby": "nav-home-tab",
       role: "tabpanel"
     }
-  }, [_vm.boards.length !== 0 ? _c("div", {
-    staticClass: "container-fluid"
   }, [_c("div", {
     staticStyle: {
       "max-width": "840px",
@@ -7786,7 +7667,9 @@ var render = function render() {
     attrs: {
       id: "chartDiv"
     }
-  }), _vm._v(" "), _c("main", {
+  }), _vm._v(" "), _vm.boards.length !== 0 ? _c("div", {
+    staticClass: "container-fluid"
+  }, [_c("main", {
     staticClass: "flexbox py-4"
   }, [_c("div", {
     staticClass: "row"
@@ -7806,7 +7689,7 @@ var render = function render() {
       attrs: {
         id: "title-text"
       }
-    }, [_vm._v(_vm._s(board.name))])]), _vm._v(" "), _c("div", {
+    }, [_vm._v(_vm._s(board.name) + " - " + _vm._s(board.board_progress.total_task_done) + " / " + _vm._s(board.board_progress.total_task))])]), _vm._v(" "), _c("div", {
       staticClass: "col"
     }, [_c("div", {
       staticClass: "dropdown"
@@ -7847,7 +7730,7 @@ var render = function render() {
     }, [_c("div", {
       staticClass: "progress-bar bg-success text-light display-6 fs-6",
       style: {
-        width: board.total_task_done / board.total_task * 100 + "%"
+        width: board.board_progress.total_task_done / board.board_done.total_task * 100 + "%"
       },
       attrs: {
         role: "progressbar",
@@ -7855,7 +7738,7 @@ var render = function render() {
         "aria-valuemin": "0",
         "aria-valuemax": "100"
       }
-    }, [_vm._v("\n                                                                        " + _vm._s(Number.isNaN(Math.floor(board.total_task_done / board.total_task * 100)) ? 0 + "%" : Math.floor(board.total_task_done / board.total_task * 100) + "%") + "\n                                                                    ")])])])])]), _vm._v(" "), _c("br")]);
+    }, [_vm._v("\n                                                                        " + _vm._s(Number.isNaN(Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100)) ? 0 + "%" : Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100) + "%") + "\n                                                                    ")])])])])]), _vm._v(" "), _c("br")]);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
   }, _vm._l(_vm.boards, function (board) {
@@ -7883,11 +7766,13 @@ var render = function render() {
       }, [_c("div", {
         staticClass: "card-body"
       }, [_c("div", {
+        staticClass: "col"
+      }, [_c("div", {
         staticClass: "progress"
       }, [_c("div", {
         staticClass: "progress-bar bg-success text-light display-6 fs-6",
         style: {
-          width: task.total_subtask_done / task.total_subtask * 100 + "%"
+          width: task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100 + "%"
         },
         attrs: {
           role: "progressbar",
@@ -7895,7 +7780,7 @@ var render = function render() {
           "aria-valuemin": "0",
           "aria-valuemax": "100"
         }
-      }, [_vm._v("\n                                                                                    " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done / task.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done / task.total_subtask * 100) + "%") + "\n                                                                                ")])]), _vm._v(" "), _c("div", {
+      }, [_vm._v("\n                                                                                        " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                                    ")])])]), _vm._v(" "), _c("div", {
         staticClass: "dropdown text-end"
       }, [_c("i", {
         staticClass: "bx bx-dots-horizontal-rounded bx-md",
@@ -7996,19 +7881,24 @@ var render = function render() {
         attrs: {
           scope: "col"
         }
-      }, [_vm._v(_vm._s(task.name))]), _vm._v(" "), _vm.user_assigned_task.length === 0 ? _c("th", {
+      }, [_vm._v(_vm._s(task.name))]), _vm._v(" "), _c("th", {
         attrs: {
           scope: "col"
         }
-      }, [_c("p", {
-        staticClass: "text text-danger"
-      }, [_vm._v("No Assigned Members Yet!")])]) : _c("th", {
+      }, [_c("div", {
+        staticClass: "progress"
+      }, [_c("div", {
+        staticClass: "progress-bar bg-success text-light display-6 fs-6",
+        style: {
+          width: task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100 + "%"
+        },
         attrs: {
-          scope: "col"
+          role: "progressbar",
+          "aria-valuenow": "0",
+          "aria-valuemin": "0",
+          "aria-valuemax": "100"
         }
-      }, _vm._l(_vm.user_assigned_task, function (assigned_members) {
-        return _c("p", [_vm._v(_vm._s(assigned_members.full_name))]);
-      }), 0), _vm._v(" "), task.task_due_date ? _c("th", {
+      }, [_vm._v("\n                                                                                    " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                                ")])])]), _vm._v(" "), task.task_due_date ? _c("th", {
         attrs: {
           scope: "col"
         }
@@ -8461,7 +8351,7 @@ var render = function render() {
     }, [_vm._v(_vm._s(value.name))])]);
   })], 2), _vm._v(" "), _c("div", {
     staticClass: "col-md-12 mt-3"
-  }, [_c("p", [_vm._v("Project Members:")]), _vm._v(" "), _vm._l(_vm.staff, function (value, key, index) {
+  }, [_c("p", [_vm._v("Project Members:")]), _vm._v(" "), _vm.staff.length != 0 ? _c("div", _vm._l(_vm.staff, function (value, key, index) {
     return _c("div", {
       key: key,
       attrs: {
@@ -8470,7 +8360,7 @@ var render = function render() {
     }, [_c("li", {
       staticClass: "mx-3"
     }, [_vm._v(_vm._s(value.name))])]);
-  })], 2)])], 2)])]), _vm._v(" "), _c("div", {
+  }), 0) : _c("div", [_c("li", [_vm._v("No Project Members Yet!")])])])])], 2)])]), _vm._v(" "), _c("div", {
     staticClass: "offcanvas offcanvas-end",
     attrs: {
       id: "offcanvasAddUsersModal",
@@ -8665,6 +8555,7 @@ var render = function render() {
       name: "project_start_date",
       id: "project_start_date",
       min: _vm.item.project_start_date,
+      disabled: "",
       required: ""
     },
     domProps: {
@@ -8701,7 +8592,7 @@ var render = function render() {
       type: "date",
       name: "project_end_date",
       id: "project_end_date",
-      min: _vm.item.project_start_date,
+      min: _vm.item.project_end_date,
       required: ""
     },
     domProps: {
@@ -8729,7 +8620,7 @@ var render = function render() {
   }, [_vm._v("YES")]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-secondary mt-2 mx-2 float-end",
     attrs: {
-      "data-bs-dismiss": "modal"
+      "data-bs-dismiss": "offcanvas"
     }
   }, [_vm._v("CANCEL")])])])]), _vm._v(" "), _c("div", {
     staticClass: "offcanvas offcanvas-end",
@@ -10561,8 +10452,6 @@ var render = function render() {
       "aria-labelledby": "nav-home-tab",
       role: "tabpanel"
     }
-  }, [_vm.boards.length !== 0 ? _c("div", {
-    staticClass: "container-fluid"
   }, [_c("div", {
     staticStyle: {
       "max-width": "840px",
@@ -10573,7 +10462,9 @@ var render = function render() {
     attrs: {
       id: "chartDiv"
     }
-  }), _vm._v(" "), _c("main", {
+  }), _vm._v(" "), _vm.boards.length !== 0 ? _c("div", {
+    staticClass: "container-fluid"
+  }, [_c("main", {
     staticClass: "flexbox py-4"
   }, [_c("div", {
     staticClass: "row"
@@ -10589,7 +10480,7 @@ var render = function render() {
       attrs: {
         id: "title-text"
       }
-    }, [_vm._v(_vm._s(board.name))])]), _vm._v(" "), _c("div", {
+    }, [_vm._v(_vm._s(board.name) + " - " + _vm._s(board.board_progress.total_task_done) + " / " + _vm._s(board.board_done.total_task))])]), _vm._v(" "), _c("div", {
       staticClass: "col"
     }, [_c("div", {
       staticClass: "dropdown"
@@ -10630,7 +10521,7 @@ var render = function render() {
     }, [_c("div", {
       staticClass: "progress-bar bg-success text-light display-6 fs-6",
       style: {
-        width: "100%"
+        width: board.board_progress.total_task_done / board.board_done.total_task * 100 + "%"
       },
       attrs: {
         role: "progressbar",
@@ -10638,7 +10529,7 @@ var render = function render() {
         "aria-valuemin": "0",
         "aria-valuemax": "100"
       }
-    }, [_vm._v("\n                                                                    1 / 5\n                                                                ")])])])]), _vm._v(" "), _c("br")]);
+    }, [_vm._v("\n                                                                    " + _vm._s(Number.isNaN(Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100)) ? 0 + "%" : Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100) + "%") + "\n                                                                ")])])])]), _vm._v(" "), _c("br")]);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
   }, _vm._l(_vm.boards, function (board) {
@@ -10666,6 +10557,21 @@ var render = function render() {
       }, [_c("div", {
         staticClass: "card-body"
       }, [_c("div", {
+        staticClass: "col"
+      }, [_c("div", {
+        staticClass: "progress"
+      }, [_c("div", {
+        staticClass: "progress-bar bg-success text-light display-6 fs-6",
+        style: {
+          width: task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100 + "%"
+        },
+        attrs: {
+          role: "progressbar",
+          "aria-valuenow": "0",
+          "aria-valuemin": "0",
+          "aria-valuemax": "100"
+        }
+      }, [_vm._v("\n                                                                                        " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                                    ")])])]), _vm._v(" "), _c("div", {
         staticClass: "dropdown text-end"
       }, [_c("i", {
         staticClass: "bx bx-dots-horizontal-rounded bx-md",
@@ -10768,19 +10674,24 @@ var render = function render() {
         attrs: {
           scope: "col"
         }
-      }, [_vm._v(_vm._s(task.name))]), _vm._v(" "), _vm.user_assigned_task.length === 0 ? _c("th", {
+      }, [_vm._v(_vm._s(task.name))]), _vm._v(" "), _c("th", {
         attrs: {
           scope: "col"
         }
-      }, [_c("p", {
-        staticClass: "text text-danger"
-      }, [_vm._v("No Assigned Members Yet!")])]) : _c("th", {
+      }, [_c("div", {
+        staticClass: "progress"
+      }, [_c("div", {
+        staticClass: "progress-bar bg-success text-light display-6 fs-6",
+        style: {
+          width: task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100 + "%"
+        },
         attrs: {
-          scope: "col"
+          role: "progressbar",
+          "aria-valuenow": "0",
+          "aria-valuemin": "0",
+          "aria-valuemax": "100"
         }
-      }, _vm._l(_vm.user_assigned_task, function (assigned_members) {
-        return _c("p", [_vm._v(_vm._s(assigned_members.full_name))]);
-      }), 0), _vm._v(" "), task.task_due_date ? _c("th", {
+      }, [_vm._v("\n                                                                                " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                            ")])])]), _vm._v(" "), task.task_due_date ? _c("th", {
         attrs: {
           scope: "col"
         }
@@ -10811,26 +10722,28 @@ var render = function render() {
     staticStyle: {
       "background-color": "#E4E9F7"
     }
-  }, [_c("div", {
+  }, [_vm.logged.length != 0 ? _c("div", {
     staticClass: "row"
-  }, [_c("div", {
-    staticClass: "form-group"
-  }, [_c("div", {
-    staticStyle: {
-      "text-align": "center"
-    }
-  }, [_c("img", {
-    staticClass: "img-responsive mt-3",
-    staticStyle: {
-      "border-radius": "500px"
-    },
-    attrs: {
-      src: "/assets/login/psu.png",
-      alt: "Profile",
-      height: "180",
-      width: "180"
-    }
-  }), _vm._v(" "), _vm._m(13)])])]), _vm._v(" "), _c("div", {
+  }, _vm._l(_vm.logged, function (value, key, index) {
+    return index < 1 ? _c("div", {
+      staticClass: "form-group"
+    }, [_c("div", {
+      staticStyle: {
+        "text-align": "center"
+      }
+    }, [_c("img", {
+      staticClass: "img-responsive mt-3",
+      staticStyle: {
+        "border-radius": "500px"
+      },
+      attrs: {
+        src: "/assets/users/" + _vm.logged.image,
+        alt: "Profile",
+        height: "180",
+        width: "180"
+      }
+    }), _vm._v(" "), _vm._m(13, true)])]) : _vm._e();
+  }), 0) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "ps-2 row text"
   }, _vm._l(_vm.logged, function (value, key, index) {
     return index < 1 ? _c("div", [_c("div", {
@@ -11233,7 +11146,7 @@ var render = function render() {
     }, [_vm._v(_vm._s(value.name))])]);
   })], 2), _vm._v(" "), _c("div", {
     staticClass: "col-md-12 mt-3"
-  }, [_c("p", [_vm._v("Project Members:")]), _vm._v(" "), _vm._l(_vm.staff, function (value, key, index) {
+  }, [_c("p", [_vm._v("Project Members:")]), _vm._v(" "), _vm.staff.length != 0 ? _c("div", _vm._l(_vm.staff, function (value, key, index) {
     return _c("div", {
       key: key,
       attrs: {
@@ -11242,7 +11155,7 @@ var render = function render() {
     }, [_c("li", {
       staticClass: "mx-3"
     }, [_vm._v(_vm._s(value.name))])]);
-  })], 2)])], 2)])]), _vm._v(" "), _c("div", {
+  }), 0) : _c("div", [_c("li", [_vm._v("No Project Members Yet!")])])])])], 2)])]), _vm._v(" "), _c("div", {
     staticClass: "offcanvas offcanvas-end",
     attrs: {
       id: "offcanvasAddUsersModal",
@@ -11437,6 +11350,7 @@ var render = function render() {
       name: "project_start_date",
       id: "project_start_date",
       min: _vm.item.project_start_date,
+      disabled: "",
       required: ""
     },
     domProps: {
@@ -11473,7 +11387,7 @@ var render = function render() {
       type: "date",
       name: "project_end_date",
       id: "project_end_date",
-      min: _vm.item.project_start_date,
+      min: _vm.item.project_end_date,
       required: ""
     },
     domProps: {
@@ -11501,7 +11415,7 @@ var render = function render() {
   }, [_vm._v("YES")]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-secondary mt-2 mx-2 float-end",
     attrs: {
-      "data-bs-dismiss": "modal"
+      "data-bs-dismiss": "offcanvas"
     }
   }, [_vm._v("CANCEL")])])])]), _vm._v(" "), _c("div", {
     staticClass: "offcanvas offcanvas-end",
@@ -11603,24 +11517,7 @@ var render = function render() {
     attrs: {
       id: "offcanvasWithBothOptionsLabel"
     }
-  }, [_vm._v("\n                        " + _vm._s(_vm.show.name) + "\n                    ")])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-12 mt-4"
-  }, [_c("h4", {
-    staticClass: "display-4 fs-4 d-flex justify-content-start"
-  }, [_vm._v("Subtask Progress: " + _vm._s(_vm.totalSubtaskCompleted) + "/" + _vm._s(_vm.totalSubtask))]), _vm._v(" "), _c("div", {
-    staticClass: "progress"
-  }, [_c("div", {
-    staticClass: "progress-bar bg-success text-light display-6 fs-6",
-    style: {
-      width: _vm.totalSubtaskCompleted / _vm.totalSubtask * 100 + "%"
-    },
-    attrs: {
-      role: "progressbar",
-      "aria-valuenow": "0",
-      "aria-valuemin": "0",
-      "aria-valuemax": "100"
-    }
-  }, [_vm._v("\n                            " + _vm._s(Number.isNaN(Math.floor(_vm.totalSubtaskCompleted / _vm.totalSubtask * 100)) ? 0 + "%" : Math.floor(_vm.totalSubtaskCompleted / _vm.totalSubtask * 100) + "%") + "\n                        ")])])])]), _vm._v(" "), _c("button", {
+  }, [_vm._v("\n                        " + _vm._s(_vm.show.name) + "\n                    ")])])]), _vm._v(" "), _c("button", {
     staticClass: "btn-close btn-close-white",
     attrs: {
       type: "button",
