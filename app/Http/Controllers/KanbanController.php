@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Task;
+use Exception;
 use App\Models\User;
 use App\Models\Report;
 use App\Models\Project;
 use App\Models\Invitation;
 use App\Models\Notification;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,7 @@ class KanbanController extends Controller
     {
         try {
             $project = Project::findOrFail($id);
+            $findProject = Project::all()->where('project_title', $project->project_title);
 
             $fetch = DB::table('projects')->join('users', 'projects.id', '=', 'users.id')
                 ->where('project_id', '=', $id)
@@ -65,6 +67,12 @@ class KanbanController extends Controller
             $projects = Project::limit(5)->orderByDesc('created_at')->get()->unique('project_title');
             $fetchLimitProject = Project::limit(5)->orderByDesc('created_at')->get()->unique('project_title');
 
+            $project_id = [];
+            foreach ($findProject as $item) {
+                $project_id[] = $item->project_id;
+            }
+            $kanbanTask = Task::whereIn('project_id', $project_id)->get();
+            $kanbanBoard = Task::whereIn('project_id', $project_id)->get();
             return view('admin.kanban', compact('project'))
                 ->with('users', $users)
                 ->with(compact('projects'))
@@ -74,6 +82,8 @@ class KanbanController extends Controller
                 ->with(compact('fetch'))
                 ->with(compact('staff'))
                 ->with(compact('head'))
+                ->with(compact('kanbanTask'))
+                ->with(compact('kanbanBoard'))
                 ->with('fetchLimitProject', $fetchLimitProject);
         } catch (Exception $e) {
             abort_if($e, 500);
@@ -84,6 +94,7 @@ class KanbanController extends Controller
     {
         try {
             $project = Project::findOrFail($id);
+            $findProject = Project::all()->where('project_title', $project->project_title);
 
             $isProjectHead = Project::join('users', 'projects.id', '=', 'users.id')
                 ->where('users.role', '!=', 'admin')
@@ -160,6 +171,12 @@ class KanbanController extends Controller
                 ->limit(5)
                 ->get();
 
+            $project_id = [];
+            foreach ($findProject as $item) {
+                $project_id[] = $item->project_id;
+            }
+            $kanbanTask = Task::whereIn('project_id', $project_id)->get();
+            $kanbanBoard = Task::whereIn('project_id', $project_id)->get();
             return view('head.kanban', compact('project'))
                 ->with('users', $users)
                 ->with(compact('projects'))
@@ -171,6 +188,8 @@ class KanbanController extends Controller
                 ->with(compact('staff'))
                 ->with(compact('head'))
                 ->with(compact('invitation'))
+                ->with(compact('kanbanTask'))
+                ->with(compact('kanbanBoard'))
                 ->with('fetchLimitProject', $fetchLimitProject);
         } catch (Exception $e) {
             abort_if($e, 500);

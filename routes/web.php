@@ -28,8 +28,8 @@ use App\Http\Controllers\UserManagementController;
 */
 
 // Authentication
-Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::post('/login/checkAuth', [LoginController::class, 'authLogin']);
+Route::get('/', [LoginController::class, 'index'])->name('login');
+Route::post('/checkAuth', [LoginController::class, 'authLogin']);
 Route::get('/logout', [LoginController::class, 'logout']);
 
 // Admin role

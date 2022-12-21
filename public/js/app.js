@@ -5499,7 +5499,7 @@ Vue.prototype.$taskColumn = []; //  get current user's id from meta tag
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'notification', 'projects'],
+  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'notification', 'projects', 'kanban_task', 'kanban_board'],
   data: function data() {
     return {
       toggleUpload: false,
@@ -5607,6 +5607,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     this.getBoardColor();
     this.getTaskColor();
     this.formMembers.members = this.$currentUserArray;
+    this.fetchKanbanTask();
+    this.fetchKanbanBoard();
   },
   methods: {
     //  board data handling
@@ -5617,8 +5619,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         return res.json();
       }).then(function (res) {
         _this.boards = res.data;
-
-        _this.$boardColumn.push(res.data);
       });
     },
     deleteBoard: function deleteBoard(id) {
@@ -5676,6 +5676,10 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             }).then(function (confirm) {
               if (confirm.isConfirmed) {
                 _this3.fetchBoards();
+
+                _this3.fetchKanbanBoard();
+
+                _this3.fetchKanbanTask();
               }
             });
           } else {
@@ -5744,8 +5748,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         return res.json();
       }).then(function (res) {
         _this5.tasks = res.data;
-
-        _this5.$taskColumn.push(_this5.tasks);
       });
     },
     deleteTask: function deleteTask(id) {
@@ -6177,6 +6179,30 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         console.log(e);
       }
     },
+    fetchKanbanTask: function fetchKanbanTask() {
+      var _this22 = this;
+
+      this.$props.kanban_task.forEach(function (element) {
+        var startDate = new Date(element.task_start_date);
+        var endDate = new Date(element.task_due_date);
+        var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+        var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+
+        _this22.$taskColumn.push({
+          'name': element.name,
+          'y': [startDateFormatted, endDateFormatted]
+        });
+      });
+    },
+    fetchKanbanBoard: function fetchKanbanBoard() {
+      var _this23 = this;
+
+      this.$props.kanban_board.forEach(function (element) {
+        _this23.$boardColumn.push({
+          'name': element.name
+        });
+      });
+    },
     showModal: function showModal(tasks) {
       this.clearAssignedUser();
       var vn = this;
@@ -6199,21 +6225,21 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       $('#offcanvasTaskChangeColor').offcanvas('show');
     },
     getBoardColor: function getBoardColor() {
-      var _this22 = this;
+      var _this24 = this;
 
       axios.get('/admin/board-color/' + this.$project_id).then(function (response) {
-        _this22.currentBoardColor = response.data.board_color;
+        _this24.currentBoardColor = response.data.board_color;
       });
     },
     getTaskColor: function getTaskColor() {
-      var _this23 = this;
+      var _this25 = this;
 
       axios.get('/admin/task-color/' + this.$project_id).then(function (response) {
-        _this23.currentTaskColor = response.data.task_color;
+        _this25.currentTaskColor = response.data.task_color;
       });
     },
     changeBoardColor: function changeBoardColor(color) {
-      var _this24 = this;
+      var _this26 = this;
 
       this.currentBoardColor = color;
       axios.put('/admin/board-color/update/' + this.$project_id, {
@@ -6221,13 +6247,13 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color updated!', 'Board color has been changed!', 'success');
 
-        _this24.getBoardColor();
+        _this26.getBoardColor();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color not updated!', 'Something went wrong!', 'error');
       });
     },
     changeTaskColor: function changeTaskColor(color) {
-      var _this25 = this;
+      var _this27 = this;
 
       this.currentTaskColor = color;
       axios.put('/admin/task-color/update/' + this.$project_id, {
@@ -6235,7 +6261,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color updated!', 'Task color has been changed!', 'success');
 
-        _this25.getTaskColor();
+        _this27.getTaskColor();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color not updated!', 'Something went wrong!', 'error');
       });
@@ -6251,7 +6277,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     }
   },
   mounted: function mounted() {
-    var _this26 = this;
+    var _this28 = this;
 
     var inputElement = document.querySelector('input[id="upload_file"]');
     var pond = FilePond.create(inputElement, {
@@ -6275,10 +6301,10 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           },
           withCredentials: false,
           onload: function onload(response) {
-            _this26.fetchFiles();
+            _this28.fetchFiles();
           },
           ondata: function ondata(formData) {
-            formData.append('task_id', _this26.show.id);
+            formData.append('task_id', _this28.show.id);
             return formData;
           }
         }
@@ -6305,12 +6331,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     sidebarBtn === null || sidebarBtn === void 0 ? void 0 : sidebarBtn.addEventListener("click", function () {
       sidebar.classList.toggle("close");
     });
-    var tasks = [{
-      'name': '',
-      'y': ['', '']
-    }];
-    var task = this.$taskColumn;
-    console.log(task);
     var today = new Date();
     var currentDate = today.getMonth() + 1 + "/" + today.getDate() + "/" + today.getFullYear();
     var startDate = new Date(this.item.project_start_date);
@@ -6358,7 +6378,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       },
       series: [{
         name: 'Initiate Project',
-        points: tasks
+        points: this.$taskColumn
       }]
     });
   }
@@ -6482,12 +6502,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 Vue.prototype.$currentUserArray = [];
-Vue.prototype.$currentAssignedTaskMember = []; //  get current user's id from meta tag
+Vue.prototype.$currentAssignedTaskMember = [];
+Vue.prototype.$boardColumn = [];
+Vue.prototype.$taskColumn = []; //  get current user's id from meta tag
 
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'is_head', 'notification', 'projects', 'invitation'],
+  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'is_head', 'notification', 'projects', 'invitation', 'kanban_task', 'kanban_board'],
   data: function data() {
     return {
       toggleUpload: false,
@@ -6604,6 +6626,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         return res.json();
       }).then(function (res) {
         _this.boards = res.data;
+        _this.$props.kanban_board = res.data;
       });
     },
     deleteBoard: function deleteBoard(id) {
@@ -6729,6 +6752,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         return res.json();
       }).then(function (res) {
         _this5.tasks = res.data;
+        _this5.$props.kanban_task = res.data;
       });
     },
     deleteTask: function deleteTask(id) {
@@ -7161,6 +7185,32 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         _this21.validationMemberError = error.response.data;
       });
     },
+    fetchKanbanTask: function fetchKanbanTask() {
+      var _this22 = this;
+
+      this.fetchTasks();
+      this.$props.kanban_task.forEach(function (element) {
+        var startDate = new Date(element.task_start_date);
+        var endDate = new Date(element.task_due_date);
+        var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+        var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+
+        _this22.$taskColumn.push({
+          'name': element.name,
+          'y': [startDateFormatted, endDateFormatted]
+        });
+      });
+    },
+    fetchKanbanBoard: function fetchKanbanBoard() {
+      var _this23 = this;
+
+      this.fetchBoards();
+      this.$props.kanban_board.forEach(function (element) {
+        _this23.$boardColumn.push({
+          'name': element.name
+        });
+      });
+    },
     showModal: function showModal(tasks) {
       this.clearAssignedUser();
       var vn = this;
@@ -7183,21 +7233,21 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       $('#offcanvasTaskChangeColor').offcanvas('show');
     },
     getBoardColor: function getBoardColor() {
-      var _this22 = this;
+      var _this24 = this;
 
       axios.get('/head/board-color/' + this.$project_id).then(function (response) {
-        _this22.currentBoardColor = response.data.board_color;
+        _this24.currentBoardColor = response.data.board_color;
       });
     },
     getTaskColor: function getTaskColor() {
-      var _this23 = this;
+      var _this25 = this;
 
       axios.get('/head/task-color/' + this.$project_id).then(function (response) {
-        _this23.currentTaskColor = response.data.task_color;
+        _this25.currentTaskColor = response.data.task_color;
       });
     },
     changeBoardColor: function changeBoardColor(color) {
-      var _this24 = this;
+      var _this26 = this;
 
       this.currentBoardColor = color;
       axios.put('/head/board-color/update/' + this.$project_id, {
@@ -7205,13 +7255,13 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color updated!', 'Board color has been changed!', 'success');
 
-        _this24.getBoardColor();
+        _this26.getBoardColor();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color not updated!', 'Something went wrong!', 'error');
       });
     },
     changeTaskColor: function changeTaskColor(color) {
-      var _this25 = this;
+      var _this27 = this;
 
       this.currentTaskColor = color;
       axios.put('/head/task-color/update/' + this.$project_id, {
@@ -7219,26 +7269,26 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color updated!', 'Task color has been changed!', 'success');
 
-        _this25.getTaskColor();
+        _this27.getTaskColor();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color not updated!', 'Something went wrong!', 'error');
       });
     },
     toggleFinishedProject: function toggleFinishedProject(id) {
-      var _this26 = this;
+      var _this28 = this;
 
       axios.get('/head/finish-project/' + id).then(function (response) {
         console.log(response);
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project Finished!', 'Your project is set to finished.', 'success').then(function (confirm) {
           if (confirm.isConfirmed) {
-            window.location.href = "/head/dashboard/" + _this26.logged.id;
+            window.location.href = "/head/dashboard/" + _this28.logged.id;
           }
         });
       });
     }
   },
   mounted: function mounted() {
-    var _this27 = this;
+    var _this29 = this;
 
     var inputElement = document.querySelector('input[id="upload_file"]');
     var pond = FilePond.create(inputElement, {
@@ -7262,10 +7312,10 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           },
           withCredentials: false,
           onload: function onload(response) {
-            _this27.fetchFiles();
+            _this29.fetchFiles();
           },
           ondata: function ondata(formData) {
-            formData.append('task_id', _this27.show.id);
+            formData.append('task_id', _this29.show.id);
             return formData;
           }
         }

@@ -1076,7 +1076,8 @@ Vue.prototype.$project_id = document
 export default {
     props: [
         'item', 'users', 'fetch', 'staff', 'head', 'logged',
-        'user_assigned', 'user_head', 'notification', 'projects'
+        'user_assigned', 'user_head', 'notification', 'projects',
+        'kanban_task', 'kanban_board'
     ],
     data() {
         return {
@@ -1190,6 +1191,10 @@ export default {
         this.getTaskColor();
 
         this.formMembers.members = this.$currentUserArray;
+
+        this.fetchKanbanTask();
+
+        this.fetchKanbanBoard();
     },
     methods: {
         //  board data handling
@@ -1198,7 +1203,6 @@ export default {
                 .then(res => res.json())
                 .then(res => {
                     this.boards = res.data;
-                    this.$boardColumn.push(res.data);
                 });
         },
         deleteBoard(id) {
@@ -1253,6 +1257,8 @@ export default {
                             }).then((confirm) => {
                                 if(confirm.isConfirmed){
                                     this.fetchBoards();
+                                    this.fetchKanbanBoard();
+                                    this.fetchKanbanTask();
                                 }
                             })
                         }
@@ -1317,7 +1323,6 @@ export default {
                 .then(res => res.json())
                 .then(res => {
                     this.tasks = res.data;
-                    this.$taskColumn.push(this.tasks);
                 });
         },
         deleteTask(id) {
@@ -1760,6 +1765,20 @@ export default {
                 console.log(e);
             }
         },
+        fetchKanbanTask() {
+            this.$props.kanban_task.forEach(element => {
+                var startDate = new Date(element.task_start_date);
+                var endDate = new Date(element.task_due_date);
+                var startDateFormatted = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+                var endDateFormatted = (endDate.getMonth() + 1) + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+                this.$taskColumn.push({'name': element.name, 'y' : [startDateFormatted, endDateFormatted]});
+            });
+        },
+        fetchKanbanBoard() {
+            this.$props.kanban_board.forEach(element => {
+                this.$boardColumn.push({'name' : element.name});
+            });
+        },
 
 
         showModal(tasks) {
@@ -1911,10 +1930,6 @@ export default {
             sidebar.classList.toggle("close");
         });
 
-        let tasks = [{'name' : '', 'y' : ['', '']}];
-        let task = this.$taskColumn;
-        console.log(task);
-
         var today = new Date()
         var currentDate = (today.getMonth() +1) + "/" + today.getDate() + "/" + today.getFullYear();
 
@@ -1922,7 +1937,6 @@ export default {
         var endDate = new Date(this.item.project_end_date);
         var startDateFormatted = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
         var endDateFormatted = (endDate.getMonth() + 1) + "/" + endDate.getDate() + "/" + endDate.getFullYear();
-
         var chart = JSC.chart('chartDiv', {
             debug: true,
             title_label_text:'Project: ' + this.item.project_title + ' from ' + startDateFormatted + ' to ' + endDateFormatted,
@@ -1966,7 +1980,7 @@ export default {
             series: [
                 {
                     name: 'Initiate Project',
-                    points: tasks
+                    points: this.$taskColumn
                 },
             ],
         });

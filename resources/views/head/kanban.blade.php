@@ -11,14 +11,14 @@
     <div class="pad">
         <div class="row justify-content-center">
             <div class="col-md-12">
-                @if(Auth::check())
+                @if (Auth::check())
                     <meta name="project_id" content="{{ $project->project_id }}">
                     <heads :item="{{ $project }}" :users="{{ $users }}" :fetch="{{ $fetch }}"
-                           :staff="{{ $staff }}" :head="{{ $head }}" :logged="{{ Auth::user() }}"
-                           :user_assigned="{{ $userAssignedProject }}" :user_head="{{ $user_head }}"
-                           :is_head="{{ $isProjectHead }}" :notification="{{ $notification }}" :projects="{{ $projects }}"
-                           :invitation="{{ $invitation }}"
-                    ></heads>
+                        :staff="{{ $staff }}" :head="{{ $head }}" :logged="{{ Auth::user() }}"
+                        :user_assigned="{{ $userAssignedProject }}" :user_head="{{ $user_head }}"
+                        :is_head="{{ $isProjectHead }}" :notification="{{ $notification }}"
+                        :projects="{{ $projects }}" :invitation="{{ $invitation }}"
+                        :kanban_task="{{ $kanbanTask }}" :kanban_board="{{ $kanbanBoard }}"></heads>
                 @endif
             </div>
         </div>

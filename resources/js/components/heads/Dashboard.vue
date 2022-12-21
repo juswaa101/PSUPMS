@@ -1105,6 +1105,9 @@ import VueCookies from 'vue-cookies';
 
 Vue.prototype.$currentUserArray = [];
 Vue.prototype.$currentAssignedTaskMember = [];
+Vue.prototype.$boardColumn = [];
+Vue.prototype.$taskColumn = [];
+
 
 //  get current user's id from meta tag
 Vue.prototype.$user_id = document
@@ -1119,7 +1122,7 @@ export default {
     props: [
         'item', 'users', 'fetch', 'staff', 'head', 'logged',
         'user_assigned', 'user_head', 'is_head', 'notification',
-        'projects', 'invitation'
+        'projects', 'invitation', 'kanban_task', 'kanban_board'
     ],
     data() {
         return {
@@ -1240,6 +1243,7 @@ export default {
                 .then(res => res.json())
                 .then(res => {
                     this.boards = res.data;
+                    this.$props.kanban_board = res.data;
                 });
         },
         deleteBoard(id) {
@@ -1358,6 +1362,7 @@ export default {
                 .then(res => res.json())
                 .then(res => {
                     this.tasks = res.data;
+                    this.$props.kanban_task = res.data;
                 });
         },
         deleteTask(id) {
@@ -1798,6 +1803,22 @@ export default {
                 .catch((error) => {
                     this.validationMemberError = error.response.data;
                 });
+        },
+        fetchKanbanTask() {
+            this.fetchTasks();
+            this.$props.kanban_task.forEach(element => {
+                var startDate = new Date(element.task_start_date);
+                var endDate = new Date(element.task_due_date);
+                var startDateFormatted = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+                var endDateFormatted = (endDate.getMonth() + 1) + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+                this.$taskColumn.push({'name': element.name, 'y' : [startDateFormatted, endDateFormatted]});
+            });
+        },
+        fetchKanbanBoard() {
+            this.fetchBoards();
+            this.$props.kanban_board.forEach(element => {
+                this.$boardColumn.push({'name' : element.name});
+            });
         },
 
         showModal(tasks) {
