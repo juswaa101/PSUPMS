@@ -5489,17 +5489,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-cookies */ "./node_modules/vue-cookies/vue-cookies.js");
 /* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_cookies__WEBPACK_IMPORTED_MODULE_1__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 Vue.prototype.$currentUserArray = [];
 Vue.prototype.$currentAssignedTaskMember = [];
 Vue.prototype.$boardColumn = [];
-Vue.prototype.$taskColumn = []; //  get current user's id from meta tag
+Vue.prototype.$taskColumn = [];
+Vue.prototype.$boardFinal = []; //  get current user's id from meta tag
 
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'notification', 'projects', 'kanban_task', 'kanban_board'],
+  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'notification', 'projects', 'kanban_task', 'kanban_board_task'],
   data: function data() {
     return {
       toggleUpload: false,
@@ -5642,6 +5649,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board Deleted', 'Board Deleted Successfully!', 'success');
 
             _this2.fetchBoards();
+
+            window.location.reload();
           })["catch"](function (error) {
             return console.log(error);
           });
@@ -5677,9 +5686,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
               if (confirm.isConfirmed) {
                 _this3.fetchBoards();
 
-                _this3.fetchKanbanBoard();
-
-                _this3.fetchKanbanTask();
+                window.location.reload();
               }
             });
           } else {
@@ -5733,6 +5740,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this4.fetchBoards();
+
+              window.location.reload();
             }
           });
         }
@@ -5780,6 +5789,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
                 _this6.fetchTasks();
 
                 _this6.fetchBoards();
+
+                window.location.reload();
               }
             });
           })["catch"](function (error) {
@@ -5821,6 +5832,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
               _this7.fetchTasks();
 
               _this7.fetchBoards();
+
+              window.location.reload();
             }
           });
         }
@@ -5855,6 +5868,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
               _this8.fetchTasks();
 
               _this8.fetchBoards();
+
+              window.location.reload();
             }
           });
         }
@@ -6197,9 +6212,45 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     fetchKanbanBoard: function fetchKanbanBoard() {
       var _this23 = this;
 
-      this.$props.kanban_board.forEach(function (element) {
-        _this23.$boardColumn.push({
-          'name': element.name
+      var filter = [];
+      this.$props.kanban_board_task.forEach(function (element) {
+        filter = _this23.$props.kanban_task.filter(function (e) {
+          return element.id == e.board_id;
+        }).map(function (e) {
+          var startDate = new Date(e.task_start_date);
+          var endDate = new Date(e.task_due_date);
+          var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+          var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+          return _objectSpread(_objectSpread({}, e), {}, {
+            points: [{
+              'name': element.name,
+              'y': [startDateFormatted, endDateFormatted]
+            }]
+          });
+        });
+        var mapBoard = [];
+
+        _this23.$boardColumn.push(element.name);
+
+        filter.forEach(function (el) {
+          el.points.forEach(function (ele) {
+            mapBoard = _this23.$boardColumn.filter(function (x) {
+              return x == element.name;
+            }).map(function (elem) {
+              var startDate = new Date(el.task_start_date);
+              var endDate = new Date(el.task_due_date);
+              var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+              var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+
+              _this23.$boardFinal.push({
+                name: ele.name,
+                points: [{
+                  name: el.name,
+                  y: [startDateFormatted, endDateFormatted]
+                }]
+              });
+            });
+          });
         });
       });
     },
@@ -6333,6 +6384,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     });
     var today = new Date();
     var currentDate = today.getMonth() + 1 + "/" + today.getDate() + "/" + today.getFullYear();
+    var thresholdDate = norm(currentDate);
     var startDate = new Date(this.item.project_start_date);
     var endDate = new Date(this.item.project_end_date);
     var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
@@ -6357,11 +6409,12 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           label_text: 'Now'
         }]
       },
+      defaultPoint_label_autoHide: false,
       defaultPoint: {
         outline_width: 0,
         radius: 0,
         label: {
-          text: 'Task',
+          text: pointLabelText,
           placement: 'outside'
         },
         tooltip: '<b>%name</b> %low - %high<br/>{days(%high-%low)} days'
@@ -6376,11 +6429,29 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           xAxisTick_label_text: '<b>%value</b>'
         }
       },
-      series: [{
-        name: 'Initiate Project',
-        points: this.$taskColumn
-      }]
+      series: this.$boardFinal
     });
+
+    function pointLabelText(point) {
+      var pY = point.options('y');
+      var pRange = pY.map(norm);
+
+      if (thresholdDate > pRange[1]) {
+        return getIconText('material/navigation/check', '#66BB6A', 16);
+      } else if (thresholdDate > pRange[0]) {
+        return getIconText('material/notification/sync', '#FDD835', 20);
+      }
+
+      return getIconText('material/navigation/close', '#FF5252', 16);
+    }
+
+    function norm(d) {
+      return new Date(d).getTime();
+    }
+
+    function getIconText(name, color, size) {
+      return '<icon name=' + name + ' size=' + size + ' fill=' + color + '>';
+    }
   }
 });
 
@@ -6499,17 +6570,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-cookies */ "./node_modules/vue-cookies/vue-cookies.js");
 /* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_cookies__WEBPACK_IMPORTED_MODULE_1__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 Vue.prototype.$currentUserArray = [];
 Vue.prototype.$currentAssignedTaskMember = [];
 Vue.prototype.$boardColumn = [];
-Vue.prototype.$taskColumn = []; //  get current user's id from meta tag
+Vue.prototype.$taskColumn = [];
+Vue.prototype.$boardFinal = []; //  get current user's id from meta tag
 
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'is_head', 'notification', 'projects', 'invitation', 'kanban_task', 'kanban_board'],
+  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'is_head', 'notification', 'projects', 'invitation', 'kanban_task', 'kanban_board_task'],
   data: function data() {
     return {
       toggleUpload: false,
@@ -6616,6 +6694,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     this.getBoardColor();
     this.getTaskColor();
     this.formMembers.members = this.$currentUserArray;
+    this.fetchKanbanTask();
+    this.fetchKanbanBoard();
   },
   methods: {
     //  board data handling
@@ -6626,7 +6706,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         return res.json();
       }).then(function (res) {
         _this.boards = res.data;
-        _this.$props.kanban_board = res.data;
       });
     },
     deleteBoard: function deleteBoard(id) {
@@ -6650,6 +6729,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board Deleted', 'Board Deleted Successfully!', 'success');
 
             _this2.fetchBoards();
+
+            window.location.reload();
           })["catch"](function (error) {
             return console.log(error);
           });
@@ -6684,6 +6765,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             }).then(function (confirm) {
               if (confirm.isConfirmed) {
                 _this3.fetchBoards();
+
+                window.location.reload();
               }
             });
           } else {
@@ -6737,6 +6820,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this4.fetchBoards();
+
+              window.location.reload();
             }
           });
         }
@@ -6752,7 +6837,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         return res.json();
       }).then(function (res) {
         _this5.tasks = res.data;
-        _this5.$props.kanban_task = res.data;
       });
     },
     deleteTask: function deleteTask(id) {
@@ -6785,6 +6869,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
                 _this6.fetchBoards();
 
                 _this6.fetchTasks();
+
+                window.location.reload();
               }
             });
           })["catch"](function (error) {
@@ -6826,6 +6912,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
               _this7.fetchTasks();
 
               _this7.fetchBoards();
+
+              window.location.reload();
             }
           });
         }
@@ -6860,6 +6948,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
               _this8.fetchTasks();
 
               _this8.fetchBoards();
+
+              window.location.reload();
             }
           });
         }
@@ -7188,7 +7278,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     fetchKanbanTask: function fetchKanbanTask() {
       var _this22 = this;
 
-      this.fetchTasks();
       this.$props.kanban_task.forEach(function (element) {
         var startDate = new Date(element.task_start_date);
         var endDate = new Date(element.task_due_date);
@@ -7204,10 +7293,45 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     fetchKanbanBoard: function fetchKanbanBoard() {
       var _this23 = this;
 
-      this.fetchBoards();
-      this.$props.kanban_board.forEach(function (element) {
-        _this23.$boardColumn.push({
-          'name': element.name
+      var filter = [];
+      this.$props.kanban_board_task.forEach(function (element) {
+        filter = _this23.$props.kanban_task.filter(function (e) {
+          return element.id == e.board_id;
+        }).map(function (e) {
+          var startDate = new Date(e.task_start_date);
+          var endDate = new Date(e.task_due_date);
+          var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+          var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+          return _objectSpread(_objectSpread({}, e), {}, {
+            points: [{
+              'name': element.name,
+              'y': [startDateFormatted, endDateFormatted]
+            }]
+          });
+        });
+        var mapBoard = [];
+
+        _this23.$boardColumn.push(element.name);
+
+        filter.forEach(function (el) {
+          el.points.forEach(function (ele) {
+            mapBoard = _this23.$boardColumn.filter(function (x) {
+              return x == element.name;
+            }).map(function (elem) {
+              var startDate = new Date(el.task_start_date);
+              var endDate = new Date(el.task_due_date);
+              var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+              var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+
+              _this23.$boardFinal.push({
+                name: ele.name,
+                points: [{
+                  name: el.name,
+                  y: [startDateFormatted, endDateFormatted]
+                }]
+              });
+            });
+          });
         });
       });
     },
@@ -7344,6 +7468,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     });
     var today = new Date();
     var currentDate = today.getMonth() + 1 + "/" + today.getDate() + "/" + today.getFullYear();
+    var thresholdDate = norm(currentDate);
     var startDate = new Date(this.item.project_start_date);
     var endDate = new Date(this.item.project_end_date);
     var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
@@ -7368,11 +7493,12 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           label_text: 'Now'
         }]
       },
+      defaultPoint_label_autoHide: false,
       defaultPoint: {
         outline_width: 0,
         radius: 0,
         label: {
-          text: 'Task',
+          text: pointLabelText,
           placement: 'outside'
         },
         tooltip: '<b>%name</b> %low - %high<br/>{days(%high-%low)} days'
@@ -7387,23 +7513,29 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           xAxisTick_label_text: '<b>%value</b>'
         }
       },
-      series: [{
-        name: 'Initiate Project',
-        points: [{
-          name: 'Initiate Project',
-          y: ['1/15/2023', '2/15/2023']
-        }, {
-          name: 'Project Assignments',
-          y: ['2/7/2023', '3/31/2023']
-        }, {
-          name: 'Project Creation',
-          y: ['4/7/2023', '4/19/2023']
-        }, {
-          name: 'Project Polishing',
-          y: ['4/26/2023', '6/19/2023']
-        }]
-      }]
+      series: this.$boardFinal
     });
+
+    function pointLabelText(point) {
+      var pY = point.options('y');
+      var pRange = pY.map(norm);
+
+      if (thresholdDate > pRange[1]) {
+        return getIconText('material/navigation/check', '#66BB6A', 16);
+      } else if (thresholdDate > pRange[0]) {
+        return getIconText('material/notification/sync', '#FDD835', 20);
+      }
+
+      return getIconText('material/navigation/close', '#FF5252', 16);
+    }
+
+    function norm(d) {
+      return new Date(d).getTime();
+    }
+
+    function getIconText(name, color, size) {
+      return '<icon name=' + name + ' size=' + size + ' fill=' + color + '>';
+    }
   }
 });
 

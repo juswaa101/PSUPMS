@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Board;
 use App\Task;
 use Exception;
 use App\Models\User;
@@ -72,7 +73,7 @@ class KanbanController extends Controller
                 $project_id[] = $item->project_id;
             }
             $kanbanTask = Task::whereIn('project_id', $project_id)->get();
-            $kanbanBoard = Task::whereIn('project_id', $project_id)->get();
+            $kanbanBoardAndTask = Board::whereIn('project_id', $project_id)->get();
             return view('admin.kanban', compact('project'))
                 ->with('users', $users)
                 ->with(compact('projects'))
@@ -83,7 +84,7 @@ class KanbanController extends Controller
                 ->with(compact('staff'))
                 ->with(compact('head'))
                 ->with(compact('kanbanTask'))
-                ->with(compact('kanbanBoard'))
+                ->with(compact('kanbanBoardAndTask'))
                 ->with('fetchLimitProject', $fetchLimitProject);
         } catch (Exception $e) {
             abort_if($e, 500);
@@ -176,7 +177,7 @@ class KanbanController extends Controller
                 $project_id[] = $item->project_id;
             }
             $kanbanTask = Task::whereIn('project_id', $project_id)->get();
-            $kanbanBoard = Task::whereIn('project_id', $project_id)->get();
+            $kanbanBoardAndTask = Board::whereIn('project_id', $project_id)->get();
             return view('head.kanban', compact('project'))
                 ->with('users', $users)
                 ->with(compact('projects'))
@@ -189,7 +190,7 @@ class KanbanController extends Controller
                 ->with(compact('head'))
                 ->with(compact('invitation'))
                 ->with(compact('kanbanTask'))
-                ->with(compact('kanbanBoard'))
+                ->with(compact('kanbanBoardAndTask'))
                 ->with('fetchLimitProject', $fetchLimitProject);
         } catch (Exception $e) {
             abort_if($e, 500);

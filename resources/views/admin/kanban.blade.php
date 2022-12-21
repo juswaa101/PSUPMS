@@ -17,7 +17,7 @@
                         :staff="{{ $staff }}" :head="{{ $head }}" :logged="{{ Auth::user() }}"
                         :user_assigned="{{ $userAssignedProject }}" :user_head="{{ $user_head }}"
                         :notification="{{ $notification }}" :projects="{{ $projects }}"
-                        :kanban_task="{{ $kanbanTask }}" :kanban_board="{{ $kanbanBoard }}"></dashboard>
+                        :kanban_task="{{ $kanbanTask }}" :kanban_board_task="{{ $kanbanBoardAndTask }}"></dashboard>
                 @endif
             </div>
         </div>

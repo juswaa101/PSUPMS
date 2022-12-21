@@ -1063,6 +1063,7 @@ Vue.prototype.$currentUserArray = [];
 Vue.prototype.$currentAssignedTaskMember = [];
 Vue.prototype.$boardColumn = [];
 Vue.prototype.$taskColumn = [];
+Vue.prototype.$boardFinal = [];
 
 //  get current user's id from meta tag
 Vue.prototype.$user_id = document
@@ -1077,7 +1078,7 @@ export default {
     props: [
         'item', 'users', 'fetch', 'staff', 'head', 'logged',
         'user_assigned', 'user_head', 'notification', 'projects',
-        'kanban_task', 'kanban_board'
+        'kanban_task', 'kanban_board_task'
     ],
     data() {
         return {
@@ -1227,6 +1228,7 @@ export default {
                                 'success'
                             )
                             this.fetchBoards();
+                            window.location.reload();
                         })
                         .catch(error => console.log(error));
                 }
@@ -1257,8 +1259,7 @@ export default {
                             }).then((confirm) => {
                                 if(confirm.isConfirmed){
                                     this.fetchBoards();
-                                    this.fetchKanbanBoard();
-                                    this.fetchKanbanTask();
+                                    window.location.reload();
                                 }
                             })
                         }
@@ -1310,6 +1311,7 @@ export default {
                         }).then((confirm) => {
                             if(confirm.isConfirmed){
                                 this.fetchBoards();
+                                window.location.reload();
                             }
                         })
                     }
@@ -1352,6 +1354,7 @@ export default {
                                 if(confirm.isConfirmed){
                                     this.fetchTasks();
                                     this.fetchBoards();
+                                    window.location.reload();
                                 }
                             });
                         })
@@ -1391,6 +1394,7 @@ export default {
                             if(confirm.isConfirmed) {
                                 this.fetchTasks();
                                 this.fetchBoards();
+                                window.location.reload();
                             }
                         });
                     }
@@ -1422,6 +1426,7 @@ export default {
                             if (confirm.isConfirmed) {
                                 this.fetchTasks();
                                 this.fetchBoards();
+                                window.location.reload();
                             }
                         });
                     }
@@ -1775,8 +1780,31 @@ export default {
             });
         },
         fetchKanbanBoard() {
-            this.$props.kanban_board.forEach(element => {
-                this.$boardColumn.push({'name' : element.name});
+            let filter = [];
+            this.$props.kanban_board_task.forEach(element => {
+                filter = this.$props.kanban_task.filter(e => element.id == e.board_id).map(e => {
+                    var startDate = new Date(e.task_start_date);
+                    var endDate = new Date(e.task_due_date);
+                    var startDateFormatted = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+                    var endDateFormatted = (endDate.getMonth() + 1) + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+                    return {...e, points: [{'name' : element.name, 'y' : [startDateFormatted, endDateFormatted]}] }
+                });
+
+                let mapBoard = [];
+                this.$boardColumn.push(element.name);
+                filter.forEach(el => {
+                    el.points.forEach(ele => {
+                        mapBoard = this.$boardColumn
+                            .filter(x => x == element.name)
+                            .map(elem => {
+                                var startDate = new Date(el.task_start_date);
+                                var endDate = new Date(el.task_due_date);
+                                var startDateFormatted = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+                                var endDateFormatted = (endDate.getMonth() + 1) + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+                                this.$boardFinal.push({name: ele.name, points : [{name: el.name, y: [startDateFormatted, endDateFormatted]}]});
+                            });
+                    });
+                });
             });
         },
 
@@ -1932,6 +1960,7 @@ export default {
 
         var today = new Date()
         var currentDate = (today.getMonth() +1) + "/" + today.getDate() + "/" + today.getFullYear();
+        var thresholdDate = norm(currentDate); 
 
         var startDate = new Date(this.item.project_start_date);
         var endDate = new Date(this.item.project_end_date);
@@ -1960,11 +1989,12 @@ export default {
                     }
                 ]
             },
+            defaultPoint_label_autoHide: false,
             defaultPoint: {
                 outline_width: 0,
                 radius: 0,
                 label: {
-                    text: 'Task',
+                    text: pointLabelText,
                     placement: 'outside'
                 },
                 tooltip:
@@ -1977,13 +2007,47 @@ export default {
                     xAxisTick_label_text: '<b>%value</b>'
                 }
             },
-            series: [
-                {
-                    name: 'Initiate Project',
-                    points: this.$taskColumn
-                },
-            ],
+            series: this.$boardFinal
         });
+
+        function pointLabelText(point) { 
+            var pY = point.options('y'); 
+            var pRange = pY.map(norm); 
+            if (thresholdDate > pRange[1]) { 
+                return getIconText( 
+                'material/navigation/check', 
+                '#66BB6A', 
+                16 
+                ); 
+            } else if (thresholdDate > pRange[0]) { 
+                return getIconText( 
+                'material/notification/sync', 
+                '#FDD835', 
+                20 
+                ); 
+            } 
+            return getIconText( 
+                'material/navigation/close', 
+                '#FF5252', 
+                16 
+            ); 
+            } 
+            
+        function norm(d) { 
+            return new Date(d).getTime(); 
+        } 
+            
+        function getIconText(name, color, size) { 
+            return ( 
+                '<icon name=' + 
+                name + 
+                ' size=' + 
+                size + 
+                ' fill=' + 
+                color + 
+                '>'
+            ); 
+        } 
     }
 };
 </script>
