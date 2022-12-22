@@ -123,7 +123,6 @@ class ReportsController extends Controller
         }
     }
 
-    //  almost fixed na
     public function getCollection(Request $request, array $get_projects_id)
     {
         try {
@@ -318,8 +317,6 @@ class ReportsController extends Controller
                 ->where('invitations.status', 1)
                 ->get();
 
-            // Project::where('project_title', $project->project_title)->get();
-
             $get_projects_id = [];
             foreach ($projects as $proj) {
                 $get_projects_id[] = $proj->project_id;
@@ -332,7 +329,7 @@ class ReportsController extends Controller
             $data = file_get_contents($path);
             $image = 'data:image/' . $type . ';base64,' . base64_encode($data);
 
-            $pdf = Pdf::setOptions(['isRemoteEnabled' => TRUE])
+            $pdf = Pdf::setOptions(['isRemoteEnabled' => FALSE])
                 ->loadView('pdf.reports', ['reports' => $reports, 'image' => $image]);
 
             $path = public_path('pdf/');

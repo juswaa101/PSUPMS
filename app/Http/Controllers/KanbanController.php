@@ -72,8 +72,11 @@ class KanbanController extends Controller
             foreach ($findProject as $item) {
                 $project_id[] = $item->project_id;
             }
-            $kanbanTask = Task::whereIn('project_id', $project_id)->get();
-            $kanbanBoardAndTask = Board::whereIn('project_id', $project_id)->get();
+            $kanbanTask = Task::join('boards', 'boards.id', '=', 'tasks.board_id')
+                ->whereIn('tasks.project_id', $project_id)
+                ->select('boards.*', 'tasks.*', 'boards.name as board_name', 'tasks.name as task_name')
+                ->get();
+            $kanbanBoardAndTask = Board::orderBy('index')->whereIn('project_id', $project_id)->get();
             return view('admin.kanban', compact('project'))
                 ->with('users', $users)
                 ->with(compact('projects'))
@@ -87,6 +90,7 @@ class KanbanController extends Controller
                 ->with(compact('kanbanBoardAndTask'))
                 ->with('fetchLimitProject', $fetchLimitProject);
         } catch (Exception $e) {
+            dd($e);
             abort_if($e, 500);
         }
     }
@@ -176,8 +180,11 @@ class KanbanController extends Controller
             foreach ($findProject as $item) {
                 $project_id[] = $item->project_id;
             }
-            $kanbanTask = Task::whereIn('project_id', $project_id)->get();
-            $kanbanBoardAndTask = Board::whereIn('project_id', $project_id)->get();
+            $kanbanTask = Task::join('boards', 'boards.id', '=', 'tasks.board_id')
+                ->whereIn('tasks.project_id', $project_id)
+                ->select('boards.*', 'tasks.*', 'boards.name as board_name', 'tasks.name as task_name')
+                ->get();
+            $kanbanBoardAndTask = Board::orderBy('index')->whereIn('project_id', $project_id)->get();
             return view('head.kanban', compact('project'))
                 ->with('users', $users)
                 ->with(compact('projects'))

@@ -1064,6 +1064,8 @@ Vue.prototype.$currentAssignedTaskMember = [];
 Vue.prototype.$boardColumn = [];
 Vue.prototype.$taskColumn = [];
 Vue.prototype.$boardFinal = [];
+Vue.prototype.$boardFinal1 = [];
+Vue.prototype.$boardFinal2 = [];
 
 //  get current user's id from meta tag
 Vue.prototype.$user_id = document
@@ -1792,19 +1794,36 @@ export default {
 
                 let mapBoard = [];
                 this.$boardColumn.push(element.name);
-                filter.forEach(el => {
+                filter.filter((value, index, self) => 
+                    self.findIndex(v => v.board_name === value.board_name) === index)
+                    .forEach(el => {
                     el.points.forEach(ele => {
                         mapBoard = this.$boardColumn
-                            .filter(x => x == element.name)
-                            .map(elem => {
-                                var startDate = new Date(el.task_start_date);
-                                var endDate = new Date(el.task_due_date);
-                                var startDateFormatted = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
-                                var endDateFormatted = (endDate.getMonth() + 1) + "/" + endDate.getDate() + "/" + endDate.getFullYear();
-                                this.$boardFinal.push({name: ele.name, points : [{name: el.name, y: [startDateFormatted, endDateFormatted]}]});
-                            });
+                        .filter(x => x == element.name)
+                        .map(elem => { 
+                            this.$boardFinal.push({name: el.board_name});
+                        });
                     });
                 });
+                filter.filter((value, index, self) => 
+                    self.findIndex(v => v.board_name === value.board_name) === index).forEach(el => {
+                        el.points.forEach(ele => {
+                            this.$boardFinal.filter(x => x.name == element.name && x.name == ele.name).map(mp => {   
+                                this.$boardFinal1.push({...mp, points: []});
+                            })
+                        });
+                })
+
+                filter.forEach(b => {
+                    this.$boardFinal1.filter(x => x.name == b.board_name).forEach(item => {
+                        console.log(item);
+                        var startDate = new Date(b.task_start_date);
+                        var endDate = new Date(b.task_due_date);
+                        var startDateFormatted = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+                        var endDateFormatted = (endDate.getMonth() + 1) + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+                        item.points.push({'name' : b.task_name, y: [startDateFormatted, endDateFormatted]})
+                    })
+                });    
             });
         },
 
@@ -1980,7 +1999,7 @@ export default {
                 'inside bottom left',
             yAxis: {
                 scale_type: 'time',
-                scale_range_padding: 0.15,
+                scale_range_padding: 0.35,
                 markers: [
                     {
                         value: currentDate,
@@ -2007,7 +2026,7 @@ export default {
                     xAxisTick_label_text: '<b>%value</b>'
                 }
             },
-            series: this.$boardFinal
+            series: this.$boardFinal1
         });
 
         function pointLabelText(point) { 
@@ -2031,12 +2050,10 @@ export default {
                 '#FF5252', 
                 16 
             ); 
-            } 
-            
+        }  
         function norm(d) { 
             return new Date(d).getTime(); 
-        } 
-            
+        }     
         function getIconText(name, color, size) { 
             return ( 
                 '<icon name=' + 

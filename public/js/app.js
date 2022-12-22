@@ -5501,7 +5501,9 @@ Vue.prototype.$currentUserArray = [];
 Vue.prototype.$currentAssignedTaskMember = [];
 Vue.prototype.$boardColumn = [];
 Vue.prototype.$taskColumn = [];
-Vue.prototype.$boardFinal = []; //  get current user's id from meta tag
+Vue.prototype.$boardFinal = [];
+Vue.prototype.$boardFinal1 = [];
+Vue.prototype.$boardFinal2 = []; //  get current user's id from meta tag
 
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
@@ -6232,23 +6234,48 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
 
         _this23.$boardColumn.push(element.name);
 
-        filter.forEach(function (el) {
+        filter.filter(function (value, index, self) {
+          return self.findIndex(function (v) {
+            return v.board_name === value.board_name;
+          }) === index;
+        }).forEach(function (el) {
           el.points.forEach(function (ele) {
             mapBoard = _this23.$boardColumn.filter(function (x) {
               return x == element.name;
             }).map(function (elem) {
-              var startDate = new Date(el.task_start_date);
-              var endDate = new Date(el.task_due_date);
-              var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
-              var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
-
               _this23.$boardFinal.push({
-                name: ele.name,
-                points: [{
-                  name: el.name,
-                  y: [startDateFormatted, endDateFormatted]
-                }]
+                name: el.board_name
               });
+            });
+          });
+        });
+        filter.filter(function (value, index, self) {
+          return self.findIndex(function (v) {
+            return v.board_name === value.board_name;
+          }) === index;
+        }).forEach(function (el) {
+          el.points.forEach(function (ele) {
+            _this23.$boardFinal.filter(function (x) {
+              return x.name == element.name && x.name == ele.name;
+            }).map(function (mp) {
+              _this23.$boardFinal1.push(_objectSpread(_objectSpread({}, mp), {}, {
+                points: []
+              }));
+            });
+          });
+        });
+        filter.forEach(function (b) {
+          _this23.$boardFinal1.filter(function (x) {
+            return x.name == b.board_name;
+          }).forEach(function (item) {
+            console.log(item);
+            var startDate = new Date(b.task_start_date);
+            var endDate = new Date(b.task_due_date);
+            var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+            var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+            item.points.push({
+              'name': b.task_name,
+              y: [startDateFormatted, endDateFormatted]
             });
           });
         });
@@ -6402,7 +6429,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       toolbar_items_export_position: 'inside bottom left',
       yAxis: {
         scale_type: 'time',
-        scale_range_padding: 0.15,
+        scale_range_padding: 0.35,
         markers: [{
           value: currentDate,
           color: 'red',
@@ -6429,7 +6456,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           xAxisTick_label_text: '<b>%value</b>'
         }
       },
-      series: this.$boardFinal
+      series: this.$boardFinal1
     });
 
     function pointLabelText(point) {
@@ -6582,7 +6609,8 @@ Vue.prototype.$currentUserArray = [];
 Vue.prototype.$currentAssignedTaskMember = [];
 Vue.prototype.$boardColumn = [];
 Vue.prototype.$taskColumn = [];
-Vue.prototype.$boardFinal = []; //  get current user's id from meta tag
+Vue.prototype.$boardFinal = [];
+Vue.prototype.$boardFinal1 = []; //  get current user's id from meta tag
 
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
@@ -7313,23 +7341,48 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
 
         _this23.$boardColumn.push(element.name);
 
-        filter.forEach(function (el) {
+        filter.filter(function (value, index, self) {
+          return self.findIndex(function (v) {
+            return v.board_name === value.board_name;
+          }) === index;
+        }).forEach(function (el) {
           el.points.forEach(function (ele) {
             mapBoard = _this23.$boardColumn.filter(function (x) {
               return x == element.name;
             }).map(function (elem) {
-              var startDate = new Date(el.task_start_date);
-              var endDate = new Date(el.task_due_date);
-              var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
-              var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
-
               _this23.$boardFinal.push({
-                name: ele.name,
-                points: [{
-                  name: el.name,
-                  y: [startDateFormatted, endDateFormatted]
-                }]
+                name: el.board_name
               });
+            });
+          });
+        });
+        filter.filter(function (value, index, self) {
+          return self.findIndex(function (v) {
+            return v.board_name === value.board_name;
+          }) === index;
+        }).forEach(function (el) {
+          el.points.forEach(function (ele) {
+            _this23.$boardFinal.filter(function (x) {
+              return x.name == element.name && x.name == ele.name;
+            }).map(function (mp) {
+              _this23.$boardFinal1.push(_objectSpread(_objectSpread({}, mp), {}, {
+                points: []
+              }));
+            });
+          });
+        });
+        filter.forEach(function (b) {
+          _this23.$boardFinal1.filter(function (x) {
+            return x.name == b.board_name;
+          }).forEach(function (item) {
+            console.log(item);
+            var startDate = new Date(b.task_start_date);
+            var endDate = new Date(b.task_due_date);
+            var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+            var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
+            item.points.push({
+              'name': b.task_name,
+              y: [startDateFormatted, endDateFormatted]
             });
           });
         });
@@ -7486,7 +7539,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       toolbar_items_export_position: 'inside bottom left',
       yAxis: {
         scale_type: 'time',
-        scale_range_padding: 0.15,
+        scale_range_padding: 0.35,
         markers: [{
           value: currentDate,
           color: 'red',
@@ -7513,7 +7566,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           xAxisTick_label_text: '<b>%value</b>'
         }
       },
-      series: this.$boardFinal
+      series: this.$boardFinal1
     });
 
     function pointLabelText(point) {

@@ -102,6 +102,24 @@
                     type: 'get',
                     url: '/admin/reports/fetch',
                     dataType: 'json',
+                    beforeSend: function() {
+                        swal({
+                            title: 'Please Wait !',
+                            html: 'Report is generating', // add html attribute if you want or remove
+                            allowOutsideClick: false,
+                            onBeforeOpen: () => {
+                                swal.showLoading()
+                            },
+                        });
+                    },
+                    complete: function() {
+                        swal.close();
+                        swal(
+                            'Generated',
+                            'Successful Generated',
+                            'success'
+                        );
+                    },
                     success: function(data) {
                         $.each(data.projects, function(key, item) {
                             $('#projects').append("<option value='" + item.project_id + "'>" +
@@ -128,6 +146,24 @@
                     },
                     url: '/admin/reports/fetch/' + $('#projects option:selected').val(),
                     dataType: 'json',
+                    beforeSend: function() {
+                        swal({
+                            title: 'Please Wait !',
+                            html: 'Report is generating', // add html attribute if you want or remove
+                            allowOutsideClick: false,
+                            onBeforeOpen: () => {
+                                swal.showLoading()
+                            },
+                        });
+                    },
+                    complete: function() {
+                        swal.close();
+                        swal(
+                            'Generated',
+                            'Successful Generated',
+                            'success'
+                        );
+                    },
                     success: function(data) {
                         $.each(data.project, function(key, item) {
                             let tableName = $('#reportTable').DataTable();
@@ -151,6 +187,24 @@
                     type: 'get',
                     url: '/admin/reports/fetch/' + $('#projects option:selected').val(),
                     dataType: 'json',
+                    beforeSend: function() {
+                        swal({
+                            title: 'Please Wait !',
+                            html: 'Report is generating', // add html attribute if you want or remove
+                            allowOutsideClick: false,
+                            onBeforeOpen: () => {
+                                swal.showLoading()
+                            },
+                        });
+                    },
+                    complete: function() {
+                        swal.close();
+                        swal(
+                            'Generated',
+                            'Successful Generated',
+                            'success'
+                        );
+                    },
                     success: function(data) {
                         $.each(data.project, function(key, item) {
                             let tableName = $('#reportTable').DataTable();
@@ -287,6 +341,24 @@
                         },
                         xhrFields: {
                             responseType: 'blob',
+                        },
+                        beforeSend: function() {
+                            swal({
+                                title: 'Please Wait !',
+                                html: 'Report is generating', // add html attribute if you want or remove
+                                allowOutsideClick: false,
+                                onBeforeOpen: () => {
+                                    swal.showLoading()
+                                },
+                            });
+                        },
+                        complete: function() {
+                            swal.close();
+                            swal(
+                                'Generated',
+                                'Successful Generated',
+                                'success'
+                            );
                         },
                         success: function(data) {
                             let blob = new Blob([data]);

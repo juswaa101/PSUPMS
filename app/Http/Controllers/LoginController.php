@@ -169,7 +169,7 @@ class LoginController extends Controller
     {
         try {
             Auth::logout();
-            return redirect('/login');
+            return redirect('/');
         } catch (Exception $e) {
             abort_if($e, 500);
         }

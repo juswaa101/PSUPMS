@@ -102,6 +102,24 @@
                     type: 'get',
                     url: '/head/reports/fetch',
                     dataType: 'json',
+                    beforeSend: function() {
+                        swal({
+                            title: 'Please Wait !',
+                            html: 'Report is generating', // add html attribute if you want or remove
+                            allowOutsideClick: false,
+                            onBeforeOpen: () => {
+                                swal.showLoading()
+                            },
+                        });
+                    },
+                    complete: function() {
+                        swal.close();
+                        swal(
+                            'Generated',
+                            'Successful Generated',
+                            'success'
+                        );
+                    },
                     success: function(data) {
                         $.each(data.projects, function(key, item) {
                             $('#projects').append("<option value='" + item.project_id + "'>" +
@@ -128,6 +146,24 @@
                     },
                     url: '/head/reports/fetch/' + $('#projects option:selected').val(),
                     dataType: 'json',
+                    beforeSend: function() {
+                        swal({
+                            title: 'Please Wait !',
+                            html: 'Report is generating', // add html attribute if you want or remove
+                            allowOutsideClick: false,
+                            onBeforeOpen: () => {
+                                swal.showLoading()
+                            },
+                        });
+                    },
+                    complete: function() {
+                        swal.close();
+                        swal(
+                            'Generated',
+                            'Successful Generated',
+                            'success'
+                        );
+                    },
                     success: function(data) {
                         $.each(data.project, function(key, item) {
                             let tableName = $('#reportTable').DataTable();
@@ -151,12 +187,27 @@
                     type: 'get',
                     url: '/head/reports/fetch/' + $('#projects option:selected').val(),
                     dataType: 'json',
+                    beforeSend: function() {
+                        swal({
+                            title: 'Please Wait !',
+                            html: 'Report is generating', // add html attribute if you want or remove
+                            allowOutsideClick: false,
+                            onBeforeOpen: () => {
+                                swal.showLoading()
+                            },
+                        });
+                    },
+                    complete: function() {
+                        swal.close();
+                        swal(
+                            'Generated',
+                            'Successful Generated',
+                            'success'
+                        );
+                    },
                     success: function(data) {
                         $.each(data.project, function(key, item) {
                             let tableName = $('#reportTable').DataTable();
-                            // let oldNode = tableName.$("td:contains('"+item.report_id+"')").parent('tr');
-                            // tableName.row(oldNode).remove();
-                            // tableName.row(oldNode).invalidate();
                             const tr = $('<tr><td class="d-none">' + item.report_id +
                                 '</td><td>' + item.project_title + '</td><td>' +
                                 item.name + '</td>' + '<td>' + item.username + item
@@ -290,6 +341,24 @@
                         },
                         xhrFields: {
                             responseType: 'blob',
+                        },
+                        beforeSend: function() {
+                            swal({
+                                title: 'Please Wait !',
+                                html: 'Report is generating', // add html attribute if you want or remove
+                                allowOutsideClick: false,
+                                onBeforeOpen: () => {
+                                    swal.showLoading()
+                                },
+                            });
+                        },
+                        complete: function() {
+                            swal.close();
+                            swal(
+                                'Generated',
+                                'Successful Generated',
+                                'success'
+                            );
                         },
                         success: function(data) {
                             let blob = new Blob([data]);
