@@ -20,7 +20,7 @@ class ReportsController extends Controller
     {
         try {
             $user_profile = User::where('id', Auth::user()->id)->get();
-            $fetch = Project::limit(5)->orderByDesc('created_at')->get();
+            $fetch = Project::where('id', Auth::user()->id)->limit(5)->orderByDesc('created_at')->get();
             $project = $fetch->unique('project_title');
             $notification = Notification::join('users', 'users.id', '=', 'notifications.user_id')
                 ->where('user_id', Auth::user()->id)
@@ -28,7 +28,7 @@ class ReportsController extends Controller
                 ->select(['notifications.id as notify_id', 'notifications.created_at as created', 'notifications.*', 'users.*'])
                 ->get();
 
-            $fetchLimitProject = Project::limit(5)->orderByDesc('created_at')->get()->unique('project_title');
+            $fetchLimitProject = Project::where('id', Auth::user()->id)->limit(5)->orderByDesc('created_at')->get()->unique('project_title');
 
             return view('admin.reports.reports', compact('project'), compact('notification'))
                 ->with('user_profile', $user_profile)

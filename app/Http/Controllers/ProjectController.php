@@ -25,7 +25,7 @@ class ProjectController extends Controller
                 ->where('id', '!=', Auth::user()->id)
                 ->orderBy('name')->get();
             $user_profile = User::where('id', Auth::user()->id)->get();
-            $fetch = Project::orderByDesc('created_at')->limit(5)->get();
+            $fetch = Project::orderByDesc('created_at')->where('id', Auth::user()->id)->limit(5)->get();
             $project = $fetch->unique('project_title');
             $notification = Notification::join('users', 'users.id', '=', 'notifications.user_id')
                 ->where('user_id', Auth::user()->id)
@@ -33,7 +33,7 @@ class ProjectController extends Controller
                 ->select(['notifications.id as notify_id', 'notifications.created_at as created', 'notifications.*', 'users.*'])
                 ->get();
 
-            $fetchLimitProject = Project::limit(5)->orderByDesc('created_at')->get()->unique('project_title');
+            $fetchLimitProject = Project::where('id', Auth::user()->id)->limit(5)->orderByDesc('created_at')->get()->unique('project_title');
             return view('admin.project', ['members' => $members, 'notification' => $notification], compact('project'))
                 ->with('user_profile', $user_profile)
                 ->with('fetchLimitProject', $fetchLimitProject);
@@ -331,6 +331,20 @@ class ProjectController extends Controller
                 ->where('project_title', $project->project_title)
                 ->update(['is_finished' => 1]);
             return response()->json(['msg' => 'success'], 200);
+        } catch (Exception $e) {
+            dd($e);
+            abort_if($e, 500);
+        }
+    }
+
+    public function toggleUnfinishedProject($id)
+    {
+        try {
+            $project = Project::firstWhere('project_id', $id);
+            Project::where('id', Auth::user()->id)
+                ->where('project_title', $project->project_title)
+                ->update(['is_finished' => 0]);
+            return redirect()->back();
         } catch (Exception $e) {
             abort_if($e, 500);
         }

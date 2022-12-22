@@ -65,8 +65,8 @@ class KanbanController extends Controller
                 ->select(['notifications.id as notify_id', 'notifications.created_at as created', 'notifications.*', 'users.*'])
                 ->get();
 
-            $projects = Project::limit(5)->orderByDesc('created_at')->get()->unique('project_title');
-            $fetchLimitProject = Project::limit(5)->orderByDesc('created_at')->get()->unique('project_title');
+            $projects = Project::where('id', Auth::user()->id)->limit(5)->orderByDesc('created_at')->get()->unique('project_title');
+            $fetchLimitProject = Project::where('id', Auth::user()->id)->limit(5)->orderByDesc('created_at')->get()->unique('project_title');
 
             $project_id = [];
             foreach ($findProject as $item) {
@@ -90,7 +90,6 @@ class KanbanController extends Controller
                 ->with(compact('kanbanBoardAndTask'))
                 ->with('fetchLimitProject', $fetchLimitProject);
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
     }
@@ -211,7 +210,6 @@ class KanbanController extends Controller
                 'members' => 'required'
             ]);
             $all_members = $request->input('members');
-
             if ($validate->fails()) {
                 // Return validation error
                 return response()->json($validate->getMessageBag(), 400);
@@ -223,11 +221,13 @@ class KanbanController extends Controller
                     ->where('users.role', '!=', 'admin')
                     ->where('is_project_head', '=', 0)
                     ->where('invitations.status', 1)
+                    ->select(['projects.*', 'projects.id as userId', 'invitations.user_id as inv_user_id',  'invitations.*', 'users.*', 'users.id as uid'])
                     ->get();
+
                 $currentMembers = [];
 
                 foreach ($fetchQuery as $row) {
-                    $currentMembers[] = $row->id;
+                    $currentMembers[] = $row->userId;
                 }
 
                 // Add new members
@@ -292,6 +292,7 @@ class KanbanController extends Controller
                 return response()->json('Members updated successfully!');
             }
         } catch (Exception $e) {
+            dd($e);
             abort_if($e, 500);
         }
     }

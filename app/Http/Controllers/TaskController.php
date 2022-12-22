@@ -120,7 +120,6 @@ class TaskController extends Controller
                 }
             }
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
     }
@@ -278,7 +277,6 @@ class TaskController extends Controller
                 }
             }
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
     }
@@ -350,7 +348,6 @@ class TaskController extends Controller
                 return new TaskResource($task);
             }
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
     }
@@ -375,9 +372,6 @@ class TaskController extends Controller
                     ->where('tasks.project_id', $task->project_id)
                     ->select('users.name as full_name', 'task_members.user_id')
                     ->get();
-
-                $project = Project::join('tasks', 'tasks.project_id', '=', 'projects.project_id')
-                    ->where('tasks.project_id', $task->id)->first();
 
                 $currentMembersTask = [];
 
@@ -464,20 +458,6 @@ class TaskController extends Controller
                 ->first();
 
             return response()->json($taskMember);
-        } catch (Exception $e) {
-            abort_if($e, 500);
-        }
-    }
-
-    public function taskProgress($id)
-    {
-        try {
-            $totalCountSubtask = DB::table('subtasks')->where('task_id', $id)->get()->count();
-            $totalCompletedSubtask = DB::table('subtasks')->where('task_id', $id)->where('board_id', 2)->get()->count();
-            return response()->json([
-                'totalCountSubtask' => $totalCountSubtask,
-                'totalCountCompletedSubtask' => $totalCompletedSubtask
-            ]);
         } catch (Exception $e) {
             abort_if($e, 500);
         }

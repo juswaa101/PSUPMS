@@ -129,7 +129,7 @@
                                                     <li>
                                                         <hr class="dropdown-divider">
                                                     </li>
-                                                    <li><a class="dropdown-item" @click="toggleFinishedProject(item.id)">Add to finished projects</a></li>
+                                                    <li><a class="dropdown-item" @click="toggleFinishedProject(item.project_id)">Add to finished projects</a></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -801,26 +801,32 @@
                                         <div class="row">
                                             <div class="col-4" v-for="(item, index) in subtask_board_name">
                                                 <input type="hidden" :value="show.id" name="task_id">
-                                                <SubtaskBoard :id="index">
+                                                <SubtaskHeadBoard :id="index">
                                                     <div v-for="subtask in subtasks" v-bind:key="subtask.id">
                                                         <div v-if="index === subtask.board_id">
-                                                            <Subtask :id="subtask.id" draggable="true">
+                                                            <SubtaskHeadTask :id="subtask.id" draggable="true">
                                                                 <div class="card shadow-sm mt-2">
                                                                     <div class="card-body">
+                                                                        <div class="dropdown text-end">
+                                                                            <i class="bx bx-dots-horizontal-rounded bx-md" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                                                            <ul class="dropdown-menu" style="background-color:#E4E9F7;">
+                                                                                <li><a @click="editSubtask(subtask)" class="dropdown-item">Edit</a></li>
+                                                                                <div class="dropdown-divider"></div>
+                                                                                <li><a @click="deleteSubtask(subtask.id)" class="dropdown-item">Delete</a></li>
+                                                                            </ul>
+                                                                        </div>
                                                                         <div class="card-title">
                                                                             <h3 class="lead font-weight-light text-primary">{{ subtask.subtask_name }}</h3>
                                                                         </div>
                                                                         <p>
                                                                             {{ subtask.subtask_description?.toString().substring(0, 30) }}
                                                                         </p>
-                                                                        <button @click="editSubtask(subtask)" class="btn btn-warning btn-sm w-100 mt-2">Edit</button>
-                                                                        <button @click="deleteSubtask(subtask.id)" class="btn  btn-danger btn-sm w-100 mt-2">Delete</button>
                                                                     </div>
                                                                 </div>
-                                                            </Subtask>
+                                                            </SubtaskHeadTask>
                                                         </div>
                                                     </div>
-                                                </SubtaskBoard>
+                                                </SubtaskHeadBoard>
                                             </div>
                                         </div>
                                     </main>
@@ -1796,7 +1802,6 @@ export default {
         },
         updateMembers() {
             this.formMembers.members = $('#selectMembers').val();
-            console.log(this.formMembers.members);
             axios.put('/head/update-members/' + this.$project_id, this.formMembers)
                 .then(() => {
                     Swal.fire(
@@ -1857,7 +1862,6 @@ export default {
 
                 filter.forEach(b => {
                     this.$boardFinal1.filter(x => x.name == b.board_name).forEach(item => {
-                        console.log(item);
                         var startDate = new Date(b.task_start_date);
                         var endDate = new Date(b.task_due_date);
                         var startDateFormatted = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
@@ -1949,7 +1953,6 @@ export default {
         },
         toggleFinishedProject(id) {
             axios.get('/head/finish-project/' + id).then((response) => {
-                console.log(response);
                 Swal.fire(
                     'Project Finished!',
                     'Your project is set to finished.',

@@ -57,21 +57,21 @@ class LoginController extends Controller
     public function adminDashboard()
     {
         try {
-            $fetch = Project::all()->sortByDesc('created_at');
-            $research = Project::all()->sortByDesc('created_at')->where('template', 'research_extension')->unique('project_title');
-            $igp = Project::all()->sortByDesc('created_at')->where('template', 'igp')->unique('project_title');
-            $extension = Project::all()->sortByDesc('created_at')->where('template', 'extension_project')->unique('project_title');
-            $default = Project::all()->where('template', 'default')->unique('project_title');
+            $fetch = Project::all()->where('id', Auth::user()->id)->sortByDesc('created_at');
+            $research = Project::all()->where('id', Auth::user()->id)->sortByDesc('created_at')->where('template', 'research_extension')->unique('project_title');
+            $igp = Project::all()->where('id', Auth::user()->id)->sortByDesc('created_at')->where('template', 'igp')->unique('project_title');
+            $extension = Project::all()->where('id', Auth::user()->id)->sortByDesc('created_at')->where('template', 'extension_project')->unique('project_title');
+            $default = Project::all()->where('id', Auth::user()->id)->where('template', 'default')->unique('project_title');
             $user_profile = User::where('id', Auth::user()->id)->get();
             $project = $fetch->unique('project_title');
-            $fetchLimitProject = Project::limit(5)->orderByDesc('created_at')->get()->unique('project_title');
+            $fetchLimitProject = Project::where('id', Auth::user()->id)->limit(5)->orderByDesc('created_at')->get()->unique('project_title');
             $notification = Notification::join('users', 'users.id', '=', 'notifications.user_id')
                 ->where('user_id', Auth::user()->id)
                 ->orderByDesc('notifications.created_at')
                 ->select(['notifications.id as notify_id', 'notifications.created_at as created', 'notifications.*', 'users.*'])
                 ->get();
-            $finishedProject = Project::all()->sortByDesc('created_at')->where('is_finished', 1)->unique('project_title');
-            $limitFinishedProject = Project::where('is_finished', 1)->limit(7)->get()->unique('project_title');
+            $finishedProject = Project::all()->where('id', Auth::user()->id)->sortByDesc('created_at')->where('is_finished', 1)->unique('project_title');
+            $limitFinishedProject = Project::where('id', Auth::user()->id)->where('is_finished', 1)->limit(7)->get()->unique('project_title');
             return view('admin.dashboard', compact('project'), compact('notification'))
                 ->with('user_profile', $user_profile)
                 ->with('finishedProjects', $finishedProject)
@@ -82,6 +82,7 @@ class LoginController extends Controller
                 ->with('limitFinishedProject', $limitFinishedProject)
                 ->with('fetchLimitProject', $fetchLimitProject);
         } catch (Exception $e) {
+            dd($e);
             abort_if($e, 500);
         }
     }

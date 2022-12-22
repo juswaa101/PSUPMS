@@ -21,8 +21,11 @@ import 'vue-select/dist/vue-select.css';
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 Vue.component('v-select', vSelect);
-Vue.component('SubtaskBoard', require('./components/subtask/Board.vue').default);
-Vue.component('Subtask', require('./components/subtask/Task.vue').default);
+Vue.component('SubtaskBoard', require('./components/admin/subtask/Board.vue').default);
+Vue.component('Subtask', require('./components/admin/subtask/Task.vue').default);
+
+Vue.component('SubtaskHeadBoard', require('./components/heads/subtask/Board.vue').default)
+Vue.component('SubtaskHeadTask', require('./components/heads/subtask/Task.vue').default)
 
 Vue.component('dashboard', require('./components/admin/Dashboard.vue').default);
 Vue.component('Board', require('./components/admin/Board.vue').default);

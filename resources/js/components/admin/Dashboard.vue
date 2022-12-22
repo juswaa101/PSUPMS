@@ -135,7 +135,7 @@
                                                     <li>
                                                         <hr class="dropdown-divider">
                                                     </li>
-                                                    <li><a class="dropdown-item" @click="toggleFinishedProject(item.id)">Add to finished projects</a></li>
+                                                    <li><a class="dropdown-item" @click="toggleFinishedProject(item.project_id)">Add to finished projects</a></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -1751,7 +1751,6 @@ export default {
         },
         updateMembers() {
             this.formMembers.members = $('#selectMembers').val();
-            console.log(this.formMembers.members);
             try {
                 axios.put('/admin/update-members/' + this.$project_id, this.formMembers)
                 .then(() => {
@@ -1816,7 +1815,6 @@ export default {
 
                 filter.forEach(b => {
                     this.$boardFinal1.filter(x => x.name == b.board_name).forEach(item => {
-                        console.log(item);
                         var startDate = new Date(b.task_start_date);
                         var endDate = new Date(b.task_due_date);
                         var startDateFormatted = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();

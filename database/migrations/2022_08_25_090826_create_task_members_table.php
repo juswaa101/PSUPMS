@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('task_id')->references('id')->on('tasks')->onDelete('cascade');
+            $table->foreignId('project_id')->references('project_id')->on('projects')->onDelete('cascade');
             $table->timestamps();
         });
     }

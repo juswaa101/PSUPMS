@@ -30,10 +30,11 @@
                     <div class="card-body">
                         @forelse($finishedProjects as $item)
                             <div class="row p-0">
-                                <div class="col-md-1 text-start p-0">
-                                </div>
-                                <div class="col-md-10 text-start p-0">
+                                <div class="col-md-6 text-end p-4">
                                     <p><a href="/head/project/{{ $item->project_id }}"> {{ $item->project_title }}</a></p>
+                                </div>
+                                <div class="col-md-6 text-end p-4">
+                                    <a class="btn btn-secondary" href="/head/unfinish-project/{{ $item->project_id }}">UNFINISH PROJECT</a>
                                 </div>
                             </div>
                         @empty
@@ -207,12 +208,15 @@
                     <div class="card notification-card notification-invitation mb-2 mt-2">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     {{ $e->project_title }}
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 mt-2">
                                     <a href="/head/project/{{ $e->project_id }}" class="btn btn-primary"><i
-                                            class="bx bx-envelope-open"></i> Open Project</a>
+                                            class="bx bx-envelope-open w-100"></i> Open Project</a>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <a class="btn btn-secondary w-100" href="/head/unfinish-project/{{ $item->project_id }}">UNFINISH PROJECT</a>
                                 </div>
                             </div>
                         </div>

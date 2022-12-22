@@ -98,8 +98,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'isAdmin']], functio
 
     Route::put('/update-order', [BoardController::class, 'updateOrder']);
     Route::get('/check-conflict', [ProjectController::class, 'getAllDueDate']);
-    Route::get('/total-subtask/{id}', [TaskController::class, 'taskProgress']);
     Route::get('/finish-project/{id}', [ProjectController::class, 'toggleFinishedProject']);
+    Route::get('/unfinish-project/{id}', [ProjectController::class, 'toggleUnfinishedProject']);
     Route::get('/board-color/{id}', [BoardColorController::class, 'getBoardColor']);
     Route::put('/board-color/update/{id}', [BoardColorController::class, 'updateBoardColor']);
     Route::get('/task-color/{id}', [TaskColorController::class, 'getTaskColor']);
@@ -160,8 +160,8 @@ Route::group(['prefix' => 'head', 'middleware' => ['auth', 'isUser']], function 
 
     Route::put('/update-order', [BoardController::class, 'updateOrder']);
     Route::get('/check-conflict', [ProjectController::class, 'getAllDueDate']);
-    Route::get('/total-subtask/{id}', [TaskController::class, 'taskProgress']);
     Route::get('/finish-project/{id}', [ProjectController::class, 'toggleFinishedProject']);
+    Route::get('/unfinish-project/{id}', [ProjectController::class, 'toggleUnfinishedProject']);
     Route::get('/board-color/{id}', [BoardColorController::class, 'getBoardColor']);
     Route::put('/board-color/update/{id}', [BoardColorController::class, 'updateBoardColor']);
     Route::get('/task-color/{id}', [TaskColorController::class, 'getTaskColor']);
