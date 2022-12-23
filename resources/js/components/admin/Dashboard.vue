@@ -1054,7 +1054,6 @@
         </div>
     </div>
 </template>
-<!-- Polishing at may idadagdag pa dito -->
 <script>
 import Swal from 'sweetalert2';
 import VueCookies from 'vue-cookies';

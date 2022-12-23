@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Task;
-use App\Board;
 use Exception;
 use App\Models\User;
 use App\Models\Report;
@@ -163,12 +162,16 @@ class TaskController extends Controller
     }
 
     /**
+     * 
+     * 
      * Update the specified resource in storage.
      *
      * @param Request $request
      * @param $user_id
      * @return JsonResponse|TaskResource|void
      */
+
+    //  Last feature to do visual cue for update
     public function update(Request $request, $user_id)
     {
         try {
@@ -359,7 +362,14 @@ class TaskController extends Controller
             $validate = Validator::make($request->all(), [
                 'members' => 'required',
             ]);
-
+            
+            $url = $this->prev_segments(url()->previous());
+            $getId = null;
+            for ($i = 0; $i < count($url); $i++) {
+                if($i == count($url) - 1){
+                    $getId = $url[$i];
+                }
+            }
             $members = $request->input('members');
 
             if ($validate->fails()) {
@@ -370,6 +380,7 @@ class TaskController extends Controller
                     ->join('users', 'users.id', '=', 'task_members.user_id')
                     ->join('tasks', 'tasks.id', '=', 'task_members.task_id')
                     ->where('tasks.project_id', $task->project_id)
+                    ->where('task_id', $task->id)
                     ->select('users.name as full_name', 'task_members.user_id')
                     ->get();
 
@@ -385,6 +396,7 @@ class TaskController extends Controller
                         TaskMember::create([
                             'task_id' => $task->id,
                             'user_id' => $new_member_task,
+                            'project_id' => $getId
                         ]);
 
                         Report::create(['user_id' => $new_member_task, 'project_id' => $task->project_id, 'message' => ' is assigned to a task']);
@@ -461,5 +473,14 @@ class TaskController extends Controller
         } catch (Exception $e) {
             abort_if($e, 500);
         }
+    }
+
+    public function prev_segments($uri)
+    {
+        $segments = explode('/', str_replace('' . url('') . '', '', $uri));
+
+        return array_values(array_filter($segments, function ($value) {
+            return $value !== '';
+        }));
     }
 }

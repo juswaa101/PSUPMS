@@ -10,6 +10,7 @@ use App\Models\Report;
 use App\Models\Project;
 use App\Models\Invitation;
 use App\Models\Notification;
+use App\Models\TaskMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -52,10 +53,12 @@ class KanbanController extends Controller
 
 
             $userAssignedProject = DB::table('projects')
+                ->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
                 ->join('users', 'projects.id', '=', 'users.id')
                 ->where('project_title', '=', $project->project_title)
                 ->where('users.role', '!=', 'admin')
-                ->where('is_project_head', '=', 0)
+                ->where('projects.is_project_head', '=', 0)
+                ->where('invitations.status', 1)
                 ->select('*')
                 ->get();
 
@@ -134,10 +137,13 @@ class KanbanController extends Controller
                 ->where('projects.is_project_head', '=', 1)
                 ->first(['users.id as user_id', 'projects.*', 'users.*']);
 
-            $userAssignedProject = DB::table('projects')->join('users', 'projects.id', '=', 'users.id')
+            $userAssignedProject = DB::table('projects')
+                ->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
+                ->join('users', 'projects.id', '=', 'users.id')
                 ->where('project_title', '=', $project->project_title)
                 ->where('users.role', '!=', 'admin')
-                ->where('is_project_head', '=', 0)
+                ->where('projects.is_project_head', '=', 0)
+                ->where('invitations.status', 1)
                 ->select('*')
                 ->get();
 
@@ -286,6 +292,11 @@ class KanbanController extends Controller
 
                         Project::where('id', $fetchedRow)
                             ->where('project_title', $project->project_title)
+                            ->delete();
+
+                        TaskMember::join('projects', 'projects.project_id', '=', 'task_members.project_id')
+                            ->where('task_members.user_id', $fetchedRow)
+                            ->where('projects.project_title', $project->project_title)
                             ->delete();
                     }
                 }
