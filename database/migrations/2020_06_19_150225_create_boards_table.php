@@ -22,6 +22,7 @@ class CreateBoardsTable extends Migration
             $table->unsignedInteger('index')->nullable();
             $table->foreignId('user_id')->references('id')->on('users');
             $table->foreignId('project_id')->references('project_id')->on('projects')->onDelete('cascade');
+            $table->softDeletes();
         });
 
         DB::statement("ALTER TABLE boards AUTO_INCREMENT = 100000;");

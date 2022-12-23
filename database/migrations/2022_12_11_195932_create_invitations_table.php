@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('project_id')->references('project_id')->on('projects')->onDelete('cascade');
             $table->string('invitation_message');
             $table->boolean('status');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

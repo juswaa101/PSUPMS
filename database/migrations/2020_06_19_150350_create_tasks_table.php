@@ -25,6 +25,7 @@ class CreateTasksTable extends Migration
             $table->integer('privacy_status')->unsigned();
             $table->dateTime('created_at', 0);
             $table->dateTime('updated_at', 0);
+            $table->softDeletes();
         });
     }
 

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('create_task_status')->unsigned();
             $table->integer('create_subtask_status')->unsigned();
             $table->integer('is_finished')->unsigned()->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
