@@ -618,7 +618,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-warning mt-3" @click="updateMembers()">UPDATE</button>
+                    <button class="btn btn-warning mt-3 isDisabled" @click="updateMembers()">UPDATE</button>
                     <button class="btn btn-secondary mt-3" data-bs-dismiss="offcanvas">CANCEL</button>
                 </div>
             </div>
@@ -1759,7 +1759,7 @@ export default {
                                     'Your project has been deleted.',
                                     'success'
                                 )
-                                window.location.href = "/admin/dashboard";
+                                window.location.href = "/head/dashboard/" + this.logged.id;
                             }
                         })
                         .catch(() => {

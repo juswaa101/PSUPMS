@@ -598,7 +598,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Project templates -->
                                 <div class="row mt-5">
                                     <div class="col-md-6">
@@ -608,7 +608,7 @@
                                             <option value="research_extension">Research Extension</option>
                                             <option value="igp">IGP</option>
                                             <option value="extension_project">Extension Project</option>
-                                            
+
                                         </select>
                                     </div>
                                 </div>
@@ -888,21 +888,6 @@
 </body>
 
 </html>
-@if (isset(Auth::user()->role) && Auth::user()->role != 'admin')
-    <script>
-        swal({
-            title: "Unauthorized Access",
-            text: "Unauthorized Access of the System",
-            type: "error",
-            confirmButtonColor: '#ff0000',
-            confirmButtonText: "Back",
-            closeOnConfirm: false,
-            allowOutsideClick: false
-        }).then(function() {
-            window.history.back();
-        });
-    </script>
-@endif
 
 <!-- java -->
 <script>

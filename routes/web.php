@@ -104,6 +104,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'isAdmin']], functio
     Route::put('/board-color/update/{id}', [BoardColorController::class, 'updateBoardColor']);
     Route::get('/task-color/{id}', [TaskColorController::class, 'getTaskColor']);
     Route::put('/task-color/update/{id}', [TaskColorController::class, 'updateTaskColor']);
+    Route::get('/check-if-invited', [KanbanController::class, 'isInvited']);
 });
 
 // Head and member role
@@ -166,6 +167,7 @@ Route::group(['prefix' => 'head', 'middleware' => ['auth', 'isUser']], function 
     Route::put('/board-color/update/{id}', [BoardColorController::class, 'updateBoardColor']);
     Route::get('/task-color/{id}', [TaskColorController::class, 'getTaskColor']);
     Route::put('/task-color/update/{id}', [TaskColorController::class, 'updateTaskColor']);
+    Route::get('/check-if-invited', [KanbanController::class, 'isInvited']);
 });
 
 

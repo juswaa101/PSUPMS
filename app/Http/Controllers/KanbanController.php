@@ -292,7 +292,6 @@ class KanbanController extends Controller
                 return response()->json('Members updated successfully!');
             }
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
     }
@@ -306,5 +305,44 @@ class KanbanController extends Controller
         } catch (Exception $e) {
             abort_if($e, 500);
         }
+    }
+
+    public function isInvited()
+    {
+        try {
+            $url = $this->prev_segments(url()->previous());
+            $getId = null;
+            for ($i = 0; $i < count($url); $i++) {
+                if($i == count($url) - 1){
+                    $getId = $url[$i];
+                }
+            }
+            $project = Project::findOrFail($getId);
+            $query = Invitation::join('projects', 'projects.project_id', '=', 'invitations.project_id')
+                ->where('projects.project_title', $project->project_title)
+                ->where('projects.is_project_head', 0)
+                ->where('invitations.status', 0)
+                ->select(['projects.*', 'projects.id as pid', 'invitations.user_id as inv_user_id', 'invitations.*'])
+                ->get();
+
+            $idQuery = [];
+
+            foreach($query as $q) {
+                $idQuery[] = $q->inv_user_id;
+            }
+            return response()->json(['invitation' => $idQuery]);
+        } catch (Exception $e) {
+            dd($e);
+            abort_if($e, 500);
+        }
+    }
+
+    public function prev_segments($uri)
+    {
+        $segments = explode('/', str_replace('' . url('') . '', '', $uri));
+
+        return array_values(array_filter($segments, function ($value) {
+            return $value !== '';
+        }));
     }
 }

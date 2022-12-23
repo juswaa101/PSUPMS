@@ -7323,6 +7323,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     // project data handling
     deleteProject: function deleteProject(title) {
+      var _this19 = this;
+
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -7337,7 +7339,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           axios["delete"]('/head/project/delete/' + title).then(function () {
             if (result.isConfirmed) {
               sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Deleted!', 'Your project has been deleted.', 'success');
-              window.location.href = "/admin/dashboard";
+              window.location.href = "/head/dashboard/" + _this19.logged.id;
             }
           })["catch"](function () {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire("Failed!", "There was something wrong!", "warning");
@@ -7351,7 +7353,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       vn.formEdit.project_title = item.project_title, vn.formEdit.project_description = item.project_description, vn.formEdit.project_start_date = item.project_start_date, vn.formEdit.project_end_date = item.project_end_date, this.selectedId = item.project_id;
     },
     updateProject: function updateProject() {
-      var _this19 = this;
+      var _this20 = this;
 
       axios.put('/head/project/update/' + this.$project_id, this.formEdit).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project Updated!', 'Your project has been updated.', 'success').then(function (confirm) {
@@ -7360,18 +7362,18 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }
         });
       })["catch"](function (error) {
-        _this19.validationUpdateProjectError = error.response.data.errors;
+        _this20.validationUpdateProjectError = error.response.data.errors;
       });
     },
     appendMembers: function appendMembers() {
-      var _this20 = this;
+      var _this21 = this;
 
       this.staff.forEach(function (person) {
-        _this20.$currentUserArray.push(person.user_id);
+        _this21.$currentUserArray.push(person.user_id);
       });
     },
     updateMembers: function updateMembers() {
-      var _this21 = this;
+      var _this22 = this;
 
       this.formMembers.members = $('#selectMembers').val();
       axios.put('/head/update-members/' + this.$project_id, this.formMembers).then(function () {
@@ -7381,11 +7383,11 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }
         });
       })["catch"](function (error) {
-        _this21.validationMemberError = error.response.data;
+        _this22.validationMemberError = error.response.data;
       });
     },
     fetchKanbanTask: function fetchKanbanTask() {
-      var _this22 = this;
+      var _this23 = this;
 
       this.$props.kanban_task.forEach(function (element) {
         var startDate = new Date(element.task_start_date);
@@ -7393,18 +7395,18 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
         var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
 
-        _this22.$taskColumn.push({
+        _this23.$taskColumn.push({
           'name': element.name,
           'y': [startDateFormatted, endDateFormatted]
         });
       });
     },
     fetchKanbanBoard: function fetchKanbanBoard() {
-      var _this23 = this;
+      var _this24 = this;
 
       var filter = [];
       this.$props.kanban_board_task.forEach(function (element) {
-        filter = _this23.$props.kanban_task.filter(function (e) {
+        filter = _this24.$props.kanban_task.filter(function (e) {
           return element.id == e.board_id;
         }).map(function (e) {
           var startDate = new Date(e.task_start_date);
@@ -7420,7 +7422,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         });
         var mapBoard = [];
 
-        _this23.$boardColumn.push(element.name);
+        _this24.$boardColumn.push(element.name);
 
         filter.filter(function (value, index, self) {
           return self.findIndex(function (v) {
@@ -7428,10 +7430,10 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }) === index;
         }).forEach(function (el) {
           el.points.forEach(function (ele) {
-            mapBoard = _this23.$boardColumn.filter(function (x) {
+            mapBoard = _this24.$boardColumn.filter(function (x) {
               return x == element.name;
             }).map(function (elem) {
-              _this23.$boardFinal.push({
+              _this24.$boardFinal.push({
                 name: el.board_name
               });
             });
@@ -7443,17 +7445,17 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }) === index;
         }).forEach(function (el) {
           el.points.forEach(function (ele) {
-            _this23.$boardFinal.filter(function (x) {
+            _this24.$boardFinal.filter(function (x) {
               return x.name == element.name && x.name == ele.name;
             }).map(function (mp) {
-              _this23.$boardFinal1.push(_objectSpread(_objectSpread({}, mp), {}, {
+              _this24.$boardFinal1.push(_objectSpread(_objectSpread({}, mp), {}, {
                 points: []
               }));
             });
           });
         });
         filter.forEach(function (b) {
-          _this23.$boardFinal1.filter(function (x) {
+          _this24.$boardFinal1.filter(function (x) {
             return x.name == b.board_name;
           }).forEach(function (item) {
             var startDate = new Date(b.task_start_date);
@@ -7490,21 +7492,21 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       $('#offcanvasTaskChangeColor').offcanvas('show');
     },
     getBoardColor: function getBoardColor() {
-      var _this24 = this;
+      var _this25 = this;
 
       axios.get('/head/board-color/' + this.$project_id).then(function (response) {
-        _this24.currentBoardColor = response.data.board_color;
+        _this25.currentBoardColor = response.data.board_color;
       });
     },
     getTaskColor: function getTaskColor() {
-      var _this25 = this;
+      var _this26 = this;
 
       axios.get('/head/task-color/' + this.$project_id).then(function (response) {
-        _this25.currentTaskColor = response.data.task_color;
+        _this26.currentTaskColor = response.data.task_color;
       });
     },
     changeBoardColor: function changeBoardColor(color) {
-      var _this26 = this;
+      var _this27 = this;
 
       this.currentBoardColor = color;
       axios.put('/head/board-color/update/' + this.$project_id, {
@@ -7512,13 +7514,13 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color updated!', 'Board color has been changed!', 'success');
 
-        _this26.getBoardColor();
+        _this27.getBoardColor();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color not updated!', 'Something went wrong!', 'error');
       });
     },
     changeTaskColor: function changeTaskColor(color) {
-      var _this27 = this;
+      var _this28 = this;
 
       this.currentTaskColor = color;
       axios.put('/head/task-color/update/' + this.$project_id, {
@@ -7526,25 +7528,25 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color updated!', 'Task color has been changed!', 'success');
 
-        _this27.getTaskColor();
+        _this28.getTaskColor();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color not updated!', 'Something went wrong!', 'error');
       });
     },
     toggleFinishedProject: function toggleFinishedProject(id) {
-      var _this28 = this;
+      var _this29 = this;
 
       axios.get('/head/finish-project/' + id).then(function (response) {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project Finished!', 'Your project is set to finished.', 'success').then(function (confirm) {
           if (confirm.isConfirmed) {
-            window.location.href = "/head/dashboard/" + _this28.logged.id;
+            window.location.href = "/head/dashboard/" + _this29.logged.id;
           }
         });
       });
     }
   },
   mounted: function mounted() {
-    var _this29 = this;
+    var _this30 = this;
 
     var inputElement = document.querySelector('input[id="upload_file"]');
     var pond = FilePond.create(inputElement, {
@@ -7568,10 +7570,10 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           },
           withCredentials: false,
           onload: function onload(response) {
-            _this29.fetchFiles();
+            _this30.fetchFiles();
           },
           ondata: function ondata(formData) {
-            formData.append('task_id', _this29.show.id);
+            formData.append('task_id', _this30.show.id);
             return formData;
           }
         }
@@ -8745,7 +8747,7 @@ var render = function render() {
       }
     }, [_vm._v("\n                                        " + _vm._s(user.name) + "\n                                    ")]) : _vm._e();
   }), 0)])])]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-warning mt-3",
+    staticClass: "btn btn-warning mt-3 isDisabled",
     on: {
       click: function click($event) {
         return _vm.updateMembers();
@@ -11616,7 +11618,7 @@ var render = function render() {
       }
     }, [_vm._v("\n                                    " + _vm._s(user.name) + "\n                                ")]) : _vm._e();
   }), 0)])])]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-warning mt-3",
+    staticClass: "btn btn-warning mt-3 isDisabled",
     on: {
       click: function click($event) {
         return _vm.updateMembers();

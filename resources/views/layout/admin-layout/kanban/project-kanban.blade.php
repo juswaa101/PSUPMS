@@ -1,19 +1,24 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" id="token" content="{{ csrf_token() }}">
-    <script>window.laravel = {csrfToken: '{{ csrf_token() }}'}</script>
+    <script>
+        window.laravel = {
+            csrfToken: '{{ csrf_token() }}'
+        }
+    </script>
 
     <title>@yield('title')</title>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
     <!-- Default theme -->
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
     <!-- JavaScript -->
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 
@@ -21,8 +26,8 @@
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.css">
     <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.js"
-            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+        crossorigin="anonymous"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://kit.fontawesome.com/6d6b82be0b.js" crossorigin="anonymous"></script>
@@ -36,7 +41,7 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <script src="https://code.jscharting.com/latest/jscharting.js"></script>
     <script type="text/javascript" src="https://code.jscharting.com/latest/modules/toolbar.js"></script>
@@ -54,7 +59,8 @@
         /* Google Fonts Import Link */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-        html, body {
+        html,
+        body {
             width: 100%;
             height: 100%;
             margin: 0;
@@ -333,7 +339,7 @@
             transition: all 0.5s ease;
         }
 
-        .sidebar.close ~ .home-section {
+        .sidebar.close~.home-section {
             left: 78px;
             width: calc(100% - 78px);
         }
@@ -379,7 +385,7 @@
                 z-index: 100;
             }
 
-            .sidebar.close ~ .home-section {
+            .sidebar.close~.home-section {
                 width: 100%;
                 left: 0;
             }
@@ -396,6 +402,7 @@
         .plus {
             padding-left: 985px;
         }
+
         .date {
             font-size: 11px
         }
@@ -414,24 +421,24 @@
             margin-left: -10px;
         }
 
-        .box
-        {
-            width:1000px;
-            padding:20px;
-            background-color:#fff;
-            border:1px solid #ccc;
-            border-radius:5px;
-            margin-top:25px;
-        }
-        #page_list li
-        {
-            padding:16px;
-            background-color:#f9f9f9;
-            border:1px solid #ccc;
+        .box {
+            width: 1000px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            cursor:move;
-            margin-top:12px;
+            margin-top: 25px;
         }
+
+        #page_list li {
+            padding: 16px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: move;
+            margin-top: 12px;
+        }
+
         #page_list li.ui-state-highlight {
             padding: 24px;
             background-color: #ffffcc;
@@ -442,6 +449,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="app">
         <main class="py-4">
@@ -460,19 +468,35 @@
     <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
 
 </body>
+
 </html>
 <script type="text/javascript">
-    $(document).ready(function () {
+    let is_invited = [];
+
+    function isInvited() {
+        $.ajax({
+            type: "get",
+            url: "/admin/check-if-invited",
+            dataType: "json",
+            async: false,
+            success: function(response) {
+                is_invited.push(response.invitation);
+            }
+        });
+    }
+
+    isInvited();
+    $(document).ready(function() {
         $('#selectMembers').select2({
             placeholder: 'Select Project Members',
-            maximumSelectionLength: 20,
+            maximumSelectionLength: 50,
         });
         $('#selectHeads').select2({
             placeholder: 'Select Project Head',
             dropdownParent: $('#editModal'),
             maximumSelectionLength: 1,
         });
-        $('#offcanvasViewTask').on('shown.bs.offcanvas', function () {
+        $('#offcanvasViewTask').on('shown.bs.offcanvas', function() {
             $('#commentArea').emojioneArea({
                 autocomplete: false,
                 placeholder: 'Type a comment here',
@@ -481,11 +505,10 @@
             });
         });
         $("#page_list").sortable({
-            placeholder : "ui-state-highlight",
-            update: (event, ui) =>
-            {
+            placeholder: "ui-state-highlight",
+            update: (event, ui) => {
                 let boardIds = [];
-                $('#page_list li').each(function(){
+                $('#page_list li').each(function() {
                     boardIds.push($(this).attr("id"));
                 });
 
@@ -496,13 +519,12 @@
                 });
 
                 $.ajax({
-                    url:"/admin/update-order",
-                    method:"PUT",
-                    data:{
+                    url: "/admin/update-order",
+                    method: "PUT",
+                    data: {
                         boardIds: boardIds,
                     },
-                    success:function(data)
-                    {
+                    success: function(data) {
                         location.reload();
                     }
                 });
@@ -523,26 +545,31 @@
                 });
 
                 $.ajax({
-                    url:"/admin/update-order",
-                    method:"PUT",
-                    data:{
+                    url: "/admin/update-order",
+                    method: "PUT",
+                    data: {
                         boardIds: boardIds,
                     },
-                    success:function(data)
-                    {
+                    success: function(data) {
                         location.reload();
                     }
                 });
             }
         });
+        let currentId = is_invited[0];
+        currentId.sort();
+        currentId.forEach(el => {
+            $('#selectMembers').children('option[value="' + el + '"]').remove();
+        });
         loadDoc()
     });
+
     function loadDoc() {
         let http = new XMLHttpRequest();
         http.onreadystatechange = function() {
-            if(this.readyState === 4 && this.status === 200) {
+            if (this.readyState === 4 && this.status === 200) {
                 document.getElementById("countNotification")
-                .innerHTML = parseInt(this.responseText) > 99 ? "99+" : this.responseText;
+                    .innerHTML = parseInt(this.responseText) > 99 ? "99+" : this.responseText;
             }
         };
         http.open("GET", "/count/notification", true);

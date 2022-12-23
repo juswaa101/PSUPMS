@@ -258,6 +258,18 @@ class ProjectController extends Controller
             if ($validate->fails()) {
                 return back()->withErrors($validate)->withInput();
             } else {
+                Project::create([
+                    'project_title' => $request->input('title'),
+                    'project_description' => $request->input('description'),
+                    'project_start_date' => $request->input('project_start_date'),
+                    'project_end_date' => $request->input('project_end_date'),
+                    'id' => 1,
+                    'is_project_head' => 1,
+                    'create_task_status' => $checkToggleTask,
+                    'create_subtask_status' => $checkToggleSubtask,
+                    'template' => $request->input('template')
+                ]);
+
                 $project = Project::create([
                     'project_title' => $request->input('title'),
                     'project_description' => $request->input('description'),
