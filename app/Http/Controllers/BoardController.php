@@ -95,7 +95,7 @@ class BoardController extends Controller
                         $all_users = Project::where('project_title', $users->project_title)->get();
                         Report::create(['user_id' => $user_id, 'project_id' => $request->segment(4), 'message' => ' assigned a board in ' . $project->project_title]);
                         foreach ($all_users as $user) {
-                            $user = User::where('id', $user->id)->first();
+                            $user = User::withTrashed()->where('id', $user->id)->first();
                             Notification::create([
                                 'user_id' => $user->id,
                                 'notification_message' => $userName->name . ' created a board: ' . $request->input('name') . ' in ' . $users->project_title,
@@ -187,7 +187,7 @@ class BoardController extends Controller
     
                     Report::create(['user_id' => $user_id, 'project_id' => $request->segment(4), 'message' => ' updated the board in ' . $users->project_title]);
                     foreach ($all_users as $user) {
-                        $user = User::where('id', $user->id)->first();
+                        $user = User::withTrashed()->where('id', $user->id)->first();
                         Notification::create([
                             'user_id' => $user->id,
                             'notification_message' => $userName->name . ' updated the board: ' . $currentValue . ' in ' . $users->project_title,

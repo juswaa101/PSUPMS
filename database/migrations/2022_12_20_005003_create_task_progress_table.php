@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreignId('task_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->unsignedInteger('total_subtask')->default(0);
             $table->unsignedBigInteger('total_subtask_done')->default(0);
-            $table->softDeletes();
             $table->timestamps();
         });
     }

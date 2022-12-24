@@ -955,7 +955,7 @@
                                 >
                             </div>
                             <div class="form-group">
-                                <label for="" class="form-label mt-2">Task due date:</label>
+                                <label for="" class="form-label mt-2">Task due date: </label>
                                 <input type="date" class="form-control" v-model="taskEdit.task_due_date" id="task_due_date"
                                     :min="item.project_start_date" :max="item.project_end_date"
                                     required
@@ -1660,30 +1660,31 @@ export default {
             });
         },
         removeFile: function (id, file) {
-            axios.delete('/admin/file/destroy/' + id + '/' + file)
-                .then((response) => {
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.fire(
-                                'File deleted',
-                                'File has been deleted',
-                                'success'
-                            );
-                            this.fetchFiles();
-                        }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete('/admin/file/destroy/' + id + '/' + file)
+                    .then((response) => {
+                        Swal.fire(
+                            'File deleted',
+                            'File has been deleted',
+                            'success'
+                        );
+                        this.fetchFiles();
                     })
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+                }
+            })
+            
         },
 
         // project data handling
@@ -1754,8 +1755,8 @@ export default {
                 axios.put('/admin/update-members/' + this.$project_id, this.formMembers)
                 .then(() => {
                     Swal.fire(
-                        'Member Invited!',
-                        'Member has been invited to the project.',
+                        'Project member updated!',
+                        'Members in the project is updated',
                         'success'
                     ).then((confirm) => {
                         if (confirm.isConfirmed) {

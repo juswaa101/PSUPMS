@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('task_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('filepath');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

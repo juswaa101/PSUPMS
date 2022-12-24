@@ -82,7 +82,6 @@ class LoginController extends Controller
                 ->with('limitFinishedProject', $limitFinishedProject)
                 ->with('fetchLimitProject', $fetchLimitProject);
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
     }

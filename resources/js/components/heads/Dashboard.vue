@@ -767,12 +767,12 @@
                                 <button class="btn btn-secondary float-end" title="Toggle File Upload" style="margin-left:10px;" @click="toggleUpload = !toggleUpload"><i class="bi bi-paperclip"></i></button>
                                 <div class="fs-1 m-0" v-for="(value, key, index) in item" :key="item.id"
                                      v-if="index < 1">
-                                    <div v-if="item.create_subtask_status !== 0 || is_head.is_project_head === 1">
+                                    <div>
                                         <button class="btn btn-success float-end" title="Toggle Subtask Board" @click="toggleSubtaskBoard = !toggleSubtaskBoard"><i class="bi bi-kanban"></i></button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12" v-show="toggleSubtaskBoard">
+                            <div class="col-md-12" v-show="toggleSubtaskBoard && (item.create_subtask_status !== 0 || is_head.is_project_head === 1)">
                                 <div class="col-md-12 mt-2">
                                     <label class="form-label" for="Subtask Name">Subtask Name:</label>
                                     <input type="text" class="form-control" placeholder="Subtask Name" v-model="formSubtask.subtask_name" required
@@ -1712,30 +1712,31 @@ export default {
             });
         },
         removeFile: function (id, file) {
-            axios.delete('/head/file/destroy/' + id + '/' + file)
-                .then((response) => {
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.fire(
-                                'File deleted',
-                                'File has been deleted',
-                                'success'
-                            );
-                            this.fetchFiles();
-                        }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete('/head/file/destroy/' + id + '/' + file)
+                    .then((response) => {
+                        Swal.fire(
+                            'File deleted',
+                            'File has been deleted',
+                            'success'
+                        );
+                        this.fetchFiles();
                     })
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+
+                }
+            })
         },
 
         // project data handling
@@ -1805,8 +1806,8 @@ export default {
             axios.put('/head/update-members/' + this.$project_id, this.formMembers)
                 .then(() => {
                     Swal.fire(
-                        'Member Invited!',
-                        'Member has been invited to the project.',
+                        'Project member updated!',
+                        'Members in the project is updated',
                         'success'
                     ).then((confirm) => {
                         if (confirm.isConfirmed) {
@@ -1980,7 +1981,7 @@ export default {
         pond.setOptions({
             server: {
                 process: {
-                    url: '/admin/file/upload',
+                    url: '/head/file/upload',
                     method: 'POST',
                     headers: {
                         "X-CSRF-Token" : laravel.csrfToken

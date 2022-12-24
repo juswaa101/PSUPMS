@@ -107,7 +107,7 @@ class TaskController extends Controller
                         ]);
                     // Notify users
                     foreach ($id as $notify) {
-                        $user = User::where('id', $notify->id)->first();
+                        $user = User::withTrashed()->where('id', $notify->id)->first();
                         Notification::create([
                             'user_id' => $user->id,
                             'notification_message' => $userName->name . ' created a task: ' . $request->input('name') . ' in ' . $project->project_title,
@@ -119,6 +119,7 @@ class TaskController extends Controller
                 }
             }
         } catch (Exception $e) {
+            dd($e);
             abort_if($e, 500);
         }
     }
@@ -211,62 +212,10 @@ class TaskController extends Controller
                 $userName = User::firstWhere('id', $user_id);
 
                 if ($task->save()) {
-                    $totalCountSubtask = DB::table('subtasks')->where('task_id', $request->task_id)
-                        ->get()->count();
-                    $totalCompletedSubtask = DB::table('subtasks')->where('task_id', $request->task_id)
-                        ->where('board_id', 2)->get()->count();
-                    $totalUpdatedTask = DB::table('task_progress')
-                        ->where('board_id', $request->input('board_id'))
-                        ->get()
-                        ->count();
-                    $totalCompletedTask = DB::table('tasks')
-                        ->join('subtasks', 'subtasks.task_id', '=', 'tasks.id')
-                        ->where('tasks.board_id', $request->input('board_id'))
-                        ->where('subtasks.task_id', $request->task_id)
-                        ->where('subtasks.board_id', 2)->get()->count();
-
-                    $checkIfTaskCompleted = ($totalCountSubtask == $totalCompletedSubtask
-                        && $totalCountSubtask > 0
-                    ) ? 0 : 0;
-
-                    foreach ($tasks as $t) {
-                        $totalTask = DB::table('task_progress')
-                            ->where('board_id', $t->board_id)
-                            ->get()->count();
-                        BoardProgress::where('board_id', $request->board_id)
-                            ->update([
-                                'total_task' => $totalTask,
-                                'total_task_done' => 0
-                            ]);
-                        // if ($request->board_id == $t->board_id) {
-                        //     BoardProgress::where('board_id', $request->board_id)
-                        //         ->update([
-                        //             'total_task' => $totalTask,
-                        //             'total_task_done' => 0
-                        //         ]);
-                        // } else {
-                        //     BoardProgress::where('board_id', $t->board_id)
-                        //         ->update([
-                        //             'total_task' => $totalTask,
-                        //             'total_task_done' => 0
-                        //         ]);
-                        // }
-                    }
-
-
-                    // Update Progress
-                    TaskProgress::where('task_id', $request->task_id)
-                        ->update([
-                            'board_id' => $request->input('board_id'),
-                            'task_id' => $request->task_id,
-                            'total_subtask' => $totalCountSubtask,
-                            'total_subtask_done' => $totalCompletedSubtask
-                        ]);
-
                     Report::create(['user_id' => $user_id, 'project_id' => request()->segment(4), 'message' => ' updated the task in ' . $project->project_title]);
                     // Notify all users in the project that a task is updated
                     foreach ($findProject as $notify) {
-                        $user = User::where('id', $notify->id)->first();
+                        $user = User::withTrashed()->where('id', $notify->id)->first();
                         if (Auth::id() != $user->id) {
                             Notification::create([
                                 'user_id' => $user->id,
@@ -274,7 +223,6 @@ class TaskController extends Controller
                             ]);
                         }
                     }
-
                     //  if saved then return task as a resource
                     return new TaskResource($task);
                 }

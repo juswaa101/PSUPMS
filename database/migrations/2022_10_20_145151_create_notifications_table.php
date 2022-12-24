@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('notification_message');
             $table->boolean('has_read')->default(false);
-            $table->softDeletes();
             $table->timestamps();
         });
     }

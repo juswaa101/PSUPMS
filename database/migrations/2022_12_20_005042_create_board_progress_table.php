@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('board_id')->references('id')->on('boards')->onDelete('cascade');
             $table->unsignedInteger('total_task')->default(0);
             $table->unsignedBigInteger('total_task_done')->default(0);
-            $table->softDeletes();
             $table->timestamps();
         });
     }

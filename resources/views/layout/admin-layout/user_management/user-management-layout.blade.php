@@ -225,7 +225,7 @@
                             '<td>'+item.department+'</td>' +
                             '<td>'+item.role.toUpperCase()+'</td>' +
                             '<td><button type = "button" value ="'+item.id+'" class="edit_btn btn btn-success btn-xs pt-2 px-2">  <i class="bx bx-edit bx-sm"></i></button></td>' +
-                            '<td><button type = "button" value ="'+item.id+'" class="delete_btn btn btn-danger btn-xs pt-2 px-2"><i class="bx bx-trash-alt bx-sm"></i></button></td>'
+                            '<td><button type = "button" value ="'+item.id+'" class="delete_btn btn btn-danger btn-xs pt-2 px-2" disabled><i class="bx bx-trash-alt bx-sm"></i></button></td>'
                         );
                         usersTable.row.add(tr[0]).draw();
                     });

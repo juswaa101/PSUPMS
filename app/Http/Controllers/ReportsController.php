@@ -84,7 +84,10 @@ class ReportsController extends Controller
     public function fetchProject()
     {
         try {
-            $getProjects = Project::orderBy('project_title')->get()->unique('project_title');
+            $getProjects = Project::withTrashed()
+                ->orderBy('project_title')
+                ->get()
+                ->unique('project_title');
             return response()->json(['projects' => $getProjects]);
         } catch (Exception $e) {
             abort_if($e, 500);
@@ -94,7 +97,8 @@ class ReportsController extends Controller
     public function fetchHeadProject()
     {
         try {
-            $getProjects = Project::join('invitations', 'invitations.project_id', '=', 'projects.project_id')
+            $getProjects = Project::withTrashed()
+                ->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
                 ->orderByDesc('projects.created_at')
                 ->where('projects.id', Auth::user()->id)
                 ->where('invitations.status', 1)
@@ -108,8 +112,8 @@ class ReportsController extends Controller
     public function showReport($id, Request $request)
     {
         try {
-            $project = Project::firstWhere('project_id', $id);
-            $projects = Project::where('project_title', $project->project_title)->get();
+            $project = Project::withTrashed()->firstWhere('project_id', $id);
+            $projects = Project::withTrashed()->where('project_title', $project->project_title)->get();
 
             $get_projects_id = [];
             foreach ($projects as $proj) {
@@ -283,8 +287,8 @@ class ReportsController extends Controller
     public function showReportHead($id, Request $request)
     {
         try {
-            $project = Project::firstWhere('project_id', $id);
-            $projects = Project::where('project_title', $project->project_title)->get();
+            $project = Project::withTrashed()->firstWhere('project_id', $id);
+            $projects = Project::withTrashed()->where('project_title', $project->project_title)->get();
 
             $get_projects_id = [];
             foreach ($projects as $proj) {
@@ -310,8 +314,8 @@ class ReportsController extends Controller
     public function filterProject($id, Request $request): BinaryFileResponse
     {
         try {
-            $project = Project::firstWhere('project_id', $id);
-            $projects = Project::join('invitations', 'invitations.project_id', '=', 'projects.project_id')
+            $project = Project::withTrashed()->firstWhere('project_id', $id);
+            $projects = Project::withTrashed()->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
                 ->orderByDesc('projects.created_at')
                 ->where('projects.project_title', $project->project_title)
                 ->where('invitations.status', 1)
@@ -356,8 +360,8 @@ class ReportsController extends Controller
     public function showEmployees($id)
     {
         try {
-            $project = Project::findOrFail($id);
-            $users = DB::table('projects')->join('users', 'projects.id', '=', 'users.id')
+            $project = Project::withTrashed()->findOrFail($id);
+            $users = Project::withTrashed()->join('users', 'projects.id', '=', 'users.id')
                 ->where('projects.project_title', '=', $project->project_title)
                 ->whereNot('users.role', '=', 'admin')
                 ->orderBy('users.name')

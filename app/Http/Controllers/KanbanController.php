@@ -31,6 +31,7 @@ class KanbanController extends Controller
             $head = DB::table('projects')->join('users', 'projects.id', '=', 'users.id')
                 ->where('project_title', '=', $project->project_title)
                 ->where('users.role', '!=', 'admin')
+                ->whereNull('users.deleted_at')
                 ->where('is_project_head', '=', 1)
                 ->select('*')
                 ->get();
@@ -41,6 +42,7 @@ class KanbanController extends Controller
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('projects.is_project_head', '=', 0)
                 ->where('invitations.status', 1)
+                ->whereNull('users.deleted_at')
                 ->select(['*', 'users.id as user_id'])
                 ->get();
 
@@ -48,6 +50,7 @@ class KanbanController extends Controller
             $user_head = User::join('projects', 'projects.id', '=', 'users.id')
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('users.role', '!=', 'admin')
+                ->whereNull('users.deleted_at')
                 ->where('projects.is_project_head', '=', 1)
                 ->first(['users.id as user_id', 'projects.*', 'users.*']);
 
@@ -57,6 +60,7 @@ class KanbanController extends Controller
                 ->join('users', 'projects.id', '=', 'users.id')
                 ->where('project_title', '=', $project->project_title)
                 ->where('users.role', '!=', 'admin')
+                ->whereNull('users.deleted_at')
                 ->where('projects.is_project_head', '=', 0)
                 ->where('invitations.status', 1)
                 ->select('*')
@@ -105,6 +109,7 @@ class KanbanController extends Controller
 
             $isProjectHead = Project::join('users', 'projects.id', '=', 'users.id')
                 ->where('users.role', '!=', 'admin')
+                ->whereNull('users.deleted_at')
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('projects.id', '=', Auth::user()->id)
                 ->first(['is_project_head as is_project_head']);
@@ -117,6 +122,7 @@ class KanbanController extends Controller
                 ->where('project_title', '=', $project->project_title)
                 ->where('users.role', '!=', 'admin')
                 ->where('is_project_head', '=', 1)
+                ->whereNull('users.deleted_at')
                 ->select('*')
                 ->get();
 
@@ -126,6 +132,7 @@ class KanbanController extends Controller
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('projects.is_project_head', '=', 0)
                 ->where('invitations.status', 1)
+                ->whereNull('users.deleted_at')
                 ->select(['*', 'users.id as user_id'])
                 ->get();
 
@@ -135,6 +142,7 @@ class KanbanController extends Controller
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('users.role', '!=', 'admin')
                 ->where('projects.is_project_head', '=', 1)
+                ->whereNull('users.deleted_at')
                 ->first(['users.id as user_id', 'projects.*', 'users.*']);
 
             $userAssignedProject = DB::table('projects')
@@ -142,6 +150,7 @@ class KanbanController extends Controller
                 ->join('users', 'projects.id', '=', 'users.id')
                 ->where('project_title', '=', $project->project_title)
                 ->where('users.role', '!=', 'admin')
+                ->whereNull('users.deleted_at')
                 ->where('projects.is_project_head', '=', 0)
                 ->where('invitations.status', 1)
                 ->select('*')
@@ -343,7 +352,6 @@ class KanbanController extends Controller
             }
             return response()->json(['invitation' => $idQuery]);
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
     }

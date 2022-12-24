@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('project_id')->references('project_id')->on('projects')->onDelete('cascade');
             $table->string('task_color');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

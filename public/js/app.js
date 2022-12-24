@@ -6107,24 +6107,24 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     removeFile: function removeFile(id, file) {
       var _this18 = this;
 
-      axios["delete"]('/admin/file/destroy/' + id + '/' + file).then(function (response) {
-        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
-        }).then(function (result) {
-          if (result.isConfirmed) {
+      sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          axios["delete"]('/admin/file/destroy/' + id + '/' + file).then(function (response) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('File deleted', 'File has been deleted', 'success');
 
             _this18.fetchFiles();
-          }
-        });
-      })["catch"](function (error) {
-        console.log(error);
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
       });
     },
     // project data handling
@@ -6183,7 +6183,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
 
       try {
         axios.put('/admin/update-members/' + this.$project_id, this.formMembers).then(function () {
-          sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Member Invited!', 'Member has been invited to the project.', 'success').then(function (confirm) {
+          sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project member updated!', 'Members in the project is updated', 'success').then(function (confirm) {
             if (confirm.isConfirmed) {
               location.reload();
             }
@@ -7301,24 +7301,24 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     removeFile: function removeFile(id, file) {
       var _this18 = this;
 
-      axios["delete"]('/head/file/destroy/' + id + '/' + file).then(function (response) {
-        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
-        }).then(function (result) {
-          if (result.isConfirmed) {
+      sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          axios["delete"]('/head/file/destroy/' + id + '/' + file).then(function (response) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('File deleted', 'File has been deleted', 'success');
 
             _this18.fetchFiles();
-          }
-        });
-      })["catch"](function (error) {
-        console.log(error);
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
       });
     },
     // project data handling
@@ -7377,7 +7377,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
 
       this.formMembers.members = $('#selectMembers').val();
       axios.put('/head/update-members/' + this.$project_id, this.formMembers).then(function () {
-        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Member Invited!', 'Member has been invited to the project.', 'success').then(function (confirm) {
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project member updated!', 'Members in the project is updated', 'success').then(function (confirm) {
           if (confirm.isConfirmed) {
             location.reload();
           }
@@ -7563,7 +7563,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     pond.setOptions({
       server: {
         process: {
-          url: '/admin/file/upload',
+          url: '/head/file/upload',
           method: 'POST',
           headers: {
             "X-CSRF-Token": laravel.csrfToken
@@ -9587,7 +9587,7 @@ var render = function render() {
     attrs: {
       "for": ""
     }
-  }, [_vm._v("Task due date:")]), _vm._v(" "), _c("input", {
+  }, [_vm._v("Task due date: ")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11977,7 +11977,7 @@ var render = function render() {
     return index < 1 ? _c("div", {
       key: _vm.item.id,
       staticClass: "fs-1 m-0"
-    }, [_vm.item.create_subtask_status !== 0 || _vm.is_head.is_project_head === 1 ? _c("div", [_c("button", {
+    }, [_c("div", [_c("button", {
       staticClass: "btn btn-success float-end",
       attrs: {
         title: "Toggle Subtask Board"
@@ -11989,13 +11989,13 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-kanban"
-    })])]) : _vm._e()]) : _vm._e();
+    })])])]) : _vm._e();
   })], 2), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: _vm.toggleSubtaskBoard,
-      expression: "toggleSubtaskBoard"
+      value: _vm.toggleSubtaskBoard && (_vm.item.create_subtask_status !== 0 || _vm.is_head.is_project_head === 1),
+      expression: "toggleSubtaskBoard && (item.create_subtask_status !== 0 || is_head.is_project_head === 1)"
     }],
     staticClass: "col-md-12"
   }, [_c("div", {

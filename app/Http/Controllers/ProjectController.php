@@ -110,7 +110,7 @@ class ProjectController extends Controller
                 'title' => 'required|unique:projects,project_title|max:255',
                 'description' => 'required',
                 'project_start_date' => 'required',
-                'project_end_date' => 'required|after_or_equal:project_start_date',
+                'project_end_date' => 'required|after:project_start_date',
                 'head' => 'required',
                 'staff' => 'required',
                 'template' => 'required'
@@ -221,7 +221,7 @@ class ProjectController extends Controller
                 Report::create(['user_id' => auth()->user()->id, 'project_id' => $query->project_id, 'message' => ' updated the project details']);
 
                 foreach ($project_notify as $notify) {
-                    $user = User::where('id', $notify->id)->first();
+                    $user = User::withTrashed()->where('id', $notify->id)->first();
                     Notification::create([
                         'user_id' => $user->id,
                         'notification_message' => Auth::user()->name . ' has updated the project details in ' . $query->project_title,
@@ -246,7 +246,7 @@ class ProjectController extends Controller
                 'title' => 'required|unique:projects,project_title|max:255',
                 'description' => 'required',
                 'project_start_date' => 'required',
-                'project_end_date' => 'required|after_or_equal:project_start_date',
+                'project_end_date' => 'required|after:project_start_date',
                 'staff' => 'required',
                 'template' => 'required'
             ]);
