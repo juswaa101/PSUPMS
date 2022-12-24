@@ -155,7 +155,6 @@ class ReportsController extends Controller
                             ->select(['reports.id as report_id', 'reports.created_at as report_date', 'reports.message', 'reports.project_id', 'users.*', 'projects.*'])
                             ->orderBy('users.name')
                             ->get();
-                        dd($report);
                         return $report;
                     } else if ($request->get('quarter') == "quarter2") {
                         $start = Carbon::now()->month(4)->startOfQuarter();
@@ -279,7 +278,6 @@ class ReportsController extends Controller
                 return $report;
             }
         } catch (Exception $e) {
-            // dd($e);
             abort_if($e, 500);
         }
     }
@@ -315,10 +313,8 @@ class ReportsController extends Controller
     {
         try {
             $project = Project::withTrashed()->firstWhere('project_id', $id);
-            $projects = Project::withTrashed()->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
-                ->orderByDesc('projects.created_at')
+            $projects = Project::withTrashed()->orderByDesc('projects.created_at')
                 ->where('projects.project_title', $project->project_title)
-                ->where('invitations.status', 1)
                 ->get();
 
             $get_projects_id = [];
@@ -343,7 +339,6 @@ class ReportsController extends Controller
 
             return response()->download($pdf);
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
     }
