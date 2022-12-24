@@ -138,7 +138,7 @@
                             </div>
                             <div class="card-body p-4">
                                 <!-- Project Title -->
-                                <nav>
+                                <nav v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
                                     <div id="nav-tab" class="nav nav-tabs" role="tablist">
                                         <button id="nav-home-tab" aria-controls="nav-home" aria-selected="true"
                                                 class="nav-link active" data-bs-target="#nav-home"
@@ -153,18 +153,14 @@
                                         <button id="nav-profile-tab" aria-controls="nav-profile"
                                                 aria-selected="false"
                                                 class="nav-link" data-bs-target="#offcanvasAddBoard" data-bs-toggle="offcanvas"
-                                                role="tab" type="button">Create Column
+                                                role="tab" type="button" v-if="is_head.is_project_head === 1">Create Column
                                         </button>
-                                        <div v-for="(value, key, index) in item" :key="item.id"
-                                             v-if="index < 1">
-                                            <div v-if="item.create_task_status !== 0 || is_head.is_project_head === 1">
-                                                <button id="nav-profile-tab" aria-controls="nav-profile"
-                                                        aria-selected="false"
-                                                        class="nav-link" data-bs-target="#offcanvasAddTask" data-bs-toggle="offcanvas"
-                                                        role="tab" type="button">Create Task
-                                                </button>
-                                            </div>
-                                        </div>
+                                            
+                                        <button id="nav-profile-tab" aria-controls="nav-profile"
+                                                aria-selected="false"
+                                                class="nav-link" data-bs-target="#offcanvasAddTask" data-bs-toggle="offcanvas"
+                                                role="tab" type="button" v-if="item.create_task_status !== 0 || is_head.is_project_head === 1">Create Task
+                                        </button>
                                     </div>
                                 </nav>
                                 <br>
@@ -192,22 +188,29 @@
                                                          v-bind:key="board.id">
                                                         <div class="row align-items-start">
                                                             <div class="col">
-                                                                <h5 id="title-text">{{ board.name }} - {{ board.board_progress.total_task_done }} / {{  board.board_done.total_task }}</h5>
+                                                                <h5 id="title-text">{{ board.name }}</h5>
                                                             </div>
 
                                                             <div class="col">
-                                                                <div class="dropdown">
-                                                                    <i class="bx bx-dots-horizontal-rounded bx-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
-                                                                    <ul class="dropdown-menu" style="background-color:#E4E9F7;">
-                                                                        <li><a class="dropdown-item" @click="editBoard(board)">Edit</a></li>
-                                                                        <div class="dropdown-divider"></div>
-                                                                        <li><a class="dropdown-item" @click="deleteBoard(board.id)">Delete</a></li>
-                                                                    </ul>
+                                                                <div v-for="(value, key, index) in item" :key="item.id"
+                                                                    v-if="index < 1">
+                                                                        <div v-if="is_head.is_project_head === 1">
+                                                                            <div class="dropdown">
+                                                                                <i class="bx bx-dots-horizontal-rounded bx-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                                                                <ul class="dropdown-menu" style="background-color:#E4E9F7;">
+                                                                                    <li><a class="dropdown-item" @click="editBoard(board)">Edit</a></li>
+                                                                                    <div class="dropdown-divider"></div>
+                                                                                    <li><a class="dropdown-item" @click="deleteBoard(board.id)">Delete</a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row">
-                                                            <div class="col">
+                                                        <div class="row" v-for="(value, key, index) in item" :key="item.id"
+                                                                    v-if="index < 1">
+                                                            <div class="col" v-if="item.create_subtask_status !== 0">
+                                                                <h3 class="display-3 fs-3 mt-3">Progress: {{ board.board_progress.total_task_done }} / {{ board.board_progress.total_task }}</h3>
                                                                 <div class="progress">
                                                                     <div class="progress-bar bg-success text-light display-6 fs-6" 
                                                                         :style="{ 'width' : (board.board_progress.total_task_done/board.board_done.total_task)*100 + '%' }" 
@@ -232,8 +235,8 @@
                                                                     <Task :id="task.id" draggable="true">
                                                                         <div class="card shadow-sm mt-2" :style="('backgroundColor:'+currentTaskColor)">
                                                                             <div class="card-body">
-                                                                                <div class="col">
-                                                                                    <div class="progress">
+                                                                                <div class="col" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
+                                                                                    <div class="progress" v-if="item.create_subtask_status !== 0">
                                                                                         <div class="progress-bar bg-success text-light display-6 fs-6" 
                                                                                             :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
                                                                                             role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
@@ -760,19 +763,24 @@
                     </div>
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-md-6">
-                                <h3>Subtask:</h3>
+                            <div class="col-md-6" v-for="(value, key, index) in item" :key="item.id"
+                                v-if="index < 1">
+                                <h3 v-if="item.create_subtask_status !== 0 || is_head.is_project_head === 1">Subtask:</h3>
                             </div>
                             <div class="col-md-6">
-                                <button class="btn btn-secondary float-end" title="Toggle File Upload" style="margin-left:10px;" @click="toggleUpload = !toggleUpload"><i class="bi bi-paperclip"></i></button>
+                                <button class="btn btn-secondary float-end" title="Toggle File Upload" style="margin-left:10px;" 
+                                    @click="toggleUpload = !toggleUpload" 
+                                    v-if="is_head.is_project_head === 1"
+                                >
+                                <i class="bi bi-paperclip"></i></button>
                                 <div class="fs-1 m-0" v-for="(value, key, index) in item" :key="item.id"
                                      v-if="index < 1">
-                                    <div>
+                                    <div v-if="item.create_subtask_status !== 0 || is_head.is_project_head === 1">
                                         <button class="btn btn-success float-end" title="Toggle Subtask Board" @click="toggleSubtaskBoard = !toggleSubtaskBoard"><i class="bi bi-kanban"></i></button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12" v-show="toggleSubtaskBoard && (item.create_subtask_status !== 0 || is_head.is_project_head === 1)">
+                            <div class="col-md-12" v-show="toggleSubtaskBoard">
                                 <div class="col-md-12 mt-2">
                                     <label class="form-label" for="Subtask Name">Subtask Name:</label>
                                     <input type="text" class="form-control" placeholder="Subtask Name" v-model="formSubtask.subtask_name" required
@@ -807,7 +815,7 @@
                                                             <SubtaskHeadTask :id="subtask.id" draggable="true">
                                                                 <div class="card shadow-sm mt-2">
                                                                     <div class="card-body">
-                                                                        <div class="dropdown text-end">
+                                                                        <div class="dropdown text-end" v-if="is_head.is_project_head === 1">
                                                                             <i class="bx bx-dots-horizontal-rounded bx-md" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                                                             <ul class="dropdown-menu" style="background-color:#E4E9F7;">
                                                                                 <li><a @click="editSubtask(subtask)" class="dropdown-item">Edit</a></li>
@@ -916,8 +924,7 @@
             </div>
             <div class="offcanvas-bottom sticky-bottom p-2"  style="background-color: #00305F;">
                 <div class="input-group">
-                            <textarea class="form-control" id="commentArea"
-                                      style="resize: none;" v-model="formComment.comment"></textarea>
+                    <textarea class="form-control" id="commentArea" style="resize: none;" v-model="formComment.comment"></textarea>
                     <button class="input-group-addon btn btn-primary" @click="addOrUpdateComment()"><i class="bi bi-send"></i></button>
                 </div>
             </div>
@@ -1610,8 +1617,6 @@ export default {
                 if (result.isConfirmed) {
                     axios.delete('/head/subtask/delete/' + id)
                         .then(() => {
-                            this.fetchSubtask();
-                            this.fetchTasks();
                             this.toggleEditSubtask = false;
                             this.addOrUpdateSubtask = false;
                             this.formSubtask.subtask_name = '';
@@ -1626,6 +1631,8 @@ export default {
                         'success'
                     )
                 }
+                this.fetchSubtask();
+                this.fetchTasks();
             })
 
         },

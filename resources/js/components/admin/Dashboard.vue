@@ -195,7 +195,7 @@
                                                         <div :id="board.id">
                                                             <div class="row align-items-start">
                                                                 <div class="col">
-                                                                    <h5 id="title-text">{{ board.name }} - {{ board.board_progress.total_task_done }} / {{ board.board_progress.total_task }}</h5>
+                                                                    <h5 id="title-text">{{ board.name }}</h5>
                                                                 </div>
                                                                 <div class="col">
                                                                     <div class="dropdown">
@@ -208,8 +208,10 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="row">
-                                                                <div class="col">
+                                                            <div class="row" v-for="(value, key, index) in item" :key="item.id"
+                                                                    v-if="index < 1">
+                                                                <div class="col" v-if="item.create_subtask_status !== 0">
+                                                                    <h3 class="display-3 fs-3 mt-3">Progress: {{ board.board_progress.total_task_done }} / {{ board.board_progress.total_task }}</h3>
                                                                     <div class="progress">
                                                                         <div class="progress-bar bg-success text-light display-6 fs-6" 
                                                                             :style="{ 'width' : (board.board_progress.total_task_done/board.board_done.total_task)*100 + '%' }" 
@@ -234,8 +236,8 @@
                                                                 <div v-if="board.id === task.board_id">
                                                                     <Task :id="task.id" draggable="true">
                                                                         <div class="card shadow-sm mt-2" :style="('backgroundColor:'+currentTaskColor)">
-                                                                            <div class="card-body">
-                                                                                <div class="col">
+                                                                            <div class="card-body" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
+                                                                                <div class="col" v-if="item.create_subtask_status !== 0">
                                                                                     <div class="progress">
                                                                                         <div class="progress-bar bg-success text-light display-6 fs-6" 
                                                                                             :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
@@ -335,7 +337,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+            </div>
         </section>
 
         <!-- Offcanvas -->
@@ -765,16 +767,22 @@
                     </div>
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-md-6">
-                                <h3>Subtask:</h3>
+                            <div class="col-md-6"  v-for="(value, key, index) in item" :key="item.id"
+                                v-if="index < 1">
+                                <h3 v-if="item.create_subtask_status !== 0">Subtask:</h3>
                             </div>
                             <div class="col-md-6">
-                                <button class="btn btn-secondary float-end" title="Toggle File Upload" style="margin-left:10px;" @click="toggleUpload = !toggleUpload"><i class="bi bi-paperclip"></i></button>
+                                <button class="btn btn-secondary float-end" title="Toggle File Upload" style="margin-left:10px;" 
+                                    @click="toggleUpload = !toggleUpload" 
+                                    v-if="this.logged.role === 'admin'"
+                                >
+                                    <i class="bi bi-paperclip"></i>
+                                </button>
                                 <div class="fs-1 m-0" v-for="(value, key, index) in item" :key="item.id"
                                      v-if="index < 1">
-                                    <!--                                            <div v-if="item.create_subtask_status !== 0">-->
-                                    <button class="btn btn-success float-end" title="Toggle Subtask Board" @click="toggleSubtaskBoard = !toggleSubtaskBoard"><i class="bi bi-kanban"></i></button>
-                                    <!--                                            </div>-->
+                                    <div v-if="item.create_subtask_status !== 0">
+                                        <button class="btn btn-success float-end" title="Toggle Subtask Board" @click="toggleSubtaskBoard = !toggleSubtaskBoard"><i class="bi bi-kanban"></i></button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-12" v-show="toggleSubtaskBoard">
@@ -837,7 +845,7 @@
                                     </main>
                                 </div>
                             </div>
-                            <div class="col-md-12" v-show="toggleUpload">
+                            <div class="col-md-12" v-show="toggleUpload && is_head.is_project_head === 1">
                                 <input type="file" class="mt-2" id="upload_file" name="upload_file">
                             </div>
                             <div class="col-md-12 mt-2">
@@ -1511,6 +1519,7 @@ export default {
                         }).then((confirm) => {
                             if (confirm.isConfirmed) {
                                 this.fetchSubtask();
+                                this.fetchTasks();
                             }
                         });
                     })
@@ -1527,6 +1536,7 @@ export default {
                 })
                     .then(() => {
                         this.fetchSubtask();
+                        this.fetchTasks();
                         this.toggleEditSubtask = false;
                         this.addOrUpdateSubtask = false;
                         this.formSubtask.subtask_name = '';
@@ -1558,7 +1568,6 @@ export default {
                 if (result.isConfirmed) {
                     axios.delete('/admin/subtask/delete/' + id)
                         .then(() => {
-                            this.fetchSubtask();
                             this.toggleEditSubtask = false;
                             this.addOrUpdateSubtask = false;
                             this.formSubtask.subtask_name = '';
@@ -1575,12 +1584,15 @@ export default {
                         'success'
                     )
                 }
+                this.fetchSubtask();
+                this.fetchTasks();
             })
 
         },
         fetchSubtask: function () {
             axios.get('/admin/subtask/' + this.show.id + '/' + this.logged.id).then((response) => {
                 this.subtasks = response.data.data;
+                this.fetchTasks();
             });
         },
 

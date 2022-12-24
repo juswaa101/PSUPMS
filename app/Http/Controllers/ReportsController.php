@@ -98,11 +98,11 @@ class ReportsController extends Controller
     {
         try {
             $getProjects = Project::withTrashed()
-                ->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
                 ->orderByDesc('projects.created_at')
                 ->where('projects.id', Auth::user()->id)
-                ->where('invitations.status', 1)
-                ->get();
+                ->get()
+                ->unique('project_title');
+
             return response()->json(['projects' => $getProjects]);
         } catch (Exception $e) {
             abort_if($e, 500);

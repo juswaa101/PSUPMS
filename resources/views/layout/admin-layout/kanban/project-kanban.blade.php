@@ -559,7 +559,7 @@
         let currentId = is_invited[0];
         currentId.sort();
         currentId.forEach(el => {
-            $('#selectMembers').children('option[value="' + el + '"]').remove();
+            $('#selectMembers').children('option[value="' + el + '"]').append(` - INVITED`).prop('disabled', true);
         });
         loadDoc()
     });

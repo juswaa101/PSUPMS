@@ -63,7 +63,6 @@ export default {
                         "X-CSRF-Token" : laravel.csrfToken
                     }
                 })
-                
             });
             
         }

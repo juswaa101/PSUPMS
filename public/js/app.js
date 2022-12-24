@@ -5959,6 +5959,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this11.fetchSubtask();
+
+              _this11.fetchTasks();
             }
           });
         })["catch"](function (error) {
@@ -5972,6 +5974,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           task_id: this.show.id
         }).then(function () {
           _this11.fetchSubtask();
+
+          _this11.fetchTasks();
 
           _this11.toggleEditSubtask = false;
           _this11.addOrUpdateSubtask = false;
@@ -6004,8 +6008,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       }).then(function (result) {
         if (result.isConfirmed) {
           axios["delete"]('/admin/subtask/delete/' + id).then(function () {
-            _this12.fetchSubtask();
-
             _this12.toggleEditSubtask = false;
             _this12.addOrUpdateSubtask = false;
             _this12.formSubtask.subtask_name = '';
@@ -6017,6 +6019,10 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           });
           sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Deleted!', 'A subtask has been deleted.', 'success');
         }
+
+        _this12.fetchSubtask();
+
+        _this12.fetchTasks();
       });
     },
     fetchSubtask: function fetchSubtask() {
@@ -6024,6 +6030,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
 
       axios.get('/admin/subtask/' + this.show.id + '/' + this.logged.id).then(function (response) {
         _this13.subtasks = response.data.data;
+
+        _this13.fetchTasks();
       });
     },
     // comment data handling
@@ -7196,10 +7204,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       }).then(function (result) {
         if (result.isConfirmed) {
           axios["delete"]('/head/subtask/delete/' + id).then(function () {
-            _this12.fetchSubtask();
-
-            _this12.fetchTasks();
-
             _this12.toggleEditSubtask = false;
             _this12.addOrUpdateSubtask = false;
             _this12.formSubtask.subtask_name = '';
@@ -7209,6 +7213,10 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           });
           sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Deleted!', 'A subtask has been deleted.', 'success');
         }
+
+        _this12.fetchSubtask();
+
+        _this12.fetchTasks();
       });
     },
     fetchSubtask: function fetchSubtask() {
@@ -8005,7 +8013,7 @@ var render = function render() {
       attrs: {
         id: "title-text"
       }
-    }, [_vm._v(_vm._s(board.name) + " - " + _vm._s(board.board_progress.total_task_done) + " / " + _vm._s(board.board_progress.total_task))])]), _vm._v(" "), _c("div", {
+    }, [_vm._v(_vm._s(board.name))])]), _vm._v(" "), _c("div", {
       staticClass: "col"
     }, [_c("div", {
       staticClass: "dropdown"
@@ -8037,24 +8045,29 @@ var render = function render() {
           return _vm.deleteBoard(board.id);
         }
       }
-    }, [_vm._v("Delete")])])])])])]), _vm._v(" "), _c("div", {
-      staticClass: "row"
-    }, [_c("div", {
-      staticClass: "col"
-    }, [_c("div", {
-      staticClass: "progress"
-    }, [_c("div", {
-      staticClass: "progress-bar bg-success text-light display-6 fs-6",
-      style: {
-        width: board.board_progress.total_task_done / board.board_done.total_task * 100 + "%"
-      },
-      attrs: {
-        role: "progressbar",
-        "aria-valuenow": "0",
-        "aria-valuemin": "0",
-        "aria-valuemax": "100"
-      }
-    }, [_vm._v("\n                                                                        " + _vm._s(Number.isNaN(Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100)) ? 0 + "%" : Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100) + "%") + "\n                                                                    ")])])])])]), _vm._v(" "), _c("br")]);
+    }, [_vm._v("Delete")])])])])])]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+      return index < 1 ? _c("div", {
+        key: _vm.item.id,
+        staticClass: "row"
+      }, [_vm.item.create_subtask_status !== 0 ? _c("div", {
+        staticClass: "col"
+      }, [_c("h3", {
+        staticClass: "display-3 fs-3 mt-3"
+      }, [_vm._v("Progress: " + _vm._s(board.board_progress.total_task_done) + " / " + _vm._s(board.board_progress.total_task))]), _vm._v(" "), _c("div", {
+        staticClass: "progress"
+      }, [_c("div", {
+        staticClass: "progress-bar bg-success text-light display-6 fs-6",
+        style: {
+          width: board.board_progress.total_task_done / board.board_done.total_task * 100 + "%"
+        },
+        attrs: {
+          role: "progressbar",
+          "aria-valuenow": "0",
+          "aria-valuemin": "0",
+          "aria-valuemax": "100"
+        }
+      }, [_vm._v("\n                                                                        " + _vm._s(Number.isNaN(Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100)) ? 0 + "%" : Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100) + "%") + "\n                                                                    ")])])]) : _vm._e()]) : _vm._e();
+    })], 2), _vm._v(" "), _c("br")]);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
   }, _vm._l(_vm.boards, function (board) {
@@ -8079,89 +8092,92 @@ var render = function render() {
       }, [_c("div", {
         staticClass: "card shadow-sm mt-2",
         style: "backgroundColor:" + _vm.currentTaskColor
-      }, [_c("div", {
-        staticClass: "card-body"
-      }, [_c("div", {
-        staticClass: "col"
-      }, [_c("div", {
-        staticClass: "progress"
-      }, [_c("div", {
-        staticClass: "progress-bar bg-success text-light display-6 fs-6",
-        style: {
-          width: task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100 + "%"
-        },
-        attrs: {
-          role: "progressbar",
-          "aria-valuenow": "0",
-          "aria-valuemin": "0",
-          "aria-valuemax": "100"
-        }
-      }, [_vm._v("\n                                                                                        " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                                    ")])])]), _vm._v(" "), _c("div", {
-        staticClass: "dropdown text-end"
-      }, [_c("i", {
-        staticClass: "bx bx-dots-horizontal-rounded bx-md",
-        attrs: {
-          type: "button",
-          "data-bs-toggle": "dropdown",
-          "aria-expanded": "false"
-        }
-      }), _vm._v(" "), _c("ul", {
-        staticClass: "dropdown-menu",
-        staticStyle: {
-          "background-color": "#E4E9F7"
-        }
-      }, [_c("li", [_c("a", {
-        staticClass: "dropdown-item",
-        on: {
-          click: function click($event) {
-            return _vm.showModal(task);
+      }, _vm._l(_vm.item, function (value, key, index) {
+        return index < 1 ? _c("div", {
+          key: _vm.item.id,
+          staticClass: "card-body"
+        }, [_vm.item.create_subtask_status !== 0 ? _c("div", {
+          staticClass: "col"
+        }, [_c("div", {
+          staticClass: "progress"
+        }, [_c("div", {
+          staticClass: "progress-bar bg-success text-light display-6 fs-6",
+          style: {
+            width: task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100 + "%"
+          },
+          attrs: {
+            role: "progressbar",
+            "aria-valuenow": "0",
+            "aria-valuemin": "0",
+            "aria-valuemax": "100"
           }
-        }
-      }, [_vm._v("View")])]), _vm._v(" "), _c("div", {
-        staticClass: "dropdown-divider"
-      }), _vm._v(" "), _c("li", [_c("a", {
-        staticClass: "dropdown-item",
-        on: {
-          click: function click($event) {
-            return _vm.editTask(task);
+        }, [_vm._v("\n                                                                                        " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                                    ")])])]) : _vm._e(), _vm._v(" "), _c("div", {
+          staticClass: "dropdown text-end"
+        }, [_c("i", {
+          staticClass: "bx bx-dots-horizontal-rounded bx-md",
+          attrs: {
+            type: "button",
+            "data-bs-toggle": "dropdown",
+            "aria-expanded": "false"
           }
-        }
-      }, [_vm._v("Edit")])]), _vm._v(" "), _c("div", {
-        staticClass: "dropdown-divider"
-      }), _vm._v(" "), _c("li", [_c("a", {
-        staticClass: "dropdown-item",
-        on: {
-          click: function click($event) {
-            return _vm.assignUserTaskModal(task.id);
+        }), _vm._v(" "), _c("ul", {
+          staticClass: "dropdown-menu",
+          staticStyle: {
+            "background-color": "#E4E9F7"
           }
-        }
-      }, [_vm._v("Assign Members To Task")])]), _vm._v(" "), _c("div", {
-        staticClass: "dropdown-divider"
-      }), _vm._v(" "), _c("li", [_c("a", {
-        staticClass: "dropdown-item",
-        on: {
-          click: function click($event) {
-            return _vm.deleteTask(task.id);
+        }, [_c("li", [_c("a", {
+          staticClass: "dropdown-item",
+          on: {
+            click: function click($event) {
+              return _vm.showModal(task);
+            }
           }
-        }
-      }, [_vm._v("Delete")])]), _vm._v(" "), _c("div", {
-        staticClass: "dropdown-divider"
-      }), _vm._v(" "), _c("li", [_c("a", {
-        staticClass: "dropdown-item",
-        on: {
-          click: _vm.openTaskColorModal
-        }
-      }, [_vm._v("Change Color")])])])]), _vm._v(" "), _c("div", {
-        staticClass: "card-title"
-      }, [_c("div", {
-        staticClass: "container"
-      }, [_c("div", {
-        staticClass: "row"
-      }, [_c("h5", {
-        staticClass: "text-primary"
-      }, [_vm._v(_vm._s(task.name.substring(0, 30) + "..."))])])])]), _vm._v(" "), _c("p", {
-        staticClass: "ps-4"
-      }, [_vm._v("\n                                                                                " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                            ")])])])])], 1) : _vm._e()]);
+        }, [_vm._v("View")])]), _vm._v(" "), _c("div", {
+          staticClass: "dropdown-divider"
+        }), _vm._v(" "), _c("li", [_c("a", {
+          staticClass: "dropdown-item",
+          on: {
+            click: function click($event) {
+              return _vm.editTask(task);
+            }
+          }
+        }, [_vm._v("Edit")])]), _vm._v(" "), _c("div", {
+          staticClass: "dropdown-divider"
+        }), _vm._v(" "), _c("li", [_c("a", {
+          staticClass: "dropdown-item",
+          on: {
+            click: function click($event) {
+              return _vm.assignUserTaskModal(task.id);
+            }
+          }
+        }, [_vm._v("Assign Members To Task")])]), _vm._v(" "), _c("div", {
+          staticClass: "dropdown-divider"
+        }), _vm._v(" "), _c("li", [_c("a", {
+          staticClass: "dropdown-item",
+          on: {
+            click: function click($event) {
+              return _vm.deleteTask(task.id);
+            }
+          }
+        }, [_vm._v("Delete")])]), _vm._v(" "), _c("div", {
+          staticClass: "dropdown-divider"
+        }), _vm._v(" "), _c("li", [_c("a", {
+          staticClass: "dropdown-item",
+          on: {
+            click: _vm.openTaskColorModal
+          }
+        }, [_vm._v("Change Color")])])])]), _vm._v(" "), _c("div", {
+          staticClass: "card-title"
+        }, [_c("div", {
+          staticClass: "container"
+        }, [_c("div", {
+          staticClass: "row"
+        }, [_c("h5", {
+          staticClass: "text-primary"
+        }, [_vm._v(_vm._s(task.name.substring(0, 30) + "..."))])])])]), _vm._v(" "), _c("p", {
+          staticClass: "ps-4"
+        }, [_vm._v("\n                                                                                " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                            ")])]) : _vm._e();
+      }), 0)])], 1) : _vm._e()]);
     }), 0)], 1);
   }), 0)])]) : _c("div", [_vm._m(13)])]), _vm._v(" "), _c("div", {
     staticClass: "tab-pane fade",
@@ -9085,9 +9101,14 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("div", {
     staticClass: "row"
-  }, [_vm._m(32), _vm._v(" "), _c("div", {
+  }, [_vm._l(_vm.item, function (value, key, index) {
+    return index < 1 ? _c("div", {
+      key: _vm.item.id,
+      staticClass: "col-md-6"
+    }, [_vm.item.create_subtask_status !== 0 ? _c("h3", [_vm._v("Subtask:")]) : _vm._e()]) : _vm._e();
+  }), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
-  }, [_c("button", {
+  }, [this.logged.role === "admin" ? _c("button", {
     staticClass: "btn btn-secondary float-end",
     staticStyle: {
       "margin-left": "10px"
@@ -9102,11 +9123,11 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "bi bi-paperclip"
-  })]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+  })]) : _vm._e(), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
     return index < 1 ? _c("div", {
       key: _vm.item.id,
       staticClass: "fs-1 m-0"
-    }, [_c("button", {
+    }, [_vm.item.create_subtask_status !== 0 ? _c("div", [_c("button", {
       staticClass: "btn btn-success float-end",
       attrs: {
         title: "Toggle Subtask Board"
@@ -9118,7 +9139,7 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-kanban"
-    })])]) : _vm._e();
+    })])]) : _vm._e()]) : _vm._e();
   })], 2), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
@@ -9299,8 +9320,8 @@ var render = function render() {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: _vm.toggleUpload,
-      expression: "toggleUpload"
+      value: _vm.toggleUpload && _vm.is_head.is_project_head === 1,
+      expression: "toggleUpload && is_head.is_project_head === 1"
     }],
     staticClass: "col-md-12"
   }, [_c("input", {
@@ -9357,7 +9378,7 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-trash"
-    })])])])]), _vm._v(" "), _vm._m(33, true)])])])]);
+    })])])])]), _vm._v(" "), _vm._m(32, true)])])])]);
   }), 0)]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12 mt-3"
   }, [_c("h3", {
@@ -9413,7 +9434,7 @@ var render = function render() {
           return _vm.editComment(comment);
         }
       }
-    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(34, true), _vm._v(" "), _c("li", [_c("a", {
+    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(33, true), _vm._v(" "), _c("li", [_c("a", {
       staticClass: "dropdown-item",
       on: {
         click: function click($event) {
@@ -9427,7 +9448,7 @@ var render = function render() {
     }, [_c("p", {
       staticClass: "comment-text"
     }, [_vm._v(_vm._s(comment.comment))])])])])]);
-  }), 0)])])])])]), _vm._v(" "), _c("div", {
+  }), 0)])], 2)])])]), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-bottom sticky-bottom p-2",
     staticStyle: {
       "background-color": "#00305F"
@@ -9475,7 +9496,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(35), _vm._v(" "), _c("div", {
+  }, [_vm._m(34), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9673,7 +9694,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(36), _vm._v(" "), _c("div", {
+  }, [_vm._m(35), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9688,7 +9709,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("table", {
     staticClass: "table table-primary table-bordered"
-  }, [_vm._m(37), _vm._v(" "), _c("tbody", {
+  }, [_vm._m(36), _vm._v(" "), _c("tbody", {
     attrs: {
       id: "board_list"
     }
@@ -9756,7 +9777,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(38), _vm._v(" "), _c("div", {
+  }, [_vm._m(37), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -10369,13 +10390,6 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "col-md-6"
-  }, [_c("h3", [_vm._v("Subtask:")])]);
-}, function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("div", {
     staticClass: "col-md-2"
   }, [_c("i", {
     staticClass: "bi bi-file-earmark-text",
@@ -10752,49 +10766,49 @@ var render = function render() {
     }
   }, [_vm._v("Add to finished projects")])])])])])])])]), _vm._v(" "), _c("div", {
     staticClass: "card-body p-4"
-  }, [_c("nav", [_c("div", {
-    staticClass: "nav nav-tabs",
-    attrs: {
-      id: "nav-tab",
-      role: "tablist"
-    }
-  }, [_c("button", {
-    staticClass: "nav-link active",
-    attrs: {
-      id: "nav-home-tab",
-      "aria-controls": "nav-home",
-      "aria-selected": "true",
-      "data-bs-target": "#nav-home",
-      "data-bs-toggle": "tab",
-      role: "tab",
-      type: "button"
-    }
-  }, [_vm._v("Column\n                                    ")]), _vm._v(" "), _c("button", {
-    staticClass: "nav-link",
-    attrs: {
-      id: "nav-profile-tab",
-      "aria-controls": "nav-profile",
-      "aria-selected": "false",
-      "data-bs-target": "#nav-profile",
-      "data-bs-toggle": "tab",
-      role: "tab",
-      type: "button"
-    }
-  }, [_vm._v("List\n                                    ")]), _vm._v(" "), _c("button", {
-    staticClass: "nav-link",
-    attrs: {
-      id: "nav-profile-tab",
-      "aria-controls": "nav-profile",
-      "aria-selected": "false",
-      "data-bs-target": "#offcanvasAddBoard",
-      "data-bs-toggle": "offcanvas",
-      role: "tab",
-      type: "button"
-    }
-  }, [_vm._v("Create Column\n                                    ")]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
-    return index < 1 ? _c("div", {
+  }, [_vm._l(_vm.item, function (value, key, index) {
+    return index < 1 ? _c("nav", {
       key: _vm.item.id
-    }, [_vm.item.create_task_status !== 0 || _vm.is_head.is_project_head === 1 ? _c("div", [_c("button", {
+    }, [_c("div", {
+      staticClass: "nav nav-tabs",
+      attrs: {
+        id: "nav-tab",
+        role: "tablist"
+      }
+    }, [_c("button", {
+      staticClass: "nav-link active",
+      attrs: {
+        id: "nav-home-tab",
+        "aria-controls": "nav-home",
+        "aria-selected": "true",
+        "data-bs-target": "#nav-home",
+        "data-bs-toggle": "tab",
+        role: "tab",
+        type: "button"
+      }
+    }, [_vm._v("Column\n                                    ")]), _vm._v(" "), _c("button", {
+      staticClass: "nav-link",
+      attrs: {
+        id: "nav-profile-tab",
+        "aria-controls": "nav-profile",
+        "aria-selected": "false",
+        "data-bs-target": "#nav-profile",
+        "data-bs-toggle": "tab",
+        role: "tab",
+        type: "button"
+      }
+    }, [_vm._v("List\n                                    ")]), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("button", {
+      staticClass: "nav-link",
+      attrs: {
+        id: "nav-profile-tab",
+        "aria-controls": "nav-profile",
+        "aria-selected": "false",
+        "data-bs-target": "#offcanvasAddBoard",
+        "data-bs-toggle": "offcanvas",
+        role: "tab",
+        type: "button"
+      }
+    }, [_vm._v("Create Column\n                                    ")]) : _vm._e(), _vm._v(" "), _vm.item.create_task_status !== 0 || _vm.is_head.is_project_head === 1 ? _c("button", {
       staticClass: "nav-link",
       attrs: {
         id: "nav-profile-tab",
@@ -10805,8 +10819,8 @@ var render = function render() {
         role: "tab",
         type: "button"
       }
-    }, [_vm._v("Create Task\n                                            ")])]) : _vm._e()]) : _vm._e();
-  })], 2)]), _vm._v(" "), _c("br"), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("div", {
+    }, [_vm._v("Create Task\n                                    ")]) : _vm._e()])]) : _vm._e();
+  }), _vm._v(" "), _c("br"), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("div", {
     staticClass: "container"
   }, [_c("div", {
     staticClass: "row"
@@ -10872,56 +10886,65 @@ var render = function render() {
       attrs: {
         id: "title-text"
       }
-    }, [_vm._v(_vm._s(board.name) + " - " + _vm._s(board.board_progress.total_task_done) + " / " + _vm._s(board.board_done.total_task))])]), _vm._v(" "), _c("div", {
+    }, [_vm._v(_vm._s(board.name))])]), _vm._v(" "), _c("div", {
       staticClass: "col"
-    }, [_c("div", {
-      staticClass: "dropdown"
-    }, [_c("i", {
-      staticClass: "bx bx-dots-horizontal-rounded bx-sm",
-      attrs: {
-        type: "button",
-        "data-bs-toggle": "dropdown",
-        "aria-expanded": "false"
-      }
-    }), _vm._v(" "), _c("ul", {
-      staticClass: "dropdown-menu",
-      staticStyle: {
-        "background-color": "#E4E9F7"
-      }
-    }, [_c("li", [_c("a", {
-      staticClass: "dropdown-item",
-      on: {
-        click: function click($event) {
-          return _vm.editBoard(board);
+    }, _vm._l(_vm.item, function (value, key, index) {
+      return index < 1 ? _c("div", {
+        key: _vm.item.id
+      }, [_vm.is_head.is_project_head === 1 ? _c("div", [_c("div", {
+        staticClass: "dropdown"
+      }, [_c("i", {
+        staticClass: "bx bx-dots-horizontal-rounded bx-sm",
+        attrs: {
+          type: "button",
+          "data-bs-toggle": "dropdown",
+          "aria-expanded": "false"
         }
-      }
-    }, [_vm._v("Edit")])]), _vm._v(" "), _c("div", {
-      staticClass: "dropdown-divider"
-    }), _vm._v(" "), _c("li", [_c("a", {
-      staticClass: "dropdown-item",
-      on: {
-        click: function click($event) {
-          return _vm.deleteBoard(board.id);
+      }), _vm._v(" "), _c("ul", {
+        staticClass: "dropdown-menu",
+        staticStyle: {
+          "background-color": "#E4E9F7"
         }
-      }
-    }, [_vm._v("Delete")])])])])])]), _vm._v(" "), _c("div", {
-      staticClass: "row"
-    }, [_c("div", {
-      staticClass: "col"
-    }, [_c("div", {
-      staticClass: "progress"
-    }, [_c("div", {
-      staticClass: "progress-bar bg-success text-light display-6 fs-6",
-      style: {
-        width: board.board_progress.total_task_done / board.board_done.total_task * 100 + "%"
-      },
-      attrs: {
-        role: "progressbar",
-        "aria-valuenow": "0",
-        "aria-valuemin": "0",
-        "aria-valuemax": "100"
-      }
-    }, [_vm._v("\n                                                                    " + _vm._s(Number.isNaN(Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100)) ? 0 + "%" : Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100) + "%") + "\n                                                                ")])])])]), _vm._v(" "), _c("br")]);
+      }, [_c("li", [_c("a", {
+        staticClass: "dropdown-item",
+        on: {
+          click: function click($event) {
+            return _vm.editBoard(board);
+          }
+        }
+      }, [_vm._v("Edit")])]), _vm._v(" "), _c("div", {
+        staticClass: "dropdown-divider"
+      }), _vm._v(" "), _c("li", [_c("a", {
+        staticClass: "dropdown-item",
+        on: {
+          click: function click($event) {
+            return _vm.deleteBoard(board.id);
+          }
+        }
+      }, [_vm._v("Delete")])])])])]) : _vm._e()]) : _vm._e();
+    }), 0)]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+      return index < 1 ? _c("div", {
+        key: _vm.item.id,
+        staticClass: "row"
+      }, [_vm.item.create_subtask_status !== 0 ? _c("div", {
+        staticClass: "col"
+      }, [_c("h3", {
+        staticClass: "display-3 fs-3 mt-3"
+      }, [_vm._v("Progress: " + _vm._s(board.board_progress.total_task_done) + " / " + _vm._s(board.board_progress.total_task))]), _vm._v(" "), _c("div", {
+        staticClass: "progress"
+      }, [_c("div", {
+        staticClass: "progress-bar bg-success text-light display-6 fs-6",
+        style: {
+          width: board.board_progress.total_task_done / board.board_done.total_task * 100 + "%"
+        },
+        attrs: {
+          role: "progressbar",
+          "aria-valuenow": "0",
+          "aria-valuemin": "0",
+          "aria-valuemax": "100"
+        }
+      }, [_vm._v("\n                                                                    " + _vm._s(Number.isNaN(Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100)) ? 0 + "%" : Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100) + "%") + "\n                                                                ")])])]) : _vm._e()]) : _vm._e();
+    }), _vm._v(" "), _c("br")], 2);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
   }, _vm._l(_vm.boards, function (board) {
@@ -10948,22 +10971,25 @@ var render = function render() {
         style: "backgroundColor:" + _vm.currentTaskColor
       }, [_c("div", {
         staticClass: "card-body"
-      }, [_c("div", {
-        staticClass: "col"
-      }, [_c("div", {
-        staticClass: "progress"
-      }, [_c("div", {
-        staticClass: "progress-bar bg-success text-light display-6 fs-6",
-        style: {
-          width: task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100 + "%"
-        },
-        attrs: {
-          role: "progressbar",
-          "aria-valuenow": "0",
-          "aria-valuemin": "0",
-          "aria-valuemax": "100"
-        }
-      }, [_vm._v("\n                                                                                        " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                                    ")])])]), _vm._v(" "), _c("div", {
+      }, [_vm._l(_vm.item, function (value, key, index) {
+        return index < 1 ? _c("div", {
+          key: _vm.item.id,
+          staticClass: "col"
+        }, [_vm.item.create_subtask_status !== 0 ? _c("div", {
+          staticClass: "progress"
+        }, [_c("div", {
+          staticClass: "progress-bar bg-success text-light display-6 fs-6",
+          style: {
+            width: task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100 + "%"
+          },
+          attrs: {
+            role: "progressbar",
+            "aria-valuenow": "0",
+            "aria-valuemin": "0",
+            "aria-valuemax": "100"
+          }
+        }, [_vm._v("\n                                                                                        " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                                    ")])]) : _vm._e()]) : _vm._e();
+      }), _vm._v(" "), _c("div", {
         staticClass: "dropdown text-end"
       }, [_c("i", {
         staticClass: "bx bx-dots-horizontal-rounded bx-md",
@@ -11030,7 +11056,7 @@ var render = function render() {
         staticClass: "text-primary"
       }, [_vm._v(_vm._s(task.name.substring(0, 30) + "..."))])])])]), _vm._v(" "), _c("p", {
         staticClass: "ps-4"
-      }, [_vm._v("\n                                                                                " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                            ")])])])])], 1) : _vm._e()]);
+      }, [_vm._v("\n                                                                                " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                            ")])], 2)])])], 1) : _vm._e()]);
     }), 0)], 1);
   }), 0)])]) : _c("div", [_vm._m(10)])]), _vm._v(" "), _c("div", {
     staticClass: "tab-pane fade",
@@ -11101,7 +11127,7 @@ var render = function render() {
       name: "page_order_list",
       id: "page_order_list"
     }
-  })])])])])])])])])]), _vm._v(" "), _c("div", {
+  })])])])], 2)])])])])]), _vm._v(" "), _c("div", {
     staticClass: "offcanvas offcanvas-end",
     attrs: {
       id: "offcanvasWithBothOptions",
@@ -11956,9 +11982,14 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("div", {
     staticClass: "row"
-  }, [_vm._m(29), _vm._v(" "), _c("div", {
+  }, [_vm._l(_vm.item, function (value, key, index) {
+    return index < 1 ? _c("div", {
+      key: _vm.item.id,
+      staticClass: "col-md-6"
+    }, [_vm.item.create_subtask_status !== 0 || _vm.is_head.is_project_head === 1 ? _c("h3", [_vm._v("Subtask:")]) : _vm._e()]) : _vm._e();
+  }), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
-  }, [_c("button", {
+  }, [_vm.is_head.is_project_head === 1 ? _c("button", {
     staticClass: "btn btn-secondary float-end",
     staticStyle: {
       "margin-left": "10px"
@@ -11973,11 +12004,11 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "bi bi-paperclip"
-  })]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+  })]) : _vm._e(), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
     return index < 1 ? _c("div", {
       key: _vm.item.id,
       staticClass: "fs-1 m-0"
-    }, [_c("div", [_c("button", {
+    }, [_vm.item.create_subtask_status !== 0 || _vm.is_head.is_project_head === 1 ? _c("div", [_c("button", {
       staticClass: "btn btn-success float-end",
       attrs: {
         title: "Toggle Subtask Board"
@@ -11989,13 +12020,13 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-kanban"
-    })])])]) : _vm._e();
+    })])]) : _vm._e()]) : _vm._e();
   })], 2), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: _vm.toggleSubtaskBoard && (_vm.item.create_subtask_status !== 0 || _vm.is_head.is_project_head === 1),
-      expression: "toggleSubtaskBoard && (item.create_subtask_status !== 0 || is_head.is_project_head === 1)"
+      value: _vm.toggleSubtaskBoard,
+      expression: "toggleSubtaskBoard"
     }],
     staticClass: "col-md-12"
   }, [_c("div", {
@@ -12130,7 +12161,7 @@ var render = function render() {
         staticClass: "card shadow-sm mt-2"
       }, [_c("div", {
         staticClass: "card-body"
-      }, [_c("div", {
+      }, [_vm.is_head.is_project_head === 1 ? _c("div", {
         staticClass: "dropdown text-end"
       }, [_c("i", {
         staticClass: "bx bx-dots-horizontal-rounded bx-md",
@@ -12160,7 +12191,7 @@ var render = function render() {
             return _vm.deleteSubtask(subtask.id);
           }
         }
-      }, [_vm._v("Delete")])])])]), _vm._v(" "), _c("div", {
+      }, [_vm._v("Delete")])])])]) : _vm._e(), _vm._v(" "), _c("div", {
         staticClass: "card-title"
       }, [_c("h3", {
         staticClass: "lead font-weight-light text-primary"
@@ -12228,7 +12259,7 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-trash"
-    })])])])]), _vm._v(" "), _vm._m(30, true)])])])]);
+    })])])])]), _vm._v(" "), _vm._m(29, true)])])])]);
   }), 0)]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12 mt-3"
   }, [_c("h3", {
@@ -12284,7 +12315,7 @@ var render = function render() {
           return _vm.editComment(comment);
         }
       }
-    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(31, true), _vm._v(" "), _c("li", [_c("a", {
+    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(30, true), _vm._v(" "), _c("li", [_c("a", {
       staticClass: "dropdown-item",
       on: {
         click: function click($event) {
@@ -12298,7 +12329,7 @@ var render = function render() {
     }, [_c("p", {
       staticClass: "comment-text"
     }, [_vm._v(_vm._s(comment.comment))])])])])]);
-  }), 0)])])])])]), _vm._v(" "), _c("div", {
+  }), 0)])], 2)])])]), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-bottom sticky-bottom p-2",
     staticStyle: {
       "background-color": "#00305F"
@@ -12346,7 +12377,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(32), _vm._v(" "), _c("div", {
+  }, [_vm._m(31), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12544,7 +12575,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(33), _vm._v(" "), _c("div", {
+  }, [_vm._m(32), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12559,7 +12590,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("table", {
     staticClass: "table table-primary table-bordered"
-  }, [_vm._m(34), _vm._v(" "), _c("tbody", {
+  }, [_vm._m(33), _vm._v(" "), _c("tbody", {
     attrs: {
       id: "board_list"
     }
@@ -12627,7 +12658,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(35), _vm._v(" "), _c("div", {
+  }, [_vm._m(34), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12701,7 +12732,7 @@ var render = function render() {
       id: "offcanvasInvitation",
       "aria-labelledby": "offcanvasWithBothOptionsLabel"
     }
-  }, [_vm._m(36), _vm._v(" "), _c("div", {
+  }, [_vm._m(35), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -13226,13 +13257,6 @@ var staticRenderFns = [function () {
       "aria-label": "Close"
     }
   })]);
-}, function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("div", {
-    staticClass: "col-md-6"
-  }, [_c("h3", [_vm._v("Subtask:")])]);
 }, function () {
   var _vm = this,
       _c = _vm._self._c;

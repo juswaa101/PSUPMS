@@ -46,7 +46,7 @@ class InvitationController extends Controller
                 ->delete();
             Project::where('id', Auth::user()->id)
                 ->where('project_id', $id)
-                ->delete();
+                ->forceDelete();
             Alert::error('Invitation Declined', 'You rejected the invitation request');
             return redirect()->back();
         } catch (Exception $e) {

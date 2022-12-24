@@ -13,6 +13,7 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\SubtaskResource;
+use App\Models\TaskProgress;
 use Illuminate\Support\Facades\Validator;
 
 class SubtaskController extends Controller
@@ -37,7 +38,7 @@ class SubtaskController extends Controller
             $subtask = Subtask::where('user_id', $user_id)
                 ->where('task_id', $task_id)
                 ->findOrFail($id);
-
+            
             // return subtask as a resource
             return new SubtaskResource($subtask);
         } catch (Exception $e) {
@@ -69,6 +70,11 @@ class SubtaskController extends Controller
                 $task = Task::firstWhere('id', $request->input('task_id'));
                 $project = Project::firstWhere('project_id', $task->project_id);
 
+                $totalSubtask = Subtask::where('task_id', $request->input('task_id'))->get()->count();
+                TaskProgress::where('task_id', $request->input('task_id'))
+                    ->update(['total_subtask' => $totalSubtask]);
+
+
                 Report::create(['user_id' => auth()->user()->id, 'project_id' => $task->project_id, 'message' => ' created a subtask in' . $task->name]);
 
 
@@ -96,6 +102,9 @@ class SubtaskController extends Controller
 
             $users = TaskMember::where('task_id', '=', $subtask->task_id)->get();
             $project = Project::firstWhere('project_id', $task->project_id);
+
+            $task_id = $subtask->task_id;
+
             foreach ($users as $user) {
                 Notification::create([
                     'user_id' => $user->id,
@@ -107,12 +116,17 @@ class SubtaskController extends Controller
 
             $subtask->delete();
 
+            $totalSubtask = Subtask::where('task_id', $task_id)->get()->count();
+            TaskProgress::where('task_id', $task_id)
+                ->update(['total_subtask' => $totalSubtask]);
+
             return new SubtaskResource($subtask);
         } catch (Exception $e) {
             abort_if($e, 500);
         }
     }
 
+    // drag and drop, on drop update na dapat
     public function update(Request $request, $id, $task_id, $user_id)
     {
         try {
@@ -136,7 +150,13 @@ class SubtaskController extends Controller
                 $subtask->subtask_name = $request->input('subtask_name');
                 $subtask->subtask_description = $request->input('subtask_description');
 
+
                 if ($subtask->save()) {
+                    $totalSubtask = Subtask::where('task_id', $task_id)->where('board_id', 2)
+                        ->get()->count();
+                    TaskProgress::where('task_id', $task_id)
+                        ->update(['total_subtask_done' => $totalSubtask]);
+
                     $task = Task::firstWhere('id', $task_id);
 
                     Report::create(['user_id' => $user_id, 'project_id' => $task->project_id, 'message' => ' updated a subtask in ' . $task->name]);

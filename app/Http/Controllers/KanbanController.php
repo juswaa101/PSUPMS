@@ -301,7 +301,7 @@ class KanbanController extends Controller
 
                         Project::where('id', $fetchedRow)
                             ->where('project_title', $project->project_title)
-                            ->delete();
+                            ->forceDelete();
 
                         TaskMember::join('projects', 'projects.project_id', '=', 'task_members.project_id')
                             ->where('task_members.user_id', $fetchedRow)
