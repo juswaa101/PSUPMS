@@ -297,17 +297,17 @@
                                                         <li :id="board.id">
                                                             <div class="container">
                                                                 <p class="fw-bold">{{ board.name }}</p>
-                                                                <div class="container">
+                                                                <div class="container" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
                                                                     <table class="table table-bordered table-striped">
                                                                         <thead>
                                                                         <tr>
                                                                             <th scope="col">Task</th>
-                                                                            <th scope="col">Progress</th>
+                                                                            <th scope="col" v-if="item.create_subtask_status !== 0">Progress</th>
                                                                             <th scope="col">Due Date</th>
                                                                         </tr>
                                                                         <tr v-for="task in tasks" v-bind:key="task.id" v-if="board.id === task.board_id">
                                                                             <th scope="col">{{ task.name }}</th>
-                                                                            <th scope="col">
+                                                                            <th scope="col" v-if="item.create_subtask_status !== 0">
                                                                                 <div class="progress">
                                                                                     <div class="progress-bar bg-success text-light display-6 fs-6" 
                                                                                     :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
@@ -1420,7 +1420,6 @@ export default {
                 .then(res => res.json())
                 .then(data => {
                     if (this.taskEdit.board_id == null || this.taskEdit.name == null || this.taskEdit.description == null) {
-                        console.log(data)
                         this.validationTaskUpdateError = data
                     } else {
                         this.validationTaskUpdateError = '';
@@ -1518,8 +1517,9 @@ export default {
                             allowEscapeKey: false
                         }).then((confirm) => {
                             if (confirm.isConfirmed) {
-                                this.fetchSubtask();
+                                this.fetchBoards();
                                 this.fetchTasks();
+                                this.fetchSubtask();
                             }
                         });
                     })
@@ -1537,6 +1537,7 @@ export default {
                     .then(() => {
                         this.fetchSubtask();
                         this.fetchTasks();
+                        this.fetchBoards();
                         this.toggleEditSubtask = false;
                         this.addOrUpdateSubtask = false;
                         this.formSubtask.subtask_name = '';
@@ -1574,6 +1575,9 @@ export default {
                             this.formSubtask.subtask_description = '';
                             this.formSubtask.subtask_start_date = '';
                             this.formSubtask.subtask_end_date = '';
+                            this.fetchBoards();
+                            this.fetchTasks();
+                            this.fetchSubtask();
                         })
                         .catch((error) => {
                             console.log(error);

@@ -5461,8 +5461,9 @@ __webpack_require__.r(__webpack_exports__);
             headers: {
               "Content-Type": "application/json"
             }
-          }).then(function (res) {
-            return res.json();
+          }) // .then(res => res.json())
+          .then(function () {
+            return window.location.reload();
           })["catch"](function (err) {
             return console.log(err);
           });
@@ -5854,7 +5855,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         return res.json();
       }).then(function (data) {
         if (_this8.taskEdit.board_id == null || _this8.taskEdit.name == null || _this8.taskEdit.description == null) {
-          console.log(data);
           _this8.validationTaskUpdateError = data;
         } else {
           _this8.validationTaskUpdateError = '';
@@ -5958,9 +5958,11 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             allowEscapeKey: false
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
-              _this11.fetchSubtask();
+              _this11.fetchBoards();
 
               _this11.fetchTasks();
+
+              _this11.fetchSubtask();
             }
           });
         })["catch"](function (error) {
@@ -5976,6 +5978,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           _this11.fetchSubtask();
 
           _this11.fetchTasks();
+
+          _this11.fetchBoards();
 
           _this11.toggleEditSubtask = false;
           _this11.addOrUpdateSubtask = false;
@@ -6014,6 +6018,12 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             _this12.formSubtask.subtask_description = '';
             _this12.formSubtask.subtask_start_date = '';
             _this12.formSubtask.subtask_end_date = '';
+
+            _this12.fetchBoards();
+
+            _this12.fetchTasks();
+
+            _this12.fetchSubtask();
           })["catch"](function (error) {
             console.log(error);
           });
@@ -6566,6 +6576,10 @@ __webpack_require__.r(__webpack_exports__);
             "Content-Type": "application/json",
             "X-CSRF-Token": laravel.csrfToken
           }
+        }).then(function () {
+          window.location.reload();
+        })["catch"](function (err) {
+          return console.log(err);
         });
       });
     }
@@ -6659,8 +6673,11 @@ __webpack_require__.r(__webpack_exports__);
             headers: {
               "Content-Type": "application/json"
             }
-          }).then(function (res) {
-            res.json();
+          }) // .then((res) => {
+          //     res.json();
+          // })
+          .then(function () {
+            return window.location.reload();
           })["catch"](function (err) {
             return console.log(err);
           });
@@ -6848,6 +6865,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
 
             _this2.fetchBoards();
 
+            _this2.fetchTasks();
+
             window.location.reload();
           })["catch"](function (error) {
             return console.log(error);
@@ -6883,6 +6902,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             }).then(function (confirm) {
               if (confirm.isConfirmed) {
                 _this3.fetchBoards();
+
+                _this3.fetchTasks();
 
                 window.location.reload();
               }
@@ -7050,7 +7071,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         return res.json();
       }).then(function (data) {
         if (_this8.taskEdit.board_id == null || _this8.taskEdit.name == null || _this8.taskEdit.description == null) {
-          console.log(data);
           _this8.validationTaskUpdateError = data;
         } else {
           _this8.validationTaskUpdateError = '';
@@ -7154,9 +7174,11 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             allowEscapeKey: false
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
-              _this11.fetchSubtask();
+              _this11.fetchBoards();
 
               _this11.fetchTasks();
+
+              _this11.fetchSubtask();
             }
           });
         })["catch"](function (error) {
@@ -7208,6 +7230,12 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             _this12.addOrUpdateSubtask = false;
             _this12.formSubtask.subtask_name = '';
             _this12.formSubtask.subtask_description = '';
+
+            _this12.fetchBoards();
+
+            _this12.fetchTasks();
+
+            _this12.fetchSubtask();
           })["catch"](function (error) {
             console.log(error);
           });
@@ -7759,6 +7787,10 @@ __webpack_require__.r(__webpack_exports__);
             "Content-Type": "application/json",
             "X-CSRF-Token": laravel.csrfToken
           }
+        }).then(function () {
+          window.location.reload();
+        })["catch"](function (err) {
+          return console.log(err);
         });
       });
     }
@@ -8202,46 +8234,61 @@ var render = function render() {
       staticClass: "container"
     }, [_c("p", {
       staticClass: "fw-bold"
-    }, [_vm._v(_vm._s(board.name))]), _vm._v(" "), _c("div", {
-      staticClass: "container"
-    }, [_c("table", {
-      staticClass: "table table-bordered table-striped"
-    }, [_c("thead", [_vm._m(14, true), _vm._v(" "), _vm._l(_vm.tasks, function (task) {
-      return board.id === task.board_id ? _c("tr", {
-        key: task.id
-      }, [_c("th", {
+    }, [_vm._v(_vm._s(board.name))]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+      return index < 1 ? _c("div", {
+        key: _vm.item.id,
+        staticClass: "container"
+      }, [_c("table", {
+        staticClass: "table table-bordered table-striped"
+      }, [_c("thead", [_c("tr", [_c("th", {
         attrs: {
           scope: "col"
         }
-      }, [_vm._v(_vm._s(task.name))]), _vm._v(" "), _c("th", {
+      }, [_vm._v("Task")]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("th", {
         attrs: {
           scope: "col"
         }
-      }, [_c("div", {
-        staticClass: "progress"
-      }, [_c("div", {
-        staticClass: "progress-bar bg-success text-light display-6 fs-6",
-        style: {
-          width: task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100 + "%"
-        },
-        attrs: {
-          role: "progressbar",
-          "aria-valuenow": "0",
-          "aria-valuemin": "0",
-          "aria-valuemax": "100"
-        }
-      }, [_vm._v("\n                                                                                    " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                                ")])])]), _vm._v(" "), task.task_due_date ? _c("th", {
+      }, [_vm._v("Progress")]) : _vm._e(), _vm._v(" "), _c("th", {
         attrs: {
           scope: "col"
         }
-      }, [_vm._v(_vm._s(task.task_due_date))]) : _c("th", {
-        attrs: {
-          scope: "col"
-        }
-      }, [_c("p", {
-        staticClass: "text text-danger"
-      }, [_vm._v("No Due Date Yet")])])]) : _vm._e();
-    })], 2)])])])])]);
+      }, [_vm._v("Due Date")])]), _vm._v(" "), _vm._l(_vm.tasks, function (task) {
+        return board.id === task.board_id ? _c("tr", {
+          key: task.id
+        }, [_c("th", {
+          attrs: {
+            scope: "col"
+          }
+        }, [_vm._v(_vm._s(task.name))]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("th", {
+          attrs: {
+            scope: "col"
+          }
+        }, [_c("div", {
+          staticClass: "progress"
+        }, [_c("div", {
+          staticClass: "progress-bar bg-success text-light display-6 fs-6",
+          style: {
+            width: task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100 + "%"
+          },
+          attrs: {
+            role: "progressbar",
+            "aria-valuenow": "0",
+            "aria-valuemin": "0",
+            "aria-valuemax": "100"
+          }
+        }, [_vm._v("\n                                                                                    " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                                ")])])]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", {
+          attrs: {
+            scope: "col"
+          }
+        }, [_vm._v(_vm._s(task.task_due_date))]) : _c("th", {
+          attrs: {
+            scope: "col"
+          }
+        }, [_c("p", {
+          staticClass: "text text-danger"
+        }, [_vm._v("No Due Date Yet")])])]) : _vm._e();
+      })], 2)])]) : _vm._e();
+    })], 2)])]);
   }), 0), _vm._v(" "), _c("input", {
     attrs: {
       type: "hidden",
@@ -8256,7 +8303,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(15), _vm._v(" "), _c("div", {
+  }, [_vm._m(14), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8280,24 +8327,24 @@ var render = function render() {
       height: "180",
       width: "180"
     }
-  }), _vm._v(" "), _vm._m(16)])])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm._m(15)])])]), _vm._v(" "), _c("div", {
     staticClass: "ps-2 row text"
   }, _vm._l(_vm.logged, function (value, key, index) {
     return index < 1 ? _c("div", [_c("div", {
       staticClass: "row text-start mt-3"
-    }, [_vm._m(17, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(16, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-11"
     }, [_c("h6", {
       staticClass: "fw-bold"
     }, [_vm._v(_vm._s(_vm.logged.name))])])]), _vm._v(" "), _c("div", {
       staticClass: "row text-start mt-3"
-    }, [_vm._m(18, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(17, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-11"
     }, [_c("h6", {
       staticClass: "fw-bold"
     }, [_vm._v(_vm._s(_vm.logged.username))])])]), _vm._v(" "), _c("div", {
       staticClass: "row text-start mt-3"
-    }, [_vm._m(19, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(18, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-11"
     }, [_c("h6", {
       staticClass: "fw-bold"
@@ -8310,7 +8357,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(20), _vm._v(" "), _c("div", {
+  }, [_vm._m(19), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8398,7 +8445,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(21), _vm._v(" "), _c("div", {
+  }, [_vm._m(20), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8420,7 +8467,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(22), _vm._v(" "), _c("select", {
+  }, [_vm._m(21), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8462,7 +8509,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.board_id[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(23), _vm._v(" "), _c("input", {
+  }, [_vm._m(22), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8492,7 +8539,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.name[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(24), _vm._v(" "), _c("textarea", {
+  }, [_vm._m(23), _vm._v(" "), _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8521,7 +8568,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.description[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(25), _vm._v(" "), _c("select", {
+  }, [_vm._m(24), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8575,7 +8622,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(26), _vm._v(" "), _c("div", {
+  }, [_vm._m(25), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8645,7 +8692,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(27), _vm._v(" "), _c("div", {
+  }, [_vm._m(26), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8700,7 +8747,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(28), _vm._v(" "), _c("div", {
+  }, [_vm._m(27), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8782,7 +8829,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(29), _vm._v(" "), _c("div", {
+  }, [_vm._m(28), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8962,7 +9009,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(30), _vm._v(" "), _c("div", {
+  }, [_vm._m(29), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9001,7 +9048,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(31), _vm._v(" "), _c("div", {
+  }, [_vm._m(30), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9378,7 +9425,7 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-trash"
-    })])])])]), _vm._v(" "), _vm._m(32, true)])])])]);
+    })])])])]), _vm._v(" "), _vm._m(31, true)])])])]);
   }), 0)]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12 mt-3"
   }, [_c("h3", {
@@ -9434,7 +9481,7 @@ var render = function render() {
           return _vm.editComment(comment);
         }
       }
-    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(33, true), _vm._v(" "), _c("li", [_c("a", {
+    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(32, true), _vm._v(" "), _c("li", [_c("a", {
       staticClass: "dropdown-item",
       on: {
         click: function click($event) {
@@ -9496,7 +9543,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(34), _vm._v(" "), _c("div", {
+  }, [_vm._m(33), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9694,7 +9741,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(35), _vm._v(" "), _c("div", {
+  }, [_vm._m(34), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9709,7 +9756,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("table", {
     staticClass: "table table-primary table-bordered"
-  }, [_vm._m(36), _vm._v(" "), _c("tbody", {
+  }, [_vm._m(35), _vm._v(" "), _c("tbody", {
     attrs: {
       id: "board_list"
     }
@@ -9777,7 +9824,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(37), _vm._v(" "), _c("div", {
+  }, [_vm._m(36), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -10088,23 +10135,6 @@ var staticRenderFns = [function () {
   }, [_c("h1", {
     staticClass: "display-4 fs-4"
   }, [_vm._v("No Columns and Task Yet!")])]);
-}, function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("tr", [_c("th", {
-    attrs: {
-      scope: "col"
-    }
-  }, [_vm._v("Task")]), _vm._v(" "), _c("th", {
-    attrs: {
-      scope: "col"
-    }
-  }, [_vm._v("Progress")]), _vm._v(" "), _c("th", {
-    attrs: {
-      scope: "col"
-    }
-  }, [_vm._v("Due Date")])]);
 }, function () {
   var _vm = this,
       _c = _vm._self._c;
@@ -11085,46 +11115,61 @@ var render = function render() {
       staticClass: "container"
     }, [_c("p", {
       staticClass: "fw-bold"
-    }, [_vm._v(_vm._s(board.name))]), _vm._v(" "), _c("div", {
-      staticClass: "container"
-    }, [_c("table", {
-      staticClass: "table table-bordered table-striped"
-    }, [_c("thead", [_vm._m(11, true), _vm._v(" "), _vm._l(_vm.tasks, function (task) {
-      return board.id === task.board_id ? _c("tr", {
-        key: task.id
-      }, [_c("th", {
+    }, [_vm._v(_vm._s(board.name))]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+      return index < 1 ? _c("div", {
+        key: _vm.item.id,
+        staticClass: "container"
+      }, [_c("table", {
+        staticClass: "table table-bordered table-striped"
+      }, [_c("thead", [_c("tr", [_c("th", {
         attrs: {
           scope: "col"
         }
-      }, [_vm._v(_vm._s(task.name))]), _vm._v(" "), _c("th", {
+      }, [_vm._v("Task")]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("th", {
         attrs: {
           scope: "col"
         }
-      }, [_c("div", {
-        staticClass: "progress"
-      }, [_c("div", {
-        staticClass: "progress-bar bg-success text-light display-6 fs-6",
-        style: {
-          width: task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100 + "%"
-        },
-        attrs: {
-          role: "progressbar",
-          "aria-valuenow": "0",
-          "aria-valuemin": "0",
-          "aria-valuemax": "100"
-        }
-      }, [_vm._v("\n                                                                                " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                            ")])])]), _vm._v(" "), task.task_due_date ? _c("th", {
+      }, [_vm._v("Progress")]) : _vm._e(), _vm._v(" "), _c("th", {
         attrs: {
           scope: "col"
         }
-      }, [_vm._v(_vm._s(task.task_due_date))]) : _c("th", {
-        attrs: {
-          scope: "col"
-        }
-      }, [_c("p", {
-        staticClass: "text text-danger"
-      }, [_vm._v("No Due Date Yet")])])]) : _vm._e();
-    })], 2)])])])])]);
+      }, [_vm._v("Due Date")])]), _vm._v(" "), _vm._l(_vm.tasks, function (task) {
+        return board.id === task.board_id ? _c("tr", {
+          key: task.id
+        }, [_c("th", {
+          attrs: {
+            scope: "col"
+          }
+        }, [_vm._v(_vm._s(task.name))]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("th", {
+          attrs: {
+            scope: "col"
+          }
+        }, [_c("div", {
+          staticClass: "progress"
+        }, [_c("div", {
+          staticClass: "progress-bar bg-success text-light display-6 fs-6",
+          style: {
+            width: task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100 + "%"
+          },
+          attrs: {
+            role: "progressbar",
+            "aria-valuenow": "0",
+            "aria-valuemin": "0",
+            "aria-valuemax": "100"
+          }
+        }, [_vm._v("\n                                                                                " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                            ")])])]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", {
+          attrs: {
+            scope: "col"
+          }
+        }, [_vm._v(_vm._s(task.task_due_date))]) : _c("th", {
+          attrs: {
+            scope: "col"
+          }
+        }, [_c("p", {
+          staticClass: "text text-danger"
+        }, [_vm._v("No Due Date Yet")])])]) : _vm._e();
+      })], 2)])]) : _vm._e();
+    })], 2)])]);
   }), 0), _vm._v(" "), _c("input", {
     attrs: {
       type: "hidden",
@@ -11139,7 +11184,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(12), _vm._v(" "), _c("div", {
+  }, [_vm._m(11), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11164,25 +11209,25 @@ var render = function render() {
         height: "180",
         width: "180"
       }
-    }), _vm._v(" "), _vm._m(13, true)])]) : _vm._e();
+    }), _vm._v(" "), _vm._m(12, true)])]) : _vm._e();
   }), 0) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "ps-2 row text"
   }, _vm._l(_vm.logged, function (value, key, index) {
     return index < 1 ? _c("div", [_c("div", {
       staticClass: "row text-start mt-3"
-    }, [_vm._m(14, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(13, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-11"
     }, [_c("h6", {
       staticClass: "fw-bold"
     }, [_vm._v(_vm._s(_vm.logged.name))])])]), _vm._v(" "), _c("div", {
       staticClass: "row text-start mt-3"
-    }, [_vm._m(15, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(14, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-11"
     }, [_c("h6", {
       staticClass: "fw-bold"
     }, [_vm._v(_vm._s(_vm.logged.username))])])]), _vm._v(" "), _c("div", {
       staticClass: "row text-start mt-3"
-    }, [_vm._m(16, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(15, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-11"
     }, [_c("h6", {
       staticClass: "fw-bold"
@@ -11195,7 +11240,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(17), _vm._v(" "), _c("div", {
+  }, [_vm._m(16), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11283,7 +11328,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(18), _vm._v(" "), _c("div", {
+  }, [_vm._m(17), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11305,7 +11350,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(19), _vm._v(" "), _c("select", {
+  }, [_vm._m(18), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11347,7 +11392,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.board_id[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(20), _vm._v(" "), _c("input", {
+  }, [_vm._m(19), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11377,7 +11422,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.name[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(21), _vm._v(" "), _c("textarea", {
+  }, [_vm._m(20), _vm._v(" "), _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11406,7 +11451,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.description[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(22), _vm._v(" "), _c("select", {
+  }, [_vm._m(21), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11460,7 +11505,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(23), _vm._v(" "), _c("div", {
+  }, [_vm._m(22), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11530,7 +11575,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(24), _vm._v(" "), _c("div", {
+  }, [_vm._m(23), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11585,7 +11630,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(25), _vm._v(" "), _c("div", {
+  }, [_vm._m(24), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11667,7 +11712,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(26), _vm._v(" "), _c("div", {
+  }, [_vm._m(25), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11847,7 +11892,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(27), _vm._v(" "), _c("div", {
+  }, [_vm._m(26), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11886,7 +11931,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(28), _vm._v(" "), _c("div", {
+  }, [_vm._m(27), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12165,7 +12210,7 @@ var render = function render() {
         staticClass: "card shadow-sm mt-2"
       }, [_c("div", {
         staticClass: "card-body"
-      }, [_vm.is_head.is_project_head === 1 ? _c("div", {
+      }, [_c("div", {
         staticClass: "dropdown text-end"
       }, [_c("i", {
         staticClass: "bx bx-dots-horizontal-rounded bx-md",
@@ -12195,7 +12240,7 @@ var render = function render() {
             return _vm.deleteSubtask(subtask.id);
           }
         }
-      }, [_vm._v("Delete")])])])]) : _vm._e(), _vm._v(" "), _c("div", {
+      }, [_vm._v("Delete")])])])]), _vm._v(" "), _c("div", {
         staticClass: "card-title"
       }, [_c("h3", {
         staticClass: "lead font-weight-light text-primary"
@@ -12263,7 +12308,7 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-trash"
-    })])])])]), _vm._v(" "), _vm._m(29, true)])])])]);
+    })])])])]), _vm._v(" "), _vm._m(28, true)])])])]);
   }), 0)]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12 mt-3"
   }, [_c("h3", {
@@ -12319,7 +12364,7 @@ var render = function render() {
           return _vm.editComment(comment);
         }
       }
-    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(30, true), _vm._v(" "), _c("li", [_c("a", {
+    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(29, true), _vm._v(" "), _c("li", [_c("a", {
       staticClass: "dropdown-item",
       on: {
         click: function click($event) {
@@ -12381,7 +12426,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(31), _vm._v(" "), _c("div", {
+  }, [_vm._m(30), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12579,7 +12624,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(32), _vm._v(" "), _c("div", {
+  }, [_vm._m(31), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12594,7 +12639,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("table", {
     staticClass: "table table-primary table-bordered"
-  }, [_vm._m(33), _vm._v(" "), _c("tbody", {
+  }, [_vm._m(32), _vm._v(" "), _c("tbody", {
     attrs: {
       id: "board_list"
     }
@@ -12662,7 +12707,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(34), _vm._v(" "), _c("div", {
+  }, [_vm._m(33), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12736,7 +12781,7 @@ var render = function render() {
       id: "offcanvasInvitation",
       "aria-labelledby": "offcanvasWithBothOptionsLabel"
     }
-  }, [_vm._m(35), _vm._v(" "), _c("div", {
+  }, [_vm._m(34), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12964,23 +13009,6 @@ var staticRenderFns = [function () {
   }, [_c("h1", {
     staticClass: "display-4 fs-4"
   }, [_vm._v("No Columns and Task Yet!")])]);
-}, function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("tr", [_c("th", {
-    attrs: {
-      scope: "col"
-    }
-  }, [_vm._v("Task")]), _vm._v(" "), _c("th", {
-    attrs: {
-      scope: "col"
-    }
-  }, [_vm._v("Progress")]), _vm._v(" "), _c("th", {
-    attrs: {
-      scope: "col"
-    }
-  }, [_vm._v("Due Date")])]);
 }, function () {
   var _vm = this,
       _c = _vm._self._c;

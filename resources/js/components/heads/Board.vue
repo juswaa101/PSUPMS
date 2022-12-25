@@ -77,10 +77,11 @@ export default {
                                     "Content-Type": "application/json",
                                 },
                             })
-                                .then((res) => {
-                                    res.json();
-                                })
-                                .catch((err) => console.log(err));
+                            // .then((res) => {
+                            //     res.json();
+                            // })
+                            .then(() => window.location.reload())
+                            .catch((err) => console.log(err));
                         });
                 });
         },

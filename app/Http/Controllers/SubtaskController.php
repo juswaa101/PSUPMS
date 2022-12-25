@@ -13,6 +13,7 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\SubtaskResource;
+use App\Models\BoardProgress;
 use App\Models\TaskProgress;
 use Illuminate\Support\Facades\Validator;
 
@@ -74,6 +75,15 @@ class SubtaskController extends Controller
                 TaskProgress::where('task_id', $request->input('task_id'))
                     ->update(['total_subtask' => $totalSubtask]);
 
+                $totalTaskDone = TaskProgress::where('board_id', $request->input('board_id'))
+                    ->whereColumn('total_subtask', 'total_subtask_done')
+                    ->where('total_subtask_done', '>', 0)
+                    ->where('total_subtask', '>', 0)
+                    ->get()->count();
+
+                BoardProgress::where('board_id', $request->input('board_id'))->update([
+                    'total_task_done' => $totalTaskDone
+                ]);
 
                 Report::create(['user_id' => auth()->user()->id, 'project_id' => $task->project_id, 'message' => ' created a subtask in' . $task->name]);
 
@@ -117,8 +127,20 @@ class SubtaskController extends Controller
             $subtask->delete();
 
             $totalSubtask = Subtask::where('task_id', $task_id)->get()->count();
+            $totalSubtaskDone = Subtask::where('task_id', $task_id)
+                ->where('board_id', 2)
+                ->get()->count();
             TaskProgress::where('task_id', $task_id)
-                ->update(['total_subtask' => $totalSubtask]);
+                ->update(['total_subtask' => $totalSubtask, 'total_subtask_done' => $totalSubtaskDone]);
+
+            $totalTaskDone = TaskProgress::where('board_id', $task->board_id)
+                ->whereColumn('total_subtask', 'total_subtask_done')
+                ->where('total_subtask', '>', 0)
+                ->where('total_subtask_done', '>', 0)
+                ->get()->count();
+            BoardProgress::where('board_id', $task->board_id)->update([
+                'total_task_done' => $totalTaskDone
+            ]);
 
             return new SubtaskResource($subtask);
         } catch (Exception $e) {
@@ -126,7 +148,7 @@ class SubtaskController extends Controller
         }
     }
 
-    // drag and drop, on drop update na dapat
+    
     public function update(Request $request, $id, $task_id, $user_id)
     {
         try {
@@ -152,10 +174,21 @@ class SubtaskController extends Controller
 
 
                 if ($subtask->save()) {
-                    $totalSubtask = Subtask::where('task_id', $task_id)->where('board_id', 2)
+                    $totalSubtaskDone = Subtask::where('task_id', $task_id)->where('board_id', 2)
                         ->get()->count();
                     TaskProgress::where('task_id', $task_id)
-                        ->update(['total_subtask_done' => $totalSubtask]);
+                        ->update(['total_subtask_done' => $totalSubtaskDone]);
+
+                    $task = Subtask::join('tasks', 'tasks.id', '=', 'subtasks.task_id')
+                        ->firstWhere('subtasks.task_id', $task_id);
+                    $totalTaskDone = TaskProgress::where('board_id', $task->board_id)
+                        ->whereColumn('total_subtask', 'total_subtask_done')
+                        ->where('total_subtask', '>', 0)
+                        ->where('total_subtask_done', '>', 0)
+                        ->get()->count();
+                    BoardProgress::where('board_id', $task->board_id)->update([
+                        'total_task_done' => $totalTaskDone
+                    ]);
 
                     $task = Task::firstWhere('id', $task_id);
 

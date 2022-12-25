@@ -16,6 +16,7 @@ use App\Models\BoardProgress;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\TaskResource;
+use App\Models\Subtask;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -96,6 +97,11 @@ class TaskController extends Controller
                         'total_subtask_done' => 0
                     ]);
 
+                    $totalTaskDone = TaskProgress::where('board_id', $request->input('board_id'))
+                        ->whereColumn('total_subtask', 'total_subtask_done')->where('total_subtask_done', '>', 0)
+                        ->where('total_subtask', '>', 0)
+                        ->get()->count();
+
                     // Update Board Progress
                     BoardProgress::where('board_id', $request->input('board_id'))
                         ->update([
@@ -104,8 +110,9 @@ class TaskController extends Controller
                                 ->where('board_id', $request->input('board_id'))
                                 ->get()
                                 ->count(),
-                            'total_task_done' => 0
+                            'total_task_done' => $totalTaskDone
                         ]);
+
                     // Notify users
                     foreach ($id as $notify) {
                         $user = User::withTrashed()->where('id', $notify->id)->first();
@@ -120,7 +127,6 @@ class TaskController extends Controller
                 }
             }
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
     }
@@ -173,7 +179,6 @@ class TaskController extends Controller
      * @return JsonResponse|TaskResource|void
      */
 
-    //  Last feature to do visual cue for update
     public function update(Request $request, $user_id)
     {
         try {
@@ -197,9 +202,7 @@ class TaskController extends Controller
                 $task = Task::whereIn('project_id', $project_id)
                     ->findOrFail($request->task_id);
 
-                $tasks = Task::whereIn('project_id', $project_id)->get();
-
-                $oldBoardId = $task->board_id;
+                $old_board_id = $task->board_id;
 
                 // Update Task
                 $task->user_id = $user_id;
@@ -213,6 +216,37 @@ class TaskController extends Controller
                 $userName = User::firstWhere('id', $user_id);
 
                 if ($task->save()) {
+                    if ($old_board_id != $task->board_id) {
+                        Subtask::where('task_id', $task->id)->update(['board_id' => 0]);
+                        $totalSubtask = Subtask::where('task_id', $task->id)->get()->count();
+                        $totalSubtaskDone = Subtask::where('task_id', $task->id)
+                            ->where('board_id', 2)
+                            ->get()->count();
+                        TaskProgress::where('task_id', $task->id)->where('board_id', $old_board_id)
+                            ->update(['board_id' => $task->board_id,'total_subtask' => $totalSubtask, 'total_subtask_done' => $totalSubtaskDone]);
+
+                        $totalTaskDone = TaskProgress::where('board_id', $task->board_id)
+                            ->whereColumn('total_subtask', 'total_subtask_done')
+                            ->where('total_subtask', '>', 0)
+                            ->where('total_subtask_done', '>', 0)
+                            ->get()->count();
+                        $totalTask = Task::where('board_id', $task->board_id)->get()->count();
+                        BoardProgress::where('board_id', $task->board_id)->update([
+                            'total_task' => $totalTask,
+                            'total_task_done' => $totalTaskDone
+                        ]);
+
+                        $totalOldTaskDone = TaskProgress::where('board_id', $old_board_id)
+                            ->whereColumn('total_subtask', 'total_subtask_done')
+                            ->where('total_subtask', '>', 0)
+                            ->where('total_subtask_done', '>', 0)
+                            ->get()->count();
+                        $totalOldTask = Task::where('board_id', $old_board_id)->get()->count();
+                        BoardProgress::where('board_id', $old_board_id)->update([
+                            'total_task' => $totalOldTask,
+                            'total_task_done' => $totalOldTaskDone
+                        ]);
+                    }
                     Report::create(['user_id' => $user_id, 'project_id' => request()->segment(4), 'message' => ' updated the task in ' . $project->project_title]);
                     // Notify all users in the project that a task is updated
                     foreach ($findProject as $notify) {
@@ -287,6 +321,10 @@ class TaskController extends Controller
             $board = $task->board_id;
             Report::create(['user_id' => $user_id, 'project_id' => request()->segment(5), 'message' => ' deleted a task: ' . $task->name . ' in ' . $project->project_title]);
             if ($task->delete()) {
+                $totalTaskDone = TaskProgress::where('board_id', $board)
+                    ->whereColumn('total_subtask', 'total_subtask_done')->where('total_subtask_done', '>', 0)
+                    ->get()->count();
+
                 BoardProgress::where('board_id', $board)
                     ->update([
                         'board_id' => $board,
@@ -294,7 +332,7 @@ class TaskController extends Controller
                             ->where('board_id', $board)
                             ->get()
                             ->count(),
-                        'total_task_done' => 0
+                        'total_task_done' => $totalTaskDone
                     ]);
                 //  if deleted then return task as a resource
                 return new TaskResource($task);
@@ -311,11 +349,11 @@ class TaskController extends Controller
             $validate = Validator::make($request->all(), [
                 'members' => 'required',
             ]);
-            
+
             $url = $this->prev_segments(url()->previous());
             $getId = null;
             for ($i = 0; $i < count($url); $i++) {
-                if($i == count($url) - 1){
+                if ($i == count($url) - 1) {
                     $getId = $url[$i];
                 }
             }

@@ -63,6 +63,10 @@ export default {
                         "X-CSRF-Token" : laravel.csrfToken
                     }
                 })
+                .then(() => {
+                    window.location.reload();
+                })
+                .catch((err) => console.log(err));
             });
             
         }
