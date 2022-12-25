@@ -38,7 +38,7 @@ class SubtaskController extends Controller
             $subtask = Subtask::where('user_id', $user_id)
                 ->where('task_id', $task_id)
                 ->findOrFail($id);
-            
+
             // return subtask as a resource
             return new SubtaskResource($subtask);
         } catch (Exception $e) {

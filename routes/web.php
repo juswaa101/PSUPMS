@@ -54,7 +54,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'isAdmin']], functio
         Route::post('/store', [ProjectController::class, 'store'])->name('project.store');
         Route::delete('/delete/{title}', [KanbanController::class, 'destroy']);
         Route::put('/update/{id}', [ProjectController::class, 'update']);
-        Route::get('/{id}', [KanbanController::class, 'index']);
+        Route::get('/{post:uuid}', [KanbanController::class, 'index']);
     });
 
     // Member assigning routes
@@ -109,11 +109,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'isAdmin']], functio
 
 // Head and member role
 Route::group(['prefix' => 'head', 'middleware' => ['auth', 'isUser']], function () {
-    Route::get('/dashboard/{id}', [LoginController::class, 'headDashboard']);
+    Route::get('/dashboard/{post:uuid}', [LoginController::class, 'headDashboard']);
     Route::group(['prefix' => 'project'], function () {
         Route::get('/store', [ProjectController::class, 'head']);
         Route::post('/create', [ProjectController::class, 'storeHeadProject'])->name('head.store');
-        Route::get('/{id}', [KanbanController::class, 'projectHead']);
+        Route::get('/{post:uuid}', [KanbanController::class, 'projectHead']);
         Route::delete('/delete/{title}', [KanbanController::class, 'destroy']);
         Route::put('/update/{id}', [ProjectController::class, 'update']);
         Route::get('/findStaff', [ProjectController::class, 'getStaff']);

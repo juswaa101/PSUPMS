@@ -11,14 +11,14 @@
             <ul class="nav-links">
                 <!-- Dashboard -->
                 <li>
-                    <a :href="'/head/dashboard/' + logged.id">
+                    <a :href="'/head/dashboard/' + logged.uuid">
                         <i class='bx bx-grid-alt'></i>
                         <span class="link_name">Dashboard</span>
                     </a>
 
                     <!-- hover -->
                     <ul class="sub-menu blank">
-                        <li><a class="link_name" :href="'/head/dashboard/' + logged.id">Dashboard</a></li>
+                        <li><a class="link_name" :href="'/head/dashboard/' + logged.uuid">Dashboard</a></li>
                     </ul>
                 </li>
 
@@ -37,7 +37,7 @@
 
                         <div v-if="projects !== null">
                             <div v-for="item in projects">
-                                <li><a :href="'/head/project/' + item.project_id">{{ item.project_title }}</a></li>
+                                <li><a :href="'/head/project/' + item.uuid">{{ item.project_title }}</a></li>
                             </div>
                         </div>
 
@@ -252,13 +252,13 @@
                                                                                     <ul class="dropdown-menu" style="background-color:#E4E9F7;">
                                                                                         <li><a @click="showModal(task)" class="dropdown-item">View</a></li>
                                                                                         <div class="dropdown-divider"></div>
-                                                                                        <div v-if="is_head.is_project_head === 1">
-                                                                                            <li><a @click="editTask(task)" class="dropdown-item">Edit</a></li>
-                                                                                            <div class="dropdown-divider"></div>
-                                                                                            <li><a @click="assignUserTaskModal(task.id)" class="dropdown-item">Assign Members To Task</a></li>
-                                                                                            <div class="dropdown-divider"></div>
-                                                                                            <li><a @click="deleteTask(task.id)" class="dropdown-item">Delete</a></li>
-                                                                                            <div class="dropdown-divider"></div>
+                                                                                        <div v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
+                                                                                            <li v-if="is_head.is_project_head === 1 || item.create_task_status !== 0"><a @click="assignUserTaskModal(task.id)" class="dropdown-item">Assign Members To Task</a></li>
+                                                                                            <div class="dropdown-divider" v-if="is_head.is_project_head === 1 || item.create_task_status !== 0"></div>
+                                                                                            <li v-if="is_head.is_project_head === 1 || item.create_task_status !== 0"><a @click="editTask(task)" class="dropdown-item">Edit</a></li>
+                                                                                            <div class="dropdown-divider" v-if="is_head.is_project_head === 1 || item.create_task_status !== 0"></div>
+                                                                                            <li v-if="is_head.is_project_head === 1 || item.create_task_status !== 0"><a @click="deleteTask(task.id)" class="dropdown-item">Delete</a></li>
+                                                                                            <div class="dropdown-divider" v-if="is_head.is_project_head === 1 || item.create_task_status !== 0"></div>
                                                                                         </div>
                                                                                         <li><a class="dropdown-item" @click="openTaskColorModal()">Change Color</a></li>
                                                                                     </ul>

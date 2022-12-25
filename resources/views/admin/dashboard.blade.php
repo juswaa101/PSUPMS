@@ -32,7 +32,7 @@
                             <div class="row p-0">
                                 <div class="row p-0">
                                     <div class="col-md-6 text-end p-4">
-                                        <p><a href="/admin/project/{{ $item->project_id }}"> {{ $item->project_title }}</a></p>
+                                        <p><a href="/admin/project/{{ $item->uuid }}"> {{ $item->project_title }}</a></p>
                                     </div>
                                     <div class="col-md-6 text-end p-4">
                                         <a class="btn btn-secondary" href="/admin/unfinish-project/{{ $item->project_id }}">UNFINISH PROJECT</a>
@@ -102,7 +102,7 @@
                                 {{ $def->project_title }}
                             </div>
                             <div class="col-md-6">
-                                <a href="/admin/project/{{ $def->project_id }}" class="btn btn-primary"><i
+                                <a href="/admin/project/{{ $def->uuid }}" class="btn btn-primary"><i
                                         class="bx bx-envelope-open"></i> Open Project</a>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
                                 {{ $ref->project_title }}
                             </div>
                             <div class="col-md-6">
-                                <a href="/admin/project/{{ $ref->project_id }}" class="btn btn-primary"><i
+                                <a href="/admin/project/{{ $ref->uuid }}" class="btn btn-primary"><i
                                         class="bx bx-envelope-open"></i> Open Project</a>
                             </div>
                         </div>
@@ -158,7 +158,7 @@
                                 {{ $i->project_title }}
                             </div>
                             <div class="col-md-6">
-                                <a href="/admin/project/{{ $i->project_id }}" class="btn btn-primary"><i
+                                <a href="/admin/project/{{ $i->uuid }}" class="btn btn-primary"><i
                                         class="bx bx-envelope-open"></i> Open Project</a>
                             </div>
                         </div>
@@ -186,7 +186,7 @@
                                 {{ $e->project_title }}
                             </div>
                             <div class="col-md-6">
-                                <a href="/admin/project/{{ $e->project_id }}" class="btn btn-primary"><i
+                                <a href="/admin/project/{{ $e->uuid }}" class="btn btn-primary"><i
                                         class="bx bx-envelope-open"></i> Open Project</a>
                             </div>
                         </div>
@@ -214,7 +214,7 @@
                                 {{ $e->project_title }}
                             </div>
                             <div class="col-md-6 mt-2">
-                                <a href="/admin/project/{{ $e->project_id }}" class="btn btn-primary"><i
+                                <a href="/admin/project/{{ $e->uuid }}" class="btn btn-primary"><i
                                         class="bx bx-envelope-open w-100"></i> Open Project</a>
                             </div>
                             <div class="col-md-6 mt-2">
@@ -245,7 +245,7 @@
                                 {{ $item->project_title }}
                             </div>
                             <div class="col-md-6">
-                                <a href="/admin/project/{{ $item->project_id }}" class="btn btn-primary"><i
+                                <a href="/admin/project/{{ $item->uuid }}" class="btn btn-primary"><i
                                         class="bx bx-envelope-open"></i> Open Project</a>
                             </div>
                         </div>

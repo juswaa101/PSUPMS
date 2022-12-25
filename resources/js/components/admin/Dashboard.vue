@@ -51,7 +51,7 @@
 
                         <div v-if="projects !== null">
                             <div v-for="item in projects">
-                                <li><a :href="'/admin/project/' + item.project_id">{{ item.project_title }}</a></li>
+                                <li><a :href="'/admin/project/' + item.uuid">{{ item.project_title }}</a></li>
                             </div>
                         </div>
                     </ul>

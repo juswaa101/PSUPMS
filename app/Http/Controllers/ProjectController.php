@@ -338,13 +338,12 @@ class ProjectController extends Controller
     public function toggleFinishedProject($id)
     {
         try {
-            $project = Project::firstWhere('project_id', $id);
+            $project = Project::findOrFail($id);
             Project::where('id', Auth::user()->id)
                 ->where('project_title', $project->project_title)
                 ->update(['is_finished' => 1]);
             return response()->json(['msg' => 'success'], 200);
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
     }
@@ -352,7 +351,7 @@ class ProjectController extends Controller
     public function toggleUnfinishedProject($id)
     {
         try {
-            $project = Project::firstWhere('project_id', $id);
+            $project = Project::findOrFail($id);
             Project::where('id', Auth::user()->id)
                 ->where('project_title', $project->project_title)
                 ->update(['is_finished' => 0]);

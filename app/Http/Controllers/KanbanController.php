@@ -18,14 +18,14 @@ use Illuminate\Support\Facades\Validator;
 
 class KanbanController extends Controller
 {
-    public function index($id)
+    public function index($uuid)
     {
         try {
-            $project = Project::findOrFail($id);
+            $project = Project::firstWhere('uuid', $uuid);
             $findProject = Project::all()->where('project_title', $project->project_title);
 
             $fetch = DB::table('projects')->join('users', 'projects.id', '=', 'users.id')
-                ->where('project_id', '=', $id)
+                ->where('projects.uuid', '=', $uuid)
                 ->get();
 
             $head = DB::table('projects')->join('users', 'projects.id', '=', 'users.id')
@@ -101,10 +101,10 @@ class KanbanController extends Controller
         }
     }
 
-    public function projectHead($id)
+    public function projectHead($uuid)
     {
         try {
-            $project = Project::findOrFail($id);
+            $project = Project::firstWhere('uuid', $uuid);
             $findProject = Project::all()->where('project_title', $project->project_title);
 
             $isProjectHead = Project::join('users', 'projects.id', '=', 'users.id')
@@ -115,7 +115,7 @@ class KanbanController extends Controller
                 ->first(['is_project_head as is_project_head']);
 
             $fetch = DB::table('projects')->join('users', 'projects.id', '=', 'users.id')
-                ->where('project_id', '=', $id)
+                ->where('projects.uuid', '=', $uuid)
                 ->get();
 
             $head = DB::table('projects')->join('users', 'projects.id', '=', 'users.id')
@@ -331,13 +331,13 @@ class KanbanController extends Controller
     {
         try {
             $url = $this->prev_segments(url()->previous());
-            $getId = null;
+            $uuid = null;
             for ($i = 0; $i < count($url); $i++) {
                 if($i == count($url) - 1){
-                    $getId = $url[$i];
+                    $uuid = $url[$i];
                 }
             }
-            $project = Project::findOrFail($getId);
+            $project = Project::firstWhere('uuid', $uuid);
             $query = Invitation::join('projects', 'projects.project_id', '=', 'invitations.project_id')
                 ->where('projects.project_title', $project->project_title)
                 ->where('projects.is_project_head', 0)

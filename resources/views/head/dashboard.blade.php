@@ -31,7 +31,7 @@
                         @forelse($finishedProjects as $item)
                             <div class="row p-0">
                                 <div class="col-md-6 text-end p-4">
-                                    <p><a href="/head/project/{{ $item->project_id }}"> {{ $item->project_title }}</a></p>
+                                    <p><a href="/head/project/{{ $item->uuid }}"> {{ $item->project_title }}</a></p>
                                 </div>
                                 <div class="col-md-6 text-end p-4">
                                     <a class="btn btn-secondary" href="/head/unfinish-project/{{ $item->project_id }}">UNFINISH PROJECT</a>
@@ -100,7 +100,7 @@
                                     {{ $def->project_title }}
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="/head/project/{{ $def->project_id }}" class="btn btn-primary"><i
+                                    <a href="/head/project/{{ $def->uuid }}" class="btn btn-primary"><i
                                             class="bx bx-envelope-open"></i> Open Project</a>
                                 </div>
                             </div>
@@ -128,7 +128,7 @@
                                     {{ $ref->project_title }}
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="/head/project/{{ $ref->project_id }}" class="btn btn-primary"><i
+                                    <a href="/head/project/{{ $ref->uuid }}" class="btn btn-primary"><i
                                             class="bx bx-envelope-open"></i> Open Project</a>
                                 </div>
                             </div>
@@ -156,7 +156,7 @@
                                     {{ $i->project_title }}
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="/head/project/{{ $i->project_id }}" class="btn btn-primary"><i
+                                    <a href="/head/project/{{ $i->uuid }}" class="btn btn-primary"><i
                                             class="bx bx-envelope-open"></i> Open Project</a>
                                 </div>
                             </div>
@@ -184,7 +184,7 @@
                                     {{ $e->project_title }}
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="/head/project/{{ $e->project_id }}" class="btn btn-primary"><i
+                                    <a href="/head/project/{{ $e->uuid }}" class="btn btn-primary"><i
                                             class="bx bx-envelope-open"></i> Open Project</a>
                                 </div>
                             </div>
@@ -212,7 +212,7 @@
                                     {{ $e->project_title }}
                                 </div>
                                 <div class="col-md-6 mt-2">
-                                    <a href="/head/project/{{ $e->project_id }}" class="btn btn-primary"><i
+                                    <a href="/head/project/{{ $e->uuid }}" class="btn btn-primary"><i
                                             class="bx bx-envelope-open w-100"></i> Open Project</a>
                                 </div>
                                 <div class="col-md-6 mt-2">
@@ -243,7 +243,7 @@
                                     {{ $item->project_title }}
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="/head/project/{{ $item->project_id }}" class="btn btn-primary"><i
+                                    <a href="/head/project/{{ $item->uuid }}" class="btn btn-primary"><i
                                             class="bx bx-envelope-open"></i> Open Project</a>
                                 </div>
                             </div>

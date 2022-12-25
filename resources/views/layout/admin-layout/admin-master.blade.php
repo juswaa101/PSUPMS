@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,8 +16,8 @@
 
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-            crossorigin="anonymous"></script>
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
+    </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://kit.fontawesome.com/6d6b82be0b.js" crossorigin="anonymous"></script>
@@ -24,8 +25,8 @@
 
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.5/datatables.min.css"/>
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.5/datatables.min.css" />
     <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css' rel='stylesheet'>
@@ -37,7 +38,8 @@
         /* Google Fonts Import Link */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-        html, body {
+        html,
+        body {
             width: 100%;
             height: 100%;
             margin: 0;
@@ -313,7 +315,7 @@
             display: inline-block;
         }
 
-        .sidebar.close ~ .home-section {
+        .sidebar.close~.home-section {
             left: 78px;
             width: calc(100% - 78px);
         }
@@ -359,7 +361,7 @@
                 z-index: 100;
             }
 
-            .sidebar.close ~ .home-section {
+            .sidebar.close~.home-section {
                 width: 100%;
                 left: 0;
             }
@@ -376,6 +378,7 @@
         .offcanvas {
             width: 900px;
         }
+
         .notification-invitation {
             .card-body {
                 .card-title:before {
@@ -385,6 +388,7 @@
                 }
             }
         }
+
         .countBadge {
             margin-top: -25px;
             border-radius: 30px;
@@ -392,243 +396,249 @@
         }
     </style>
 </head>
+
 <body>
-@yield('content')
-@if (isset(Auth::user()->email))
+    @yield('content')
+    @if (isset(Auth::user()->email))
 
-    <!-- Sidebar -->
-    <div class="sidebar close">
-        <div class="logo-details">
-            <i><img src="{{ asset('assets/login/psu.png') }}" width="55" height="61" class="imgs"></i>
-            <span class="logo_name">PMS</span>
-        </div>
-
-
-        <ul class="nav-links">
-            <!-- Dashboard -->
-            <li>
-                <a href="/admin/dashboard">
-                    <i class='bx bx-grid-alt'></i>
-                    <span class="link_name">Dashboard</span>
-                </a>
-
-                <!-- hover -->
-                <ul class="sub-menu blank">
-                    <li><a class="link_name" href="/admin/dashboard">Dashboard</a></li>
-                </ul>
-            </li>
-
-            <!-- User Management -->
-            <li>
-                <a href="/admin/user-management">
-                    <i class='bx bx-user'></i>
-                    <span class="link_name">User Management</span>
-                </a>
-
-                <!-- hover -->
-                <ul class="sub-menu blank">
-                    <li><a class="link_name" href="/admin/user-management">User Management</a></li>
-                </ul>
-            </li>
+        <!-- Sidebar -->
+        <div class="sidebar close">
+            <div class="logo-details">
+                <i><img src="{{ asset('assets/login/psu.png') }}" width="55" height="61" class="imgs"></i>
+                <span class="logo_name">PMS</span>
+            </div>
 
 
-            <!-- Project -->
-            <li>
-                <div class="icon-link">
-                    <a href="/admin/project">
-                        <i class='bx bx-collection'></i>
-                        <span class="link_name">Projects</span>
+            <ul class="nav-links">
+                <!-- Dashboard -->
+                <li>
+                    <a href="/admin/dashboard">
+                        <i class='bx bx-grid-alt'></i>
+                        <span class="link_name">Dashboard</span>
                     </a>
-                    <i class='bx bxs-chevron-down arrow'></i>
-                </div>
 
-                <!-- hover -->
-                <ul class="sub-menu">
-                    <li><a class="link_name" href="/admin/project/">Projects</a></li>
-                    @if ($fetchLimitProject != null)
-                        @foreach ($fetchLimitProject as $item)
-                            <li><a href="/admin/project/{{ $item->project_id }}">{{ $item->project_title }}</a></li>
-                        @endforeach
-                    @endif
-                </ul>
-            </li>
+                    <!-- hover -->
+                    <ul class="sub-menu blank">
+                        <li><a class="link_name" href="/admin/dashboard">Dashboard</a></li>
+                    </ul>
+                </li>
+
+                <!-- User Management -->
+                <li>
+                    <a href="/admin/user-management">
+                        <i class='bx bx-user'></i>
+                        <span class="link_name">User Management</span>
+                    </a>
+
+                    <!-- hover -->
+                    <ul class="sub-menu blank">
+                        <li><a class="link_name" href="/admin/user-management">User Management</a></li>
+                    </ul>
+                </li>
 
 
-            <li>
-                <!-- Reports -->
-                <a href="/admin/reports">
-                    <i class='bx bx-pie-chart-alt-2'></i>
-                    <span class="link_name">Reports</span>
-                </a>
-
-                <!-- hover -->
-                <ul class="sub-menu blank">
-                    <li><a class="link_name" href="/admin/reports">Reports</a></li>
-                </ul>
-            </li>
-
-            <!-- Logout -->
-            <li>
-                <div class="profile-details">
-                    <div class="name-job">
-                        <div class="logout"><a href="/logout"><p style="color:white;">Logout</p></a></div>
+                <!-- Project -->
+                <li>
+                    <div class="icon-link">
+                        <a href="/admin/project">
+                            <i class='bx bx-collection'></i>
+                            <span class="link_name">Projects</span>
+                        </a>
+                        <i class='bx bxs-chevron-down arrow'></i>
                     </div>
-                    <a href="/logout"><i class='bx bx-log-out'></i></a>
-                </div>
-            </li>
-        </ul>
-    </div>
 
-    <!-- End Sidebar -->
+                    <!-- hover -->
+                    <ul class="sub-menu">
+                        <li><a class="link_name" href="/admin/project/">Projects</a></li>
+                        @if ($fetchLimitProject != null)
+                            @foreach ($fetchLimitProject as $item)
+                                <li><a href="/admin/project/{{ $item->uuid }}">{{ $item->project_title }}</a></li>
+                            @endforeach
+                        @endif
+                    </ul>
+                </li>
 
-    <section class="home-section">
-        <div class="home-content">
-            <!-- menu icon -->
-            <i class='bx bx-menu'></i>
 
-            <!-- bell icon -->
-            <i class='bx bx-bell bx-sm bx-tada-hover bx-border-circle'
-               data-bs-target="#offcanvasNotification" data-bs-toggle="offcanvas"></i><span class="badge bg-danger countBadge" id="countNotification"></span>&nbsp;&nbsp;
+                <li>
+                    <!-- Reports -->
+                    <a href="/admin/reports">
+                        <i class='bx bx-pie-chart-alt-2'></i>
+                        <span class="link_name">Reports</span>
+                    </a>
 
-            <!-- user icon -->
-            <i class='bx bx-user bx-sm bx-border-circle' data-bs-toggle="offcanvas"
-               data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions"></i>
-            <!-- <i class='bx bx-user bx-sm bx-border-circle' data-bs-toggle="modal" data-bs-target="#profileModal"></i> -->
+                    <!-- hover -->
+                    <ul class="sub-menu blank">
+                        <li><a class="link_name" href="/admin/reports">Reports</a></li>
+                    </ul>
+                </li>
+
+                <!-- Logout -->
+                <li>
+                    <div class="profile-details">
+                        <div class="name-job">
+                            <div class="logout"><a href="/logout">
+                                    <p style="color:white;">Logout</p>
+                                </a></div>
+                        </div>
+                        <a href="/logout"><i class='bx bx-log-out'></i></a>
+                    </div>
+                </li>
+            </ul>
         </div>
-        @yield('time')
-        @yield('user-management')
-        @yield('scripts')
-        @yield('reports')
-        @yield('reports-scripts')
-    </section>
 
-    <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
-         aria-labelledby="offcanvasWithBothOptionsLabel">
-        <div class="offcanvas-header text-white" style="background-color: #00305F;">
-            <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Profile</h4>
+        <!-- End Sidebar -->
+
+        <section class="home-section">
+            <div class="home-content">
+                <!-- menu icon -->
+                <i class='bx bx-menu'></i>
+
+                <!-- bell icon -->
+                <i class='bx bx-bell bx-sm bx-tada-hover bx-border-circle' data-bs-target="#offcanvasNotification"
+                    data-bs-toggle="offcanvas"></i><span class="badge bg-danger countBadge"
+                    id="countNotification"></span>&nbsp;&nbsp;
+
+                <!-- user icon -->
+                <i class='bx bx-user bx-sm bx-border-circle' data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions"></i>
+                <!-- <i class='bx bx-user bx-sm bx-border-circle' data-bs-toggle="modal" data-bs-target="#profileModal"></i> -->
+            </div>
+            @yield('time')
+            @yield('user-management')
+            @yield('scripts')
+            @yield('reports')
+            @yield('reports-scripts')
+        </section>
+
+        <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
+            aria-labelledby="offcanvasWithBothOptionsLabel">
+            <div class="offcanvas-header text-white" style="background-color: #00305F;">
+                <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Profile</h4>
 
 
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body" style="background-color: #E4E9F7;">
-            @foreach($user_profile as $profile)
-                <div class="row">
-                    <div class="form-group">
-                        <div style="text-align: center;">
-                            @if($profile->image == null)
-                                <img src="{{ asset('assets/login/psu.png') }}" height="120" width="120"
-                                     class="img-responsive mt-3" alt="Profile"
-                                     style="border-radius: 500px;"
-                                >
-                            @else
-                                <img src="{{ asset('assets/users/' . $profile->image) }}" height="120" width="120"
-                                     class="img-responsive mt-3" alt="Profile"
-                                     style="border-radius: 500px;"
-                                >
-                            @endif
-                            <div class="form-group mt-3">
-                                <p><b style="color: #0a53be">{{ Str::upper($profile->role) }}</b></p>
+            </div>
+            <div class="offcanvas-body" style="background-color: #E4E9F7;">
+                @foreach ($user_profile as $profile)
+                    <div class="row">
+                        <div class="form-group">
+                            <div style="text-align: center;">
+                                @if ($profile->image == null)
+                                    <img src="{{ asset('assets/login/psu.png') }}" height="120" width="120"
+                                        class="img-responsive mt-3" alt="Profile" style="border-radius: 500px;">
+                                @else
+                                    <img src="{{ asset('assets/users/' . $profile->image) }}" height="120"
+                                        width="120" class="img-responsive mt-3" alt="Profile"
+                                        style="border-radius: 500px;">
+                                @endif
+                                <div class="form-group mt-3">
+                                    <p><b style="color: #0a53be">{{ Str::upper($profile->role) }}</b></p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="ps-2 row text">
+                    <div class="ps-2 row text">
 
-                    <div class="row text-start mt-3">
-                        <div class="col-md-1">
-                            <i class='bx bx-user-pin bx-sm'></i>
+                        <div class="row text-start mt-3">
+                            <div class="col-md-1">
+                                <i class='bx bx-user-pin bx-sm'></i>
+                            </div>
+                            <div class="col-md-11">
+                                <h6 class="fw-bold">{{ $profile->name }}</h6>
+                            </div>
                         </div>
-                        <div class="col-md-11">
-                            <h6 class="fw-bold">{{ $profile->name }}</h6>
+
+
+                        <div class="row text-start mt-3">
+                            <div class="col-md-1">
+                                <i class='bx bx-user-circle bx-sm'></i>
+                            </div>
+                            <div class="col-md-11">
+                                <h6 class="fw-bold">{{ $profile->username }}</h6>
+                            </div>
+                        </div>
+
+
+                        <div class="row text-start mt-3">
+                            <div class="col-md-1">
+                                <i class='bx bx-envelope bx-sm'></i>
+                            </div>
+                            <div class="col-md-11">
+                                <h6 class="fw-bold">{{ $profile->email }}</h6>
+                            </div>
                         </div>
                     </div>
-
-
-                    <div class="row text-start mt-3">
-                        <div class="col-md-1">
-                            <i class='bx bx-user-circle bx-sm'></i>
-                        </div>
-                        <div class="col-md-11">
-                            <h6 class="fw-bold">{{ $profile->username }}</h6>
-                        </div>
-                    </div>
-
-
-                    <div class="row text-start mt-3">
-                        <div class="col-md-1">
-                            <i class='bx bx-envelope bx-sm'></i>
-                        </div>
-                        <div class="col-md-11">
-                            <h6 class="fw-bold">{{ $profile->email }}</h6>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
-    </div>
-    <div id="offcanvasNotification" aria-labelledby="offcanvasWithBothOptionsLabel"
-         class="offcanvas offcanvas-end" data-bs-scroll="true"
-         tabindex="-1">
-        <div class="offcanvas-header text-white" style="background-color: #00305F;">
-            <h4 id="offcanvasWithBothOptionsLabel" class="offcanvas-title">Notifications</h4>
-        </div>
-        <div class="offcanvas-body" style="background-color: #E4E9F7;">
-            @if(count($notification) != 0)
-                <a href="/read-all/notification" class="text text-primary">Mark as all read</a>
-            @endif
-            @forelse($notification as $notify)
-                <div class="card notification-card notification-invitation mb-2 mt-2">
-                    <div class="card-body">
-                        <table>
-                            <tr>
-                                <td>
-                                    @if($notify->image != null)
-                                        <img class="rounded-circle shadow-4 float-start" src="{{ url('assets/users/' . $notify->image) }}"
-                                             alt="user_image" height="50px" width="50px" style="margin-right: 10px;">
-                                        <div class="card-title fw-bold">{{ $notify->name }}</div>
-                                        <div class="card-title">{{ $notify->notification_message }}</div>
-                                    @else
-                                        <img class="rounded-circle shadow-4 float-start" src="{{ url('assets/login/psu.png') }}"
-                                             alt="user_image" height="50px" width="50px" style="margin-right: 10px;">
-                                        <div class="card-title fw-bold">{{ $notify->name }}</div>
-                                        <div class="card-title">{{ $notify->notification_message }}
-                                        </div>
-                                    @endif
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width:30%" class="mt-2">
-                                    <div class="row">
-                                        @if($notify->has_read == 0)
-                                            <div class="col-md-6">
-                                                <a href="/read/notification/{{ $notify->notify_id }}" class="btn btn-primary w-100">Mark as Read</a>
-                                            </div>
+        <div id="offcanvasNotification" aria-labelledby="offcanvasWithBothOptionsLabel"
+            class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1">
+            <div class="offcanvas-header text-white" style="background-color: #00305F;">
+                <h4 id="offcanvasWithBothOptionsLabel" class="offcanvas-title">Notifications</h4>
+            </div>
+            <div class="offcanvas-body" style="background-color: #E4E9F7;">
+                @if (count($notification) != 0)
+                    <a href="/read-all/notification" class="text text-primary">Mark as all read</a>
+                @endif
+                @forelse($notification as $notify)
+                    <div class="card notification-card notification-invitation mb-2 mt-2">
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        @if ($notify->image != null)
+                                            <img class="rounded-circle shadow-4 float-start"
+                                                src="{{ url('assets/users/' . $notify->image) }}" alt="user_image"
+                                                height="50px" width="50px" style="margin-right: 10px;">
+                                            <div class="card-title fw-bold">{{ $notify->name }}</div>
+                                            <div class="card-title">{{ $notify->notification_message }}</div>
                                         @else
-                                            <div class="col-md-6">
-                                                <a href="/unread/notification/{{ $notify->notify_id }}" class="btn btn-secondary w-100">Mark Unread</a>
+                                            <img class="rounded-circle shadow-4 float-start"
+                                                src="{{ url('assets/login/psu.png') }}" alt="user_image"
+                                                height="50px" width="50px" style="margin-right: 10px;">
+                                            <div class="card-title fw-bold">{{ $notify->name }}</div>
+                                            <div class="card-title">{{ $notify->notification_message }}
                                             </div>
                                         @endif
-                                        <div class="col-md-6">
-                                            <a href="/delete/notification/{{ $notify->notify_id }}" class="btn btn-danger w-100">Dismiss</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:30%" class="mt-2">
+                                        <div class="row">
+                                            @if ($notify->has_read == 0)
+                                                <div class="col-md-6">
+                                                    <a href="/read/notification/{{ $notify->notify_id }}"
+                                                        class="btn btn-primary w-100">Mark as Read</a>
+                                                </div>
+                                            @else
+                                                <div class="col-md-6">
+                                                    <a href="/unread/notification/{{ $notify->notify_id }}"
+                                                        class="btn btn-secondary w-100">Mark Unread</a>
+                                                </div>
+                                            @endif
+                                            <div class="col-md-6">
+                                                <a href="/delete/notification/{{ $notify->notify_id }}"
+                                                    class="btn btn-danger w-100">Dismiss</a>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <p class="text-muted float-end mt-3">{{ $notify->created }}</p>
-                                </td>
+                                        <p class="text-muted float-end mt-3">{{ $notify->created }}</p>
+                                    </td>
 
-                            </tr>
-                        </table>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            @empty
-                <div class="container p-3">
-                    <h4 class="text-center">No Notifications Yet</h4>
-                </div>
-            @endforelse
+                @empty
+                    <div class="container p-3">
+                        <h4 class="text-center">No Notifications Yet</h4>
+                    </div>
+                @endforelse
+            </div>
         </div>
-    </div>
-@endif
+    @endif
 </body>
+
 </html>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -640,21 +650,26 @@
 
 <!-- Javascript -->
 <script type="text/javascript">
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#name').select2({
-            width: '200px', dropdownCssClass: "bigdrop"
+            width: '200px',
+            dropdownCssClass: "bigdrop"
         });
         $('#projects').select2({
-            width: '200px', dropdownCssClass: "bigdrop"
+            width: '200px',
+            dropdownCssClass: "bigdrop"
         });
     });
 
     function loadNotification() {
         let http = new XMLHttpRequest();
         http.onreadystatechange = function() {
-            if(this.readyState === 4 && this.status === 200) {
-                document.getElementById("countNotification")
-                .innerHTML = parseInt(this.responseText) > 99 ? "99+" : this.responseText;
+            if (this.readyState === 4 && this.status === 200) {
+                let countNotification = document.getElementById("countNotification");
+                countNotification.innerHTML = 
+                    parseInt(this.responseText) > 99 ? "99+" : parseInt(this.responseText) == 0 ?
+                    countNotification.style.display = "none" :
+                    countNotification.innerHTML = this.responseText;
             }
         };
         http.open("GET", "/count/notification", true);
@@ -664,12 +679,12 @@
     loadNotification();
 </script>
 
-{{-- Sidebar Script--}}
+{{-- Sidebar Script --}}
 <script type="text/javascript">
     let arrow = document.querySelectorAll(".arrow");
     for (var i = 0; i < arrow.length; i++) {
         arrow[i].addEventListener("click", (e) => {
-            let arrowParent = e.target.parentElement.parentElement;//selecting main parent of arrow
+            let arrowParent = e.target.parentElement.parentElement; //selecting main parent of arrow
             arrowParent.classList.toggle("showMenu");
         });
     }

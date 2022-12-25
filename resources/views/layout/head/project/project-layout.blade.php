@@ -399,14 +399,14 @@
         <ul class="nav-links">
             <!-- Dashboard -->
             <li>
-                <a href="/head/dashboard/{{ Auth::user()->id }}">
+                <a href="/head/dashboard/{{ Auth::user()->uuid }}">
                     <i class='bx bx-grid-alt'></i>
                     <span class="link_name">Dashboard</span>
                 </a>
 
                 <!-- hover -->
                 <ul class="sub-menu blank">
-                    <li><a class="link_name" href="/head/dashboard/{{ Auth::user()->id }}">Dashboard</a></li>
+                    <li><a class="link_name" href="/head/dashboard/{{ Auth::user()->uuid }}">Dashboard</a></li>
                 </ul>
             </li>
 
@@ -424,7 +424,7 @@
                     <li><a class="link_name" href="/head/project/store">Projects</a></li>
                     @if ($project != null)
                         @foreach ($project as $item)
-                            <li><a href="/head/project/{{ $item->project_id }}">{{ $item->project_title }}</a></li>
+                            <li><a href="/head/project/{{ $item->uuid }}">{{ $item->project_title }}</a></li>
                         @endforeach
                     @endif
                 </ul>
@@ -822,8 +822,11 @@
             let http = new XMLHttpRequest();
             http.onreadystatechange = function() {
                 if (this.readyState === 4 && this.status === 200) {
-                    document.getElementById("countNotification")
-                        .innerHTML = parseInt(this.responseText) > 99 ? "99+" : this.responseText;
+                    let countNotification = document.getElementById("countNotification");
+                    countNotification.innerHTML = 
+                    parseInt(this.responseText) > 99 ? "99+" : parseInt(this.responseText) == 0 ?
+                    countNotification.style.display = "none" :
+                    countNotification.innerHTML = this.responseText;
                 }
             };
             http.open("GET", "/count/notification", true);

@@ -42,7 +42,7 @@ class LoginController extends Controller
                     if (Auth::user()->role == "admin") {
                         return redirect('/admin/dashboard');
                     } else {
-                        return redirect('/head/dashboard/' . Auth::user()->id);
+                        return redirect('/head/dashboard/' . Auth::user()->uuid);
                     }
                 } else {
                     return redirect()->back()
@@ -86,7 +86,7 @@ class LoginController extends Controller
         }
     }
 
-    public function headDashboard($id)
+    public function headDashboard($uuid)
     {
         try {
             $fetch = Project::join('invitations', 'invitations.project_id', '=', 'projects.project_id')
@@ -123,7 +123,7 @@ class LoginController extends Controller
                 ->where('projects.template', 'default')
                 ->orderBy('projects.created_at', 'desc')
                 ->get();
-            $user_profile = User::where('id', $id)->get();
+            $user_profile = User::where('id', $uuid)->get();
             $project = $fetch->unique('project_title');
             $fetchLimitProject = Project::join('invitations', 'invitations.project_id', '=', 'projects.project_id')
                 ->orderByDesc('projects.created_at')
@@ -136,8 +136,8 @@ class LoginController extends Controller
                 ->orderByDesc('notifications.created_at')
                 ->select(['notifications.id as notify_id', 'notifications.created_at as created', 'notifications.*', 'users.*'])
                 ->get();
-            $finishedProject = Project::where('id', $id)->where('is_finished', 1)->limit(5)->get();
-            $limitFinishedProject = Project::where('id', $id)->where('is_finished', 1)->limit(7)->get();
+            $finishedProject = Project::where('id', $uuid)->where('is_finished', 1)->limit(5)->get();
+            $limitFinishedProject = Project::where('id', $uuid)->where('is_finished', 1)->limit(7)->get();
             $invitation = Invitation::join('users', 'users.id', '=', 'invitations.user_id')
                 ->join('projects', 'projects.project_id', '=', 'invitations.project_id')
                 ->orderBy('invitations.created_at', 'desc')

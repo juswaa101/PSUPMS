@@ -568,8 +568,11 @@
         let http = new XMLHttpRequest();
         http.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
-                document.getElementById("countNotification")
-                    .innerHTML = parseInt(this.responseText) > 99 ? "99+" : this.responseText;
+                let countNotification = document.getElementById("countNotification");
+                countNotification.innerHTML = 
+                    parseInt(this.responseText) > 99 ? "99+" : parseInt(this.responseText) == 0 ?
+                    countNotification.style.display = "none" :
+                    countNotification.innerHTML = this.responseText;
             }
         };
         http.open("GET", "/count/notification", true);

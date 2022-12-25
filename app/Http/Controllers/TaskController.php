@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Task;
+use App\Board;
 use Exception;
 use App\Models\User;
 use App\Models\Report;
@@ -318,6 +319,7 @@ class TaskController extends Controller
                     $getId = $url[$i];
                 }
             }
+
             $members = $request->input('members');
 
             if ($validate->fails()) {
@@ -344,7 +346,7 @@ class TaskController extends Controller
                         TaskMember::create([
                             'task_id' => $task->id,
                             'user_id' => $new_member_task,
-                            'project_id' => $getId
+                            'project_uuid' => $getId
                         ]);
 
                         Report::create(['user_id' => $new_member_task, 'project_id' => $task->project_id, 'message' => ' is assigned to a task']);
@@ -375,6 +377,7 @@ class TaskController extends Controller
                 return response()->json($currentMembersTask);
             }
         } catch (Exception $e) {
+            dd($e);
             abort_if($e, 500);
         }
     }

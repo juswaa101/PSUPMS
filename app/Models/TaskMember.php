@@ -10,6 +10,6 @@ class TaskMember extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id', 'task_id', 'project_id'
+        'user_id', 'task_id', 'project_uuid'
     ];
 }

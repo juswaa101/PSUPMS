@@ -7873,7 +7873,7 @@ var render = function render() {
   }, [_vm._m(3), _vm._v(" "), _vm.projects !== null ? _c("div", _vm._l(_vm.projects, function (item) {
     return _c("div", [_c("li", [_c("a", {
       attrs: {
-        href: "/admin/project/" + item.project_id
+        href: "/admin/project/" + item.uuid
       }
     }, [_vm._v(_vm._s(item.project_title))])])]);
   }), 0) : _vm._e()])]), _vm._v(" "), _vm._m(4), _vm._v(" "), _vm._m(5)])]), _vm._v(" "), _c("section", {
@@ -10669,7 +10669,7 @@ var render = function render() {
     staticClass: "nav-links"
   }, [_c("li", [_c("a", {
     attrs: {
-      href: "/head/dashboard/" + _vm.logged.id
+      href: "/head/dashboard/" + _vm.logged.uuid
     }
   }, [_c("i", {
     staticClass: "bx bx-grid-alt"
@@ -10680,14 +10680,14 @@ var render = function render() {
   }, [_c("li", [_c("a", {
     staticClass: "link_name",
     attrs: {
-      href: "/head/dashboard/" + _vm.logged.id
+      href: "/head/dashboard/" + _vm.logged.uuid
     }
   }, [_vm._v("Dashboard")])])])]), _vm._v(" "), _c("li", [_vm._m(0), _vm._v(" "), _c("ul", {
     staticClass: "sub-menu"
   }, [_vm._m(1), _vm._v(" "), _vm.projects !== null ? _c("div", _vm._l(_vm.projects, function (item) {
     return _c("div", [_c("li", [_c("a", {
       attrs: {
-        href: "/head/project/" + item.project_id
+        href: "/head/project/" + item.uuid
       }
     }, [_vm._v(_vm._s(item.project_title))])])]);
   }), 0) : _vm._e()])]), _vm._v(" "), _vm._m(2), _vm._v(" "), _vm._m(3)])]), _vm._v(" "), _c("section", {
@@ -11012,41 +11012,45 @@ var render = function render() {
         }
       }, [_vm._v("View")])]), _vm._v(" "), _c("div", {
         staticClass: "dropdown-divider"
-      }), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("div", [_c("li", [_c("a", {
-        staticClass: "dropdown-item",
-        on: {
-          click: function click($event) {
-            return _vm.editTask(task);
+      }), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+        return index < 1 ? _c("div", {
+          key: _vm.item.id
+        }, [_vm.is_head.is_project_head === 1 || _vm.item.create_task_status !== 0 ? _c("li", [_c("a", {
+          staticClass: "dropdown-item",
+          on: {
+            click: function click($event) {
+              return _vm.assignUserTaskModal(task.id);
+            }
           }
-        }
-      }, [_vm._v("Edit")])]), _vm._v(" "), _c("div", {
-        staticClass: "dropdown-divider"
+        }, [_vm._v("Assign Members To Task")])]) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 || _vm.item.create_task_status !== 0 ? _c("div", {
+          staticClass: "dropdown-divider"
+        }) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 || _vm.item.create_task_status !== 0 ? _c("li", [_c("a", {
+          staticClass: "dropdown-item",
+          on: {
+            click: function click($event) {
+              return _vm.editTask(task);
+            }
+          }
+        }, [_vm._v("Edit")])]) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 || _vm.item.create_task_status !== 0 ? _c("div", {
+          staticClass: "dropdown-divider"
+        }) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 || _vm.item.create_task_status !== 0 ? _c("li", [_c("a", {
+          staticClass: "dropdown-item",
+          on: {
+            click: function click($event) {
+              return _vm.deleteTask(task.id);
+            }
+          }
+        }, [_vm._v("Delete")])]) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 || _vm.item.create_task_status !== 0 ? _c("div", {
+          staticClass: "dropdown-divider"
+        }) : _vm._e()]) : _vm._e();
       }), _vm._v(" "), _c("li", [_c("a", {
-        staticClass: "dropdown-item",
-        on: {
-          click: function click($event) {
-            return _vm.assignUserTaskModal(task.id);
-          }
-        }
-      }, [_vm._v("Assign Members To Task")])]), _vm._v(" "), _c("div", {
-        staticClass: "dropdown-divider"
-      }), _vm._v(" "), _c("li", [_c("a", {
-        staticClass: "dropdown-item",
-        on: {
-          click: function click($event) {
-            return _vm.deleteTask(task.id);
-          }
-        }
-      }, [_vm._v("Delete")])]), _vm._v(" "), _c("div", {
-        staticClass: "dropdown-divider"
-      })]) : _vm._e(), _vm._v(" "), _c("li", [_c("a", {
         staticClass: "dropdown-item",
         on: {
           click: function click($event) {
             return _vm.openTaskColorModal();
           }
         }
-      }, [_vm._v("Change Color")])])])]), _vm._v(" "), _c("div", {
+      }, [_vm._v("Change Color")])])], 2)]), _vm._v(" "), _c("div", {
         staticClass: "card-title"
       }, [_c("div", {
         staticClass: "container"
