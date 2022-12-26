@@ -5650,9 +5650,11 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (res) {
             return res.json();
           }).then(function (data) {
-            sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board Deleted', 'Board Deleted Successfully!', 'success');
+            sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Column Deleted', 'Column Deleted Successfully!', 'success');
 
             _this2.fetchBoards();
+
+            _this2.fetchTasks();
 
             window.location.reload();
           })["catch"](function (error) {
@@ -5680,7 +5682,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
 
           if (_this3.boards.length < 7) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
-              title: 'Board Added',
+              title: 'Column Added',
               icon: 'success',
               confirmButtonText: "OK",
               showConfirmButton: true,
@@ -5690,12 +5692,14 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
               if (confirm.isConfirmed) {
                 _this3.fetchBoards();
 
+                _this3.fetchTasks();
+
                 window.location.reload();
               }
             });
           } else {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
-              title: 'Maximum of 7 board per project is allowed',
+              title: 'Maximum of 7 Column per project is allowed',
               icon: 'error',
               confirmButtonText: "OK",
               showConfirmButton: true,
@@ -5735,7 +5739,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         } else {
           _this4.validationUpdateBoardError = '';
           sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
-            title: 'Board Updated',
+            title: 'Column Updated',
             icon: 'success',
             confirmButtonText: "OK",
             showConfirmButton: true,
@@ -5744,6 +5748,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this4.fetchBoards();
+
+              _this4.fetchTasks();
 
               window.location.reload();
             }
@@ -5761,6 +5767,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         return res.json();
       }).then(function (res) {
         _this5.tasks = res.data;
+
+        _this5.fetchBoards();
       });
     },
     deleteTask: function deleteTask(id) {
@@ -6864,7 +6872,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (res) {
             return res.json();
           }).then(function (data) {
-            sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board Deleted', 'Board Deleted Successfully!', 'success');
+            sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Column Deleted', 'Column Deleted Successfully!', 'success');
 
             _this2.fetchBoards();
 
@@ -6896,7 +6904,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
 
           if (_this3.boards.length < 7) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
-              title: 'Board Added',
+              title: 'Column Added',
               icon: 'success',
               confirmButtonText: "OK",
               showConfirmButton: true,
@@ -6913,7 +6921,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             });
           } else {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
-              title: 'Maximum of 7 board per project is allowed',
+              title: 'Maximum of 7 Column per project is allowed',
               icon: 'error',
               confirmButtonText: "OK",
               showConfirmButton: true,
@@ -6953,7 +6961,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         } else {
           _this4.validationBoardError = '';
           sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
-            title: 'Board Updated',
+            title: 'Column Updated',
             icon: 'success',
             confirmButtonText: "OK",
             showConfirmButton: true,
@@ -6979,6 +6987,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         return res.json();
       }).then(function (res) {
         _this5.tasks = res.data;
+
+        _this5.fetchBoards();
       });
     },
     deleteTask: function deleteTask(id) {
@@ -8102,8 +8112,8 @@ var render = function render() {
         staticClass: "row"
       }, [_vm.item.create_subtask_status !== 0 ? _c("div", {
         staticClass: "col"
-      }, [_c("h3", {
-        staticClass: "display-3 fs-3 mt-3"
+      }, [_c("h5", {
+        staticClass: "display-5 fs-5 title-text"
       }, [_vm._v("Progress: " + _vm._s(board.board_progress.total_task_done) + " / " + _vm._s(board.board_progress.total_task))]), _vm._v(" "), _c("div", {
         staticClass: "progress"
       }, [_c("div", {
@@ -8117,7 +8127,7 @@ var render = function render() {
           "aria-valuemin": "0",
           "aria-valuemax": "100"
         }
-      }, [_vm._v("\n                                                                        " + _vm._s(Number.isNaN(Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100)) ? 0 + "%" : Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100) + "%") + "\n                                                                    ")])])]) : _vm._e()]) : _vm._e();
+      })])]) : _vm._e()]) : _vm._e();
     })], 2), _vm._v(" "), _c("br")]);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
@@ -8147,7 +8157,9 @@ var render = function render() {
         return index < 1 ? _c("div", {
           key: _vm.item.id,
           staticClass: "card-body"
-        }, [_vm.item.create_subtask_status !== 0 ? _c("div", {
+        }, [_c("h5", {
+          staticClass: "display-5 fs-5"
+        }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
           staticClass: "col"
         }, [_c("div", {
           staticClass: "progress"
@@ -8162,7 +8174,7 @@ var render = function render() {
             "aria-valuemin": "0",
             "aria-valuemax": "100"
           }
-        }, [_vm._v("\n                                                                                        " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                                    ")])])]) : _vm._e(), _vm._v(" "), _c("div", {
+        })])]) : _vm._e(), _vm._v(" "), _c("div", {
           staticClass: "dropdown text-end"
         }, [_c("i", {
           staticClass: "bx bx-dots-horizontal-rounded bx-md",
@@ -8295,7 +8307,7 @@ var render = function render() {
             "aria-valuemin": "0",
             "aria-valuemax": "100"
           }
-        }, [_vm._v("\n                                                                                    " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                                ")])])]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", {
+        })])]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", {
           attrs: {
             scope: "col"
           }
@@ -11002,8 +11014,8 @@ var render = function render() {
         staticClass: "row"
       }, [_vm.item.create_subtask_status !== 0 ? _c("div", {
         staticClass: "col"
-      }, [_c("h3", {
-        staticClass: "display-3 fs-3 mt-3"
+      }, [_c("h5", {
+        staticClass: "display-5 fs-5 mt-3"
       }, [_vm._v("Progress: " + _vm._s(board.board_progress.total_task_done) + " / " + _vm._s(board.board_progress.total_task))]), _vm._v(" "), _c("div", {
         staticClass: "progress"
       }, [_c("div", {
@@ -11017,7 +11029,7 @@ var render = function render() {
           "aria-valuemin": "0",
           "aria-valuemax": "100"
         }
-      }, [_vm._v("\n                                                                    " + _vm._s(Number.isNaN(Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100)) ? 0 + "%" : Math.floor(board.board_progress.total_task_done / board.board_progress.total_task * 100) + "%") + "\n                                                                ")])])]) : _vm._e()]) : _vm._e();
+      })])]) : _vm._e()]) : _vm._e();
     }), _vm._v(" "), _c("br")], 2);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
@@ -11049,7 +11061,9 @@ var render = function render() {
         return index < 1 ? _c("div", {
           key: _vm.item.id,
           staticClass: "col"
-        }, [_vm.item.create_subtask_status !== 0 ? _c("div", {
+        }, [_c("h5", {
+          staticClass: "display-5 fs-5 title-text"
+        }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
           staticClass: "progress"
         }, [_c("div", {
           staticClass: "progress-bar bg-success text-light display-6 fs-6",
@@ -11062,7 +11076,7 @@ var render = function render() {
             "aria-valuemin": "0",
             "aria-valuemax": "100"
           }
-        }, [_vm._v("\n                                                                                        " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                                    ")])]) : _vm._e()]) : _vm._e();
+        })]) : _vm._e()]) : _vm._e();
       }), _vm._v(" "), _c("div", {
         staticClass: "dropdown text-end"
       }, [_c("i", {
@@ -11089,32 +11103,32 @@ var render = function render() {
       }), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
         return index < 1 ? _c("div", {
           key: _vm.item.id
-        }, [_vm.is_head.is_project_head === 1 || _vm.item.create_task_status !== 0 ? _c("li", [_c("a", {
+        }, [_vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
           staticClass: "dropdown-item",
           on: {
             click: function click($event) {
               return _vm.assignUserTaskModal(task.id);
             }
           }
-        }, [_vm._v("Assign Members To Task")])]) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 || _vm.item.create_task_status !== 0 ? _c("div", {
+        }, [_vm._v("Assign Members To Task")])]) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("div", {
           staticClass: "dropdown-divider"
-        }) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 || _vm.item.create_task_status !== 0 ? _c("li", [_c("a", {
+        }) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
           staticClass: "dropdown-item",
           on: {
             click: function click($event) {
               return _vm.editTask(task);
             }
           }
-        }, [_vm._v("Edit")])]) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 || _vm.item.create_task_status !== 0 ? _c("div", {
+        }, [_vm._v("Edit")])]) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("div", {
           staticClass: "dropdown-divider"
-        }) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 || _vm.item.create_task_status !== 0 ? _c("li", [_c("a", {
+        }) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
           staticClass: "dropdown-item",
           on: {
             click: function click($event) {
               return _vm.deleteTask(task.id);
             }
           }
-        }, [_vm._v("Delete")])]) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 || _vm.item.create_task_status !== 0 ? _c("div", {
+        }, [_vm._v("Delete")])]) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("div", {
           staticClass: "dropdown-divider"
         }) : _vm._e()]) : _vm._e();
       }), _vm._v(" "), _c("li", [_c("a", {
@@ -11201,7 +11215,7 @@ var render = function render() {
             "aria-valuemin": "0",
             "aria-valuemax": "100"
           }
-        }, [_vm._v("\n                                                                                " + _vm._s(Number.isNaN(Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100)) ? 0 + "%" : Math.floor(task.total_subtask_done.total_subtask_done / task.total_subtask.total_subtask * 100) + "%") + "\n                                                                            ")])])]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", {
+        })])]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", {
           attrs: {
             scope: "col"
           }

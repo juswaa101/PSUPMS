@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Board;
 use App\Task;
+use App\Board;
 use Exception;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Report;
 use App\Models\Project;
 use App\Models\Invitation;
-use App\Models\Notification;
 use App\Models\TaskMember;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -84,6 +85,25 @@ class KanbanController extends Controller
                 ->select('boards.*', 'tasks.*', 'boards.name as board_name', 'tasks.name as task_name')
                 ->get();
             $kanbanBoardAndTask = Board::orderBy('index')->whereIn('project_id', $project_id)->get();
+
+            // notify the admin
+            $notifyProject = Project::all()->unique('project_title');
+            $deadlineDate = array();
+            foreach ($notifyProject as $remindDate) {
+                $deadlineDate[$remindDate->project_id]['title'] = $remindDate->project_title;
+                $deadlineDate[$remindDate->project_id]['date'] = $remindDate->project_end_date;
+            }
+            foreach ($deadlineDate as $deadDate => $value) {
+                $current = Carbon::now();
+                $due_date = Carbon::parse($value['date']);
+                if ($current->diffInDays($due_date, false) == 2) {
+                    Notification::create([
+                        'user_id' => Auth::user()->id,
+                        'notification_message' => 'Project: ' . $value['title'] . ' is approaching the deadline 2 days from now',
+                        'has_read' => 0
+                    ]);
+                }
+            }
             return view('admin.kanban', compact('project'))
                 ->with('users', $users)
                 ->with(compact('projects'))
@@ -198,7 +218,61 @@ class KanbanController extends Controller
                 ->whereIn('tasks.project_id', $project_id)
                 ->select('boards.*', 'tasks.*', 'boards.name as board_name', 'tasks.name as task_name')
                 ->get();
+
             $kanbanBoardAndTask = Board::orderBy('index')->whereIn('project_id', $project_id)->get();
+            // notify user in the project about the project deadline
+            $notifyProject = Project::join('invitations', 'invitations.project_id', 'projects.project_id')
+                ->where('projects.id', Auth::user()->id)
+                ->where('invitations.status', 1)
+                ->get()
+                ->unique('project_title');
+
+            $deadlineDate = array();
+            foreach ($notifyProject as $remindDate) {
+                $deadlineDate[$remindDate->project_id]['title'] = $remindDate->project_title;
+                $deadlineDate[$remindDate->project_id]['date'] = $remindDate->project_end_date;
+            }
+
+            foreach ($deadlineDate as $deadDate => $value) {
+                $current = Carbon::now();
+                $due_date = Carbon::parse($value['date']);
+                if ($current->diffInDays($due_date, false) == 2) {
+                    Notification::create([
+                        'user_id' => Auth::user()->id,
+                        'notification_message' => 'Project: ' . $value['title'] . ' is approaching the deadline 2 days from now',
+                        'has_read' => 0
+                    ]);
+                }
+            }
+
+            // notify the user about the task deadline
+            $notifyTask = Task::join('task_members', 'task_members.task_id', '=', 'tasks.id')
+                ->where('task_members.user_id', Auth::user()->id)
+                ->select(['tasks.*', 'task_members.*', 'task_members.id as tm_id'])
+                ->get();
+
+            $taskDeadlineDate = array();
+            foreach ($notifyTask as $taskDate) {
+                if ($taskDate->task_due_date != null) {
+                    $taskDeadlineDate[$taskDate->tm_id]['task_name'] = $taskDate->name;
+                    $taskDeadlineDate[$taskDate->tm_id]['task_due_date'] = $taskDate->task_due_date;
+                }
+            }
+
+
+            foreach ($taskDeadlineDate as $taskDate => $value) {
+                $current = Carbon::now();
+                $due_date = Carbon::parse($value['task_due_date']);
+
+                if ($current->diffInDays($due_date, false) == 2) {
+                    Notification::create([
+                        'user_id' => Auth::user()->id,
+                        'notification_message' => 'Task: ' . $value['task_name'] . ' is approaching the deadline 2 days from now',
+                        'has_read' => 0
+                    ]);
+                }
+            }
+
             return view('head.kanban', compact('project'))
                 ->with('users', $users)
                 ->with(compact('projects'))
@@ -334,7 +408,7 @@ class KanbanController extends Controller
             $url = $this->prev_segments(url()->previous());
             $uuid = null;
             for ($i = 0; $i < count($url); $i++) {
-                if($i == count($url) - 1){
+                if ($i == count($url) - 1) {
                     $uuid = $url[$i];
                 }
             }
@@ -348,7 +422,7 @@ class KanbanController extends Controller
 
             $idQuery = [];
 
-            foreach($query as $q) {
+            foreach ($query as $q) {
                 $idQuery[] = $q->inv_user_id;
             }
             return response()->json(['invitation' => $idQuery]);

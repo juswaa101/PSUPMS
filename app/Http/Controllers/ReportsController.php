@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Task;
 use Exception;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\Invitation;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -29,6 +30,25 @@ class ReportsController extends Controller
                 ->get();
 
             $fetchLimitProject = Project::where('id', Auth::user()->id)->limit(5)->orderByDesc('created_at')->get()->unique('project_title');
+
+            // notify the admin
+            $notifyProject = Project::all()->unique('project_title');
+            $deadlineDate = array();
+            foreach ($notifyProject as $remindDate) {
+                $deadlineDate[$remindDate->project_id]['title'] = $remindDate->project_title;
+                $deadlineDate[$remindDate->project_id]['date'] = $remindDate->project_end_date;
+            }
+            foreach ($deadlineDate as $deadDate => $value) {
+                $current = Carbon::now();
+                $due_date = Carbon::parse($value['date']);
+                if ($current->diffInDays($due_date, false) == 2) {
+                    Notification::create([
+                        'user_id' => Auth::user()->id,
+                        'notification_message' => 'Project: ' . $value['title'] . ' is approaching the deadline 2 days from now',
+                        'has_read' => 0
+                    ]);
+                }
+            }
 
             return view('admin.reports.reports', compact('project'), compact('notification'))
                 ->with('user_profile', $user_profile)
@@ -72,6 +92,59 @@ class ReportsController extends Controller
                 ->where('invitations.status', 1)
                 ->limit(5)
                 ->get();
+
+            // notify user in the project about the project deadline
+            $notifyProject = Project::join('invitations', 'invitations.project_id', 'projects.project_id')
+                ->where('projects.id', Auth::user()->id)
+                ->where('invitations.status', 1)
+                ->get()
+                ->unique('project_title');
+
+            $deadlineDate = array();
+            foreach ($notifyProject as $remindDate) {
+                $deadlineDate[$remindDate->project_id]['title'] = $remindDate->project_title;
+                $deadlineDate[$remindDate->project_id]['date'] = $remindDate->project_end_date;
+            }
+
+            foreach ($deadlineDate as $deadDate => $value) {
+                $current = Carbon::now();
+                $due_date = Carbon::parse($value['date']);
+                if ($current->diffInDays($due_date, false) == 2) {
+                    Notification::create([
+                        'user_id' => Auth::user()->id,
+                        'notification_message' => 'Project: ' . $value['title'] . ' is approaching the deadline 2 days from now',
+                        'has_read' => 0
+                    ]);
+                }
+            }
+
+            // notify the user about the task deadline
+            $notifyTask = Task::join('task_members', 'task_members.task_id', '=', 'tasks.id')
+                ->where('task_members.user_id', Auth::user()->id)
+                ->select(['tasks.*', 'task_members.*', 'task_members.id as tm_id'])
+                ->get();
+
+            $taskDeadlineDate = array();
+            foreach ($notifyTask as $taskDate) {
+                if ($taskDate->task_due_date != null) {
+                    $taskDeadlineDate[$taskDate->tm_id]['task_name'] = $taskDate->name;
+                    $taskDeadlineDate[$taskDate->tm_id]['task_due_date'] = $taskDate->task_due_date;
+                }
+            }
+
+
+            foreach ($taskDeadlineDate as $taskDate => $value) {
+                $current = Carbon::now();
+                $due_date = Carbon::parse($value['task_due_date']);
+
+                if ($current->diffInDays($due_date, false) == 2) {
+                    Notification::create([
+                        'user_id' => Auth::user()->id,
+                        'notification_message' => 'Task: ' . $value['task_name'] . ' is approaching the deadline 2 days from now',
+                        'has_read' => 0
+                    ]);
+                }
+            }
             return view('head.reports.reports', compact('project'), compact('notification'))
                 ->with('user_profile', $user_profile)
                 ->with('invitation', $invitation)

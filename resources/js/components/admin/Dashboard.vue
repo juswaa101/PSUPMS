@@ -214,15 +214,11 @@
                                                             <div class="row" v-for="(value, key, index) in item" :key="item.id"
                                                                     v-if="index < 1">
                                                                 <div class="col" v-if="item.create_subtask_status !== 0">
-                                                                    <h3 class="display-3 fs-3 mt-3">Progress: {{ board.board_progress.total_task_done }} / {{ board.board_progress.total_task }}</h3>
+                                                                    <h5 class="display-5 fs-5 title-text">Progress: {{ board.board_progress.total_task_done }} / {{ board.board_progress.total_task }}</h5>
                                                                     <div class="progress">
                                                                         <div class="progress-bar bg-success text-light display-6 fs-6" 
                                                                             :style="{ 'width' : (board.board_progress.total_task_done/board.board_done.total_task)*100 + '%' }" 
                                                                             role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                                                            {{ 
-                                                                                Number.isNaN(Math.floor((board.board_progress.total_task_done/board.board_progress.total_task)*100)) ? 0 + '%' :
-                                                                                Math.floor((board.board_progress.total_task_done/board.board_progress.total_task)*100) + '%' 
-                                                                            }}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -240,15 +236,12 @@
                                                                     <Task :id="task.id" draggable="true">
                                                                         <div class="card shadow-sm mt-2" :style="('backgroundColor:'+currentTaskColor)">
                                                                             <div class="card-body" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
+                                                                                <h5 class="display-5 fs-5">Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
                                                                                 <div class="col" v-if="item.create_subtask_status !== 0">
                                                                                     <div class="progress">
                                                                                         <div class="progress-bar bg-success text-light display-6 fs-6" 
                                                                                             :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
                                                                                             role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                                                                            {{ 
-                                                                                                Number.isNaN(Math.floor((task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100)) ? 0 + '%' :
-                                                                                                Math.floor((task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100) + '%' 
-                                                                                            }}
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -315,10 +308,6 @@
                                                                                     <div class="progress-bar bg-success text-light display-6 fs-6" 
                                                                                     :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
                                                                                     role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                                                                        {{ 
-                                                                                            Number.isNaN(Math.floor((task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100)) ? 0 + '%' :
-                                                                                            Math.floor((task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100) + '%' 
-                                                                                        }}
                                                                                     </div>
                                                                                 </div>
                                                                             </th>
@@ -1244,11 +1233,12 @@ export default {
                         .then(res => res.json())
                         .then(data => {
                             Swal.fire(
-                                'Board Deleted',
-                                'Board Deleted Successfully!',
+                                'Column Deleted',
+                                'Column Deleted Successfully!',
                                 'success'
                             )
                             this.fetchBoards();
+                            this.fetchTasks();
                             window.location.reload();
                         })
                         .catch(error => console.log(error));
@@ -1271,7 +1261,7 @@ export default {
                         this.validationBoardError = ''
                         if(this.boards.length < 7){
                             Swal.fire({
-                                title: 'Board Added',
+                                title: 'Column Added',
                                 icon: 'success',
                                 confirmButtonText: "OK",
                                 showConfirmButton: true,
@@ -1280,13 +1270,14 @@ export default {
                             }).then((confirm) => {
                                 if(confirm.isConfirmed){
                                     this.fetchBoards();
+                                    this.fetchTasks();
                                     window.location.reload();
                                 }
                             })
                         }
                         else {
                             Swal.fire({
-                                title: 'Maximum of 7 board per project is allowed',
+                                title: 'Maximum of 7 Column per project is allowed',
                                 icon: 'error',
                                 confirmButtonText: "OK",
                                 showConfirmButton: true,
@@ -1323,7 +1314,7 @@ export default {
                     } else {
                         this.validationUpdateBoardError = ''
                         Swal.fire({
-                            title: 'Board Updated',
+                            title: 'Column Updated',
                             icon: 'success',
                             confirmButtonText: "OK",
                             showConfirmButton: true,
@@ -1332,6 +1323,7 @@ export default {
                         }).then((confirm) => {
                             if(confirm.isConfirmed){
                                 this.fetchBoards();
+                                this.fetchTasks();
                                 window.location.reload();
                             }
                         })
@@ -1346,6 +1338,7 @@ export default {
                 .then(res => res.json())
                 .then(res => {
                     this.tasks = res.data;
+                    this.fetchBoards();
                 });
         },
         deleteTask(id) {
