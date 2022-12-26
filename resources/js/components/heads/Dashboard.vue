@@ -69,8 +69,8 @@
                 </li>
             </ul>
         </div>
-        <!-- End Sidebar -->
 
+        <!-- End Sidebar -->
         <section class="home-section">
             <div class="home-content">
                 <!-- menu icon -->
@@ -89,10 +89,10 @@
                    data-bs-target="#offcanvasWithBothOptions" data-bs-toggle="offcanvas"></i>
             </div>
             <div class="container mx-auto mt-4 mb-5">
-                <div id="pop_up" style="display: none;"></div>
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <div class="card">
+                            <div id="pop_up" style="display: none;"></div>
                             <div class="card-header p-4 text-white card-h">
                                 <div class="container-fluid">
                                     <div class="row">
@@ -165,13 +165,16 @@
                                 </nav>
                                 <br>
 
-                                <div class="container" v-if="is_head.is_project_head === 1">
+                                <div class="container">
                                     <div class="row">
-                                        <div class="col-md my-2">
+                                        <div class="col-md my-2" v-if="is_head.is_project_head === 1">
                                             <label  data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddUsersModal">Add Members</label>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="ms-3 bi bi-plus-circle-fill" viewBox="0 0 16 16" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddUsersModal">
                                                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
                                             </svg>
+                                        </div>
+                                        <div class="col-md my-2">
+                                            <button class="btn btn-primary float-end" @click="toggleGanttChart = !toggleGanttChart">TOGGLE GANTT CHART</button>
                                         </div>
                                     </div>
                                 </div>
@@ -180,7 +183,7 @@
                                     <div id="nav-home" aria-labelledby="nav-home-tab"
                                          class="tab-pane fade show active"
                                          role="tabpanel">
-                                        <div id="chartDiv" style="max-width: 840px; min-width:330px; height: 440px;margin: 0px auto"></div>
+                                        <div id="chartDiv" style="max-width: 840px; min-width:330px; height: 440px;margin: 0px auto" v-show="toggleGanttChart"></div>
                                         <div class="container-fluid" v-if="boards.length !== 0">
                                             <main class="flexbox py-4">
                                                 <div class="row">
@@ -765,17 +768,16 @@
                         <div class="row">
                             <div class="col-md-6" v-for="(value, key, index) in item" :key="item.id"
                                 v-if="index < 1">
-                                <h3 v-if="item.create_subtask_status !== 0 || is_head.is_project_head === 1">Subtask:</h3>
+                                <h3 v-if="item.create_subtask_status !== 0">Subtask:</h3>
                             </div>
                             <div class="col-md-6">
                                 <button class="btn btn-secondary float-end" title="Toggle File Upload" style="margin-left:10px;" 
-                                    @click="toggleUpload = !toggleUpload" 
-                                    v-if="is_head.is_project_head === 1"
+                                    @click="toggleUpload = !toggleUpload"
                                 >
                                 <i class="bi bi-paperclip"></i></button>
                                 <div class="fs-1 m-0" v-for="(value, key, index) in item" :key="item.id"
                                      v-if="index < 1">
-                                    <div v-if="item.create_subtask_status !== 0 || is_head.is_project_head === 1">
+                                    <div v-if="item.create_subtask_status !== 0">
                                         <button class="btn btn-success float-end" title="Toggle Subtask Board" @click="toggleSubtaskBoard = !toggleSubtaskBoard"><i class="bi bi-kanban"></i></button>
                                     </div>
                                 </div>
@@ -845,28 +847,37 @@
                             </div>
                             <div class="col-md-12 mt-2">
                                 <div class="row">
-                                    <div v-for="attachments in attachment">
-                                        <div class="card mt-2">
+                                    <h3 id="comment_scroll" v-if="attachment.length !== 0">Uploaded File: </h3>
+                                    <div class="col-md-4 mt-2" v-for="attachments in attachment">
+                                        <div class="card mt-2 h-100">
                                             <div class="card-footer">
                                                 <div class="row">
-                                                    <div class="col-md-10">
-                                                        <p class="text-muted">{{ attachments.filepath }}</p>
+                                                    <div class="col-md-12">
                                                         <div class="row">
-                                                            <div class="col-md-4">
+                                                            <div class="col-md-3">
+                                                                <i class="bi bi-file-earmark-text float-end" style="font-size: 30px"></i>
+                                                            </div>
+                                                            <div class="col-md-9">
+                                                                <p class="text-muted">{{ attachments.filepath }}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
                                                                 <small><span class="bi-calendar-date text-muted"> {{ attachments.created_at.toString().substring(0, 10) }}</span></small>
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                <button type="button" class="btn btn-success float-end" @click="downloadFile(attachments.filepath)">
-                                                                    <i class="bi bi-download"></i>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12 mt-2">
+                                                                <button type="button" class="btn btn-success w-100" @click="downloadFile(attachments.filepath)">
+                                                                    DOWNLOAD
                                                                 </button>
-                                                                <button type="button" class="btn btn-danger float-end mx-2" @click="removeFile(attachments.id, attachments.filepath)">
-                                                                    <i class="bi bi-trash"></i>
+                                                            </div>
+                                                            <div class="col-md-12 mt-2">
+                                                                <button type="button" class="btn btn-danger w-100" @click="removeFile(attachments.id, attachments.filepath)">
+                                                                    REMOVE
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <i class="bi bi-file-earmark-text" style="font-size: 30px"></i>
                                                     </div>
                                                 </div>
                                             </div>
@@ -875,7 +886,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 mt-3">
-                                <h3 id="comment_scroll">Comments: </h3>
+                                <h3 id="comment_scroll" v-if="comments.length !== 0">Comments: </h3>
                                 <div class="container mt-3">
                                     <div v-for="comment in comments">
                                         <div class="card mt-2">
@@ -1140,6 +1151,7 @@ export default {
     ],
     data() {
         return {
+            toggleGanttChart: false,
             toggleUpload: false,
             toggleEditSubtask: false,
             toggleSubtaskBoard: false,
@@ -2044,7 +2056,7 @@ export default {
         var startDateFormatted = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
         var endDateFormatted = (endDate.getMonth() + 1) + "/" + endDate.getDate() + "/" + endDate.getFullYear();
         var chart = JSC.chart('chartDiv', {
-            debug: true,
+            debug: false,
             title_label_text:'Project: ' + this.item.project_title + ' from ' + startDateFormatted + ' to ' + endDateFormatted,
             type: 'horizontal column solid',
             zAxis_scale_type: 'stacked',
@@ -2087,6 +2099,7 @@ export default {
             series: this.$boardFinal1
         });
 
+        chart.redraw();
         function pointLabelText(point) { 
             var pY = point.options('y'); 
             var pRange = pY.map(norm); 

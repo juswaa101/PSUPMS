@@ -422,7 +422,7 @@
         }
 
         .box {
-            width: 1050px;
+            max-width: 100%;
             padding: 20px;
             background-color: #fff;
             border: 1px solid #ccc;
@@ -519,8 +519,8 @@
             $('#commentArea').emojioneArea({
                 autocomplete: false,
                 placeholder: 'Type a comment here',
-                pickerPosition: 'bottom',
-                filtersPosition: 'bottom',
+                pickerPosition: 'top',
+                filtersPosition: 'top',
             });
         });
         $("#page_list").sortable({

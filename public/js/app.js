@@ -5512,6 +5512,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
   props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'notification', 'projects', 'kanban_task', 'kanban_board_task'],
   data: function data() {
     return {
+      toggleGanttChart: false,
       toggleUpload: false,
       toggleEditSubtask: false,
       toggleSubtaskBoard: false,
@@ -6433,7 +6434,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
     var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
     var chart = JSC.chart('chartDiv', {
-      debug: true,
+      debug: false,
       title_label_text: 'Project: ' + this.item.project_title + ' from ' + startDateFormatted + ' to ' + endDateFormatted,
       type: 'horizontal column solid',
       zAxis_scale_type: 'stacked',
@@ -6474,6 +6475,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       },
       series: this.$boardFinal1
     });
+    chart.redraw();
 
     function pointLabelText(point) {
       var pY = point.options('y');
@@ -6725,6 +6727,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
   props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'is_head', 'notification', 'projects', 'invitation', 'kanban_task', 'kanban_board_task'],
   data: function data() {
     return {
+      toggleGanttChart: false,
       toggleUpload: false,
       toggleEditSubtask: false,
       toggleSubtaskBoard: false,
@@ -7644,7 +7647,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
     var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
     var chart = JSC.chart('chartDiv', {
-      debug: true,
+      debug: false,
       title_label_text: 'Project: ' + this.item.project_title + ' from ' + startDateFormatted + ' to ' + endDateFormatted,
       type: 'horizontal column solid',
       zAxis_scale_type: 'stacked',
@@ -7685,6 +7688,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       },
       series: this.$boardFinal1
     });
+    chart.redraw();
 
     function pointLabelText(point) {
       var pY = point.options('y');
@@ -8001,7 +8005,16 @@ var render = function render() {
     attrs: {
       d: "M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"
     }
-  })])])])]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md my-2"
+  }, [_c("button", {
+    staticClass: "btn btn-primary float-end",
+    on: {
+      click: function click($event) {
+        _vm.toggleGanttChart = !_vm.toggleGanttChart;
+      }
+    }
+  }, [_vm._v("TOGGLE GANTT CHART")])])])]), _vm._v(" "), _c("div", {
     staticClass: "tab-content",
     attrs: {
       id: "nav-tabContent"
@@ -8014,6 +8027,12 @@ var render = function render() {
       role: "tabpanel"
     }
   }, [_c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.toggleGanttChart,
+      expression: "toggleGanttChart"
+    }],
     staticStyle: {
       "max-width": "840px",
       "min-width": "330px",
@@ -9155,7 +9174,7 @@ var render = function render() {
     }, [_vm.item.create_subtask_status !== 0 ? _c("h3", [_vm._v("Subtask:")]) : _vm._e()]) : _vm._e();
   }), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
-  }, [this.logged.role === "admin" ? _c("button", {
+  }, [_c("button", {
     staticClass: "btn btn-secondary float-end",
     staticStyle: {
       "margin-left": "10px"
@@ -9170,7 +9189,7 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "bi bi-paperclip"
-  })]) : _vm._e(), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+  })]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
     return index < 1 ? _c("div", {
       key: _vm.item.id,
       staticClass: "fs-1 m-0"
@@ -9367,8 +9386,8 @@ var render = function render() {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: _vm.toggleUpload && _vm.is_head.is_project_head === 1,
-      expression: "toggleUpload && is_head.is_project_head === 1"
+      value: _vm.toggleUpload,
+      expression: "toggleUpload"
     }],
     staticClass: "col-md-12"
   }, [_c("input", {
@@ -9382,27 +9401,39 @@ var render = function render() {
     staticClass: "col-md-12 mt-2"
   }, [_c("div", {
     staticClass: "row"
-  }, _vm._l(_vm.attachment, function (attachments) {
-    return _c("div", [_c("div", {
-      staticClass: "card mt-2"
+  }, [_vm.attachment.length !== 0 ? _c("h3", {
+    attrs: {
+      id: "comment_scroll"
+    }
+  }, [_vm._v("Uploaded File: ")]) : _vm._e(), _vm._v(" "), _vm._l(_vm.attachment, function (attachments) {
+    return _c("div", {
+      staticClass: "col-md-4 mt-2"
+    }, [_c("div", {
+      staticClass: "card mt-2 h-100"
     }, [_c("div", {
       staticClass: "card-footer"
     }, [_c("div", {
       staticClass: "row"
     }, [_c("div", {
-      staticClass: "col-md-10"
+      staticClass: "col-md-12"
+    }, [_c("div", {
+      staticClass: "row"
+    }, [_vm._m(31, true), _vm._v(" "), _c("div", {
+      staticClass: "col-md-9"
     }, [_c("p", {
       staticClass: "text-muted"
-    }, [_vm._v(_vm._s(attachments.filepath))]), _vm._v(" "), _c("div", {
+    }, [_vm._v(_vm._s(attachments.filepath))])])]), _vm._v(" "), _c("div", {
       staticClass: "row"
     }, [_c("div", {
-      staticClass: "col-md-4"
+      staticClass: "col-md-12"
     }, [_c("small", [_c("span", {
       staticClass: "bi-calendar-date text-muted"
-    }, [_vm._v(" " + _vm._s(attachments.created_at.toString().substring(0, 10)))])])]), _vm._v(" "), _c("div", {
-      staticClass: "col-md-6"
+    }, [_vm._v(" " + _vm._s(attachments.created_at.toString().substring(0, 10)))])])])]), _vm._v(" "), _c("div", {
+      staticClass: "row"
+    }, [_c("div", {
+      staticClass: "col-md-12 mt-2"
     }, [_c("button", {
-      staticClass: "btn btn-success float-end",
+      staticClass: "btn btn-success w-100",
       attrs: {
         type: "button"
       },
@@ -9411,10 +9442,10 @@ var render = function render() {
           return _vm.downloadFile(attachments.filepath);
         }
       }
-    }, [_c("i", {
-      staticClass: "bi bi-download"
-    })]), _vm._v(" "), _c("button", {
-      staticClass: "btn btn-danger float-end mx-2",
+    }, [_vm._v("\n                                                                DOWNLOAD\n                                                            ")])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12 mt-2"
+    }, [_c("button", {
+      staticClass: "btn btn-danger w-100",
       attrs: {
         type: "button"
       },
@@ -9423,16 +9454,14 @@ var render = function render() {
           return _vm.removeFile(attachments.id, attachments.filepath);
         }
       }
-    }, [_c("i", {
-      staticClass: "bi bi-trash"
-    })])])])]), _vm._v(" "), _vm._m(31, true)])])])]);
-  }), 0)]), _vm._v(" "), _c("div", {
+    }, [_vm._v("\n                                                                REMOVE\n                                                            ")])])])])])])])]);
+  })], 2)]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12 mt-3"
-  }, [_c("h3", {
+  }, [_vm.comments.length !== 0 ? _c("h3", {
     attrs: {
       id: "comment_scroll"
     }
-  }, [_vm._v("Comments: ")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("Comments: ")]) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "container mt-3"
   }, _vm._l(_vm.comments, function (comment) {
     return _c("div", [_c("div", {
@@ -10420,9 +10449,9 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "col-md-2"
+    staticClass: "col-md-3"
   }, [_c("i", {
-    staticClass: "bi bi-file-earmark-text",
+    staticClass: "bi bi-file-earmark-text float-end",
     staticStyle: {
       "font-size": "30px"
     }
@@ -10725,6 +10754,12 @@ var render = function render() {
   }, [_vm._m(4), _vm._v(" "), _c("div", {
     staticClass: "container mx-auto mt-4 mb-5"
   }, [_c("div", {
+    staticClass: "row mt-3"
+  }, [_c("div", {
+    staticClass: "col-md-12"
+  }, [_c("div", {
+    staticClass: "card"
+  }, [_c("div", {
     staticStyle: {
       display: "none"
     },
@@ -10732,12 +10767,6 @@ var render = function render() {
       id: "pop_up"
     }
   }), _vm._v(" "), _c("div", {
-    staticClass: "row mt-3"
-  }, [_c("div", {
-    staticClass: "col-md-12"
-  }, [_c("div", {
-    staticClass: "card"
-  }, [_c("div", {
     staticClass: "card-header p-4 text-white card-h"
   }, [_c("div", {
     staticClass: "container-fluid"
@@ -10850,11 +10879,11 @@ var render = function render() {
         type: "button"
       }
     }, [_vm._v("Create Task\n                                    ")]) : _vm._e()])]) : _vm._e();
-  }), _vm._v(" "), _c("br"), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("div", {
+  }), _vm._v(" "), _c("br"), _vm._v(" "), _c("div", {
     staticClass: "container"
   }, [_c("div", {
     staticClass: "row"
-  }, [_c("div", {
+  }, [_vm.is_head.is_project_head === 1 ? _c("div", {
     staticClass: "col-md my-2"
   }, [_c("label", {
     attrs: {
@@ -10876,7 +10905,16 @@ var render = function render() {
     attrs: {
       d: "M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"
     }
-  })])])])]) : _vm._e(), _vm._v(" "), _c("div", {
+  })])]) : _vm._e(), _vm._v(" "), _c("div", {
+    staticClass: "col-md my-2"
+  }, [_c("button", {
+    staticClass: "btn btn-primary float-end",
+    on: {
+      click: function click($event) {
+        _vm.toggleGanttChart = !_vm.toggleGanttChart;
+      }
+    }
+  }, [_vm._v("TOGGLE GANTT CHART")])])])]), _vm._v(" "), _c("div", {
     staticClass: "tab-content",
     attrs: {
       id: "nav-tabContent"
@@ -10889,6 +10927,12 @@ var render = function render() {
       role: "tabpanel"
     }
   }, [_c("div", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.toggleGanttChart,
+      expression: "toggleGanttChart"
+    }],
     staticStyle: {
       "max-width": "840px",
       "min-width": "330px",
@@ -12035,10 +12079,10 @@ var render = function render() {
     return index < 1 ? _c("div", {
       key: _vm.item.id,
       staticClass: "col-md-6"
-    }, [_vm.item.create_subtask_status !== 0 || _vm.is_head.is_project_head === 1 ? _c("h3", [_vm._v("Subtask:")]) : _vm._e()]) : _vm._e();
+    }, [_vm.item.create_subtask_status !== 0 ? _c("h3", [_vm._v("Subtask:")]) : _vm._e()]) : _vm._e();
   }), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
-  }, [_vm.is_head.is_project_head === 1 ? _c("button", {
+  }, [_c("button", {
     staticClass: "btn btn-secondary float-end",
     staticStyle: {
       "margin-left": "10px"
@@ -12053,11 +12097,11 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "bi bi-paperclip"
-  })]) : _vm._e(), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+  })]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
     return index < 1 ? _c("div", {
       key: _vm.item.id,
       staticClass: "fs-1 m-0"
-    }, [_vm.item.create_subtask_status !== 0 || _vm.is_head.is_project_head === 1 ? _c("div", [_c("button", {
+    }, [_vm.item.create_subtask_status !== 0 ? _c("div", [_c("button", {
       staticClass: "btn btn-success float-end",
       attrs: {
         title: "Toggle Subtask Board"
@@ -12265,27 +12309,39 @@ var render = function render() {
     staticClass: "col-md-12 mt-2"
   }, [_c("div", {
     staticClass: "row"
-  }, _vm._l(_vm.attachment, function (attachments) {
-    return _c("div", [_c("div", {
-      staticClass: "card mt-2"
+  }, [_vm.attachment.length !== 0 ? _c("h3", {
+    attrs: {
+      id: "comment_scroll"
+    }
+  }, [_vm._v("Uploaded File: ")]) : _vm._e(), _vm._v(" "), _vm._l(_vm.attachment, function (attachments) {
+    return _c("div", {
+      staticClass: "col-md-4 mt-2"
+    }, [_c("div", {
+      staticClass: "card mt-2 h-100"
     }, [_c("div", {
       staticClass: "card-footer"
     }, [_c("div", {
       staticClass: "row"
     }, [_c("div", {
-      staticClass: "col-md-10"
+      staticClass: "col-md-12"
+    }, [_c("div", {
+      staticClass: "row"
+    }, [_vm._m(28, true), _vm._v(" "), _c("div", {
+      staticClass: "col-md-9"
     }, [_c("p", {
       staticClass: "text-muted"
-    }, [_vm._v(_vm._s(attachments.filepath))]), _vm._v(" "), _c("div", {
+    }, [_vm._v(_vm._s(attachments.filepath))])])]), _vm._v(" "), _c("div", {
       staticClass: "row"
     }, [_c("div", {
-      staticClass: "col-md-4"
+      staticClass: "col-md-12"
     }, [_c("small", [_c("span", {
       staticClass: "bi-calendar-date text-muted"
-    }, [_vm._v(" " + _vm._s(attachments.created_at.toString().substring(0, 10)))])])]), _vm._v(" "), _c("div", {
-      staticClass: "col-md-6"
+    }, [_vm._v(" " + _vm._s(attachments.created_at.toString().substring(0, 10)))])])])]), _vm._v(" "), _c("div", {
+      staticClass: "row"
+    }, [_c("div", {
+      staticClass: "col-md-12 mt-2"
     }, [_c("button", {
-      staticClass: "btn btn-success float-end",
+      staticClass: "btn btn-success w-100",
       attrs: {
         type: "button"
       },
@@ -12294,10 +12350,10 @@ var render = function render() {
           return _vm.downloadFile(attachments.filepath);
         }
       }
-    }, [_c("i", {
-      staticClass: "bi bi-download"
-    })]), _vm._v(" "), _c("button", {
-      staticClass: "btn btn-danger float-end mx-2",
+    }, [_vm._v("\n                                                                DOWNLOAD\n                                                            ")])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12 mt-2"
+    }, [_c("button", {
+      staticClass: "btn btn-danger w-100",
       attrs: {
         type: "button"
       },
@@ -12306,16 +12362,14 @@ var render = function render() {
           return _vm.removeFile(attachments.id, attachments.filepath);
         }
       }
-    }, [_c("i", {
-      staticClass: "bi bi-trash"
-    })])])])]), _vm._v(" "), _vm._m(28, true)])])])]);
-  }), 0)]), _vm._v(" "), _c("div", {
+    }, [_vm._v("\n                                                                REMOVE\n                                                            ")])])])])])])])]);
+  })], 2)]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12 mt-3"
-  }, [_c("h3", {
+  }, [_vm.comments.length !== 0 ? _c("h3", {
     attrs: {
       id: "comment_scroll"
     }
-  }, [_vm._v("Comments: ")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("Comments: ")]) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "container mt-3"
   }, _vm._l(_vm.comments, function (comment) {
     return _c("div", [_c("div", {
@@ -13294,9 +13348,9 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "col-md-2"
+    staticClass: "col-md-3"
   }, [_c("i", {
-    staticClass: "bi bi-file-earmark-text",
+    staticClass: "bi bi-file-earmark-text float-end",
     staticStyle: {
       "font-size": "30px"
     }

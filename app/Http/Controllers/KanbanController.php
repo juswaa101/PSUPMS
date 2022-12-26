@@ -303,7 +303,7 @@ class KanbanController extends Controller
                             ->where('project_title', $project->project_title)
                             ->forceDelete();
 
-                        TaskMember::join('projects', 'projects.project_id', '=', 'task_members.project_id')
+                        TaskMember::join('projects', 'projects.uuid', '=', 'task_members.project_uuid')
                             ->where('task_members.user_id', $fetchedRow)
                             ->where('projects.project_title', $project->project_title)
                             ->delete();
@@ -312,6 +312,7 @@ class KanbanController extends Controller
                 return response()->json('Members updated successfully!');
             }
         } catch (Exception $e) {
+            dd($e);
             abort_if($e, 500);
         }
     }
