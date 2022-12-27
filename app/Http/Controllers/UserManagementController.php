@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\Notification;
@@ -10,8 +12,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
-use Exception;
 
 class UserManagementController extends Controller
 {
@@ -21,6 +23,26 @@ class UserManagementController extends Controller
             $fetch = Project::orderByDesc('created_at')->limit(5)->get()->unique('project_title');
             $project = $fetch->unique('project_title');
             $user_profile = User::where('id', Auth::user()->id)->get();
+
+            // notify the admin
+            $notifyProject = Project::all()->unique('project_title');
+            $deadlineDate = array();
+            foreach ($notifyProject as $remindDate) {
+                $deadlineDate[$remindDate->project_id]['title'] = $remindDate->project_title;
+                $deadlineDate[$remindDate->project_id]['date'] = $remindDate->project_end_date;
+            }
+            foreach ($deadlineDate as $deadDate => $value) {
+                $current = Carbon::now();
+                $due_date = Carbon::parse($value['date']);
+                if ($current->diffInDays($due_date, false) == 2) {
+                    Notification::create([
+                        'user_id' => Auth::user()->id,
+                        'notification_message' => 'Project: ' . $value['title'] . ' is approaching the deadline 2 days from now',
+                        'has_read' => 0
+                    ]);
+                }
+            }
+
             $notification = Notification::join('users', 'users.id', '=', 'notifications.user_id')
                 ->where('user_id', Auth::user()->id)
                 ->orderByDesc('notifications.created_at')
@@ -47,21 +69,28 @@ class UserManagementController extends Controller
     public function destroy($id)
     {
         try {
-            $user = User::find($id);
-            if ($user) {
-                $path = 'assets/users/' . $user->image;
-                if (File::exists($path)) {
-                    File::delete($path);
+            $headProjectCount = Project::whereNull('deleted_at')->where('projects.id', $id)->get()->count();
+            if ($headProjectCount == 0) {
+                $user = User::find($id);
+                if ($user) {
+                    $path = 'assets/users/' . $user->image;
+                    if (File::exists($path)) {
+                        File::delete($path);
+                    }
+                    $user->delete();
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'User Deleted Successfully!',
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => 404,
+                        'message' => 'User Not Found!',
+                    ]);
                 }
-                $user->delete();
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'User Deleted Successfully!',
-                ]);
             } else {
                 return response()->json([
-                    'status' => 404,
-                    'message' => 'User Not Found!',
+                    'head_project_count' => $headProjectCount
                 ]);
             }
         } catch (Exception $e) {

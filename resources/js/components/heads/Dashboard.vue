@@ -353,6 +353,9 @@
                             <div class="form-group mt-3">
                                 <p><b style="color: #0a53be"></b></p>
                             </div>
+                            <div class="form-group mt-3">
+                                <p><b style="color: #0a53be">{{ logged.role.toString().toUpperCase() }}</b></p>
+                            </div>
                         </div>
                     </div>
                 </div>

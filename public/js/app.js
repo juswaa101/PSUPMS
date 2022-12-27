@@ -11267,7 +11267,13 @@ var render = function render() {
         height: "180",
         width: "180"
       }
-    }), _vm._v(" "), _vm._m(12, true)])]) : _vm._e();
+    }), _vm._v(" "), _vm._m(12, true), _vm._v(" "), _c("div", {
+      staticClass: "form-group mt-3"
+    }, [_c("p", [_c("b", {
+      staticStyle: {
+        color: "#0a53be"
+      }
+    }, [_vm._v(_vm._s(_vm.logged.role.toString().toUpperCase()))])])])])]) : _vm._e();
   }), 0) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "ps-2 row text"
   }, _vm._l(_vm.logged, function (value, key, index) {

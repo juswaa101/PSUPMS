@@ -145,7 +145,7 @@ class LoginController extends Controller
                 ->where('projects.template', 'default')
                 ->orderBy('projects.created_at', 'desc')
                 ->get();
-            $user_profile = User::where('id', $uuid)->get();
+            $user_profile = User::where('uuid', $uuid)->get();
             $project = $fetch->unique('project_title');
             $fetchLimitProject = Project::join('invitations', 'invitations.project_id', '=', 'projects.project_id')
                 ->orderByDesc('projects.created_at')
