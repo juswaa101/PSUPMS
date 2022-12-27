@@ -235,7 +235,7 @@
                                                                         <div class="card shadow-sm mt-2" :style="('backgroundColor:'+currentTaskColor)">
                                                                             <div class="card-body">
                                                                                 <div class="col" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
-                                                                                    <h5 class="display-5 fs-5 title-text">Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
+                                                                                    <h5 class="display-5 fs-5 title-text" v-if="item.create_subtask_status !== 0">Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
                                                                                     <div class="progress" v-if="item.create_subtask_status !== 0">
                                                                                         <div class="progress-bar bg-success text-light display-6 fs-6" 
                                                                                             :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
@@ -1775,7 +1775,7 @@ export default {
                                     'Your project has been deleted.',
                                     'success'
                                 )
-                                window.location.href = "/head/dashboard/" + this.logged.id;
+                                window.location.href = "/head/dashboard/" + this.logged.uuid;
                             }
                         })
                         .catch(() => {

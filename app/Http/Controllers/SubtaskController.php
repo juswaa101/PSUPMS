@@ -120,7 +120,7 @@ class SubtaskController extends Controller
 
             foreach ($users as $user) {
                 Notification::create([
-                    'user_id' => $user->id,
+                    'user_id' => $user->user_id,
                     'notification_message' =>  Auth::user()->name . ' deleted a subtask: ' . $subtask->subtask_name . ' in ' . $task->name . ' in ' . $project->project_title,
                 ]);
             }

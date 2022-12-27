@@ -7388,7 +7388,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           axios["delete"]('/head/project/delete/' + title).then(function () {
             if (result.isConfirmed) {
               sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Deleted!', 'Your project has been deleted.', 'success');
-              window.location.href = "/head/dashboard/" + _this19.logged.id;
+              window.location.href = "/head/dashboard/" + _this19.logged.uuid;
             }
           })["catch"](function () {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire("Failed!", "There was something wrong!", "warning");
@@ -8157,9 +8157,9 @@ var render = function render() {
         return index < 1 ? _c("div", {
           key: _vm.item.id,
           staticClass: "card-body"
-        }, [_c("h5", {
+        }, [_vm.item.create_subtask_status !== 0 ? _c("h5", {
           staticClass: "display-5 fs-5"
-        }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
+        }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]) : _vm._e(), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
           staticClass: "col"
         }, [_c("div", {
           staticClass: "progress"
@@ -11061,9 +11061,9 @@ var render = function render() {
         return index < 1 ? _c("div", {
           key: _vm.item.id,
           staticClass: "col"
-        }, [_c("h5", {
+        }, [_vm.item.create_subtask_status !== 0 ? _c("h5", {
           staticClass: "display-5 fs-5 title-text"
-        }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
+        }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]) : _vm._e(), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
           staticClass: "progress"
         }, [_c("div", {
           staticClass: "progress-bar bg-success text-light display-6 fs-6",

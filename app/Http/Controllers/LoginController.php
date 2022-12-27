@@ -67,11 +67,6 @@ class LoginController extends Controller
             $user_profile = User::where('id', Auth::user()->id)->get();
             $project = $fetch->unique('project_title');
             $fetchLimitProject = Project::where('id', Auth::user()->id)->limit(5)->orderByDesc('created_at')->get()->unique('project_title');
-            $notification = Notification::join('users', 'users.id', '=', 'notifications.user_id')
-                ->where('user_id', Auth::user()->id)
-                ->orderByDesc('notifications.created_at')
-                ->select(['notifications.id as notify_id', 'notifications.created_at as created', 'notifications.*', 'users.*'])
-                ->get();
 
             // notify the admin
             $notifyProject = Project::all()->unique('project_title');
@@ -91,6 +86,12 @@ class LoginController extends Controller
                     ]);
                 }
             }
+
+            $notification = Notification::join('users', 'users.id', '=', 'notifications.user_id')
+                ->where('user_id', Auth::user()->id)
+                ->orderByDesc('notifications.created_at')
+                ->select(['notifications.id as notify_id', 'notifications.created_at as created', 'notifications.*', 'users.*'])
+                ->get();
             $finishedProject = Project::all()->where('id', Auth::user()->id)->sortByDesc('created_at')->where('is_finished', 1)->unique('project_title');
             $limitFinishedProject = Project::where('id', Auth::user()->id)->where('is_finished', 1)->limit(7)->get()->unique('project_title');
             return view('admin.dashboard', compact('project'), compact('notification'))
@@ -152,25 +153,6 @@ class LoginController extends Controller
                 ->where('invitations.status', 1)
                 ->limit(5)
                 ->get();
-            $notification = Notification::join('users', 'users.id', '=', 'notifications.user_id')
-                ->where('user_id', Auth::user()->id)
-                ->orderByDesc('notifications.created_at')
-                ->select(['notifications.id as notify_id', 'notifications.created_at as created', 'notifications.*', 'users.*'])
-                ->get();
-            $finishedProject = Project::where('id', $uuid)->where('is_finished', 1)->limit(5)->get();
-            $limitFinishedProject = Project::where('id', $uuid)->where('is_finished', 1)->limit(7)->get();
-            $invitation = Invitation::join('users', 'users.id', '=', 'invitations.user_id')
-                ->join('projects', 'projects.project_id', '=', 'invitations.project_id')
-                ->orderBy('invitations.created_at', 'desc')
-                ->where('user_id', Auth::user()->id)
-                ->select([
-                    'invitations.id',
-                    'invitations.status',
-                    'invitations.invitation_message',
-                    'users.*',
-                    'projects.project_id'
-                ])
-                ->get();
 
             // notify user in the project about the project deadline
             $notifyProject = Project::join('invitations', 'invitations.project_id', 'projects.project_id')
@@ -199,13 +181,16 @@ class LoginController extends Controller
 
             // notify the user about the task deadline
             $notifyTask = Task::join('task_members', 'task_members.task_id', '=', 'tasks.id')
-                    ->where('task_members.user_id', Auth::user()->id)
-                    ->select(['tasks.*', 'task_members.*', 'task_members.id as tm_id'])
-                    ->get();
+                ->join('projects', 'projects.project_id', '=', 'tasks.project_id')
+                ->whereNull('projects.deleted_at')
+                ->where('task_members.user_id', Auth::user()->id)
+                ->select(['tasks.*', 'task_members.*', 'task_members.id as tm_id', 'projects.project_title'])
+                ->get();
 
             $taskDeadlineDate = array();
             foreach ($notifyTask as $taskDate) {
-                if($taskDate->task_due_date != null){
+                if ($taskDate->task_due_date != null) {
+                    $taskDeadlineDate[$taskDate->tm_id]['project_name'] = $taskDate->project_title;
                     $taskDeadlineDate[$taskDate->tm_id]['task_name'] = $taskDate->name;
                     $taskDeadlineDate[$taskDate->tm_id]['task_due_date'] = $taskDate->task_due_date;
                 }
@@ -215,15 +200,35 @@ class LoginController extends Controller
             foreach ($taskDeadlineDate as $taskDate => $value) {
                 $current = Carbon::now();
                 $due_date = Carbon::parse($value['task_due_date']);
-                
+
                 if ($current->diffInDays($due_date, false) == 2) {
                     Notification::create([
                         'user_id' => Auth::user()->id,
-                        'notification_message' => 'Task: ' . $value['task_name'] . ' is approaching the deadline 2 days from now',
+                        'notification_message' => 'Task: ' . $value['task_name'] . ' in Project: ' . $value['project_name'] .  ' is approaching the deadline 2 days from now',
                         'has_read' => 0
                     ]);
                 }
             }
+
+            $notification = Notification::join('users', 'users.id', '=', 'notifications.user_id')
+                ->where('user_id', Auth::user()->id)
+                ->orderByDesc('notifications.created_at')
+                ->select(['notifications.id as notify_id', 'notifications.created_at as created', 'notifications.*', 'users.*'])
+                ->get();
+            $finishedProject = Project::where('id', $uuid)->where('is_finished', 1)->limit(5)->get();
+            $limitFinishedProject = Project::where('id', $uuid)->where('is_finished', 1)->limit(7)->get();
+            $invitation = Invitation::join('users', 'users.id', '=', 'invitations.user_id')
+                ->join('projects', 'projects.project_id', '=', 'invitations.project_id')
+                ->orderBy('invitations.created_at', 'desc')
+                ->where('user_id', Auth::user()->id)
+                ->select([
+                    'invitations.id',
+                    'invitations.status',
+                    'invitations.invitation_message',
+                    'users.*',
+                    'projects.project_id'
+                ])
+                ->get();
 
             return view('head.dashboard', compact('project'), compact('notification'))
                 ->with('user_profile', $user_profile)

@@ -236,7 +236,7 @@
                                                                     <Task :id="task.id" draggable="true">
                                                                         <div class="card shadow-sm mt-2" :style="('backgroundColor:'+currentTaskColor)">
                                                                             <div class="card-body" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
-                                                                                <h5 class="display-5 fs-5">Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
+                                                                                <h5 class="display-5 fs-5" v-if="item.create_subtask_status !== 0">Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
                                                                                 <div class="col" v-if="item.create_subtask_status !== 0">
                                                                                     <div class="progress">
                                                                                         <div class="progress-bar bg-success text-light display-6 fs-6" 
