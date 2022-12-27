@@ -101,7 +101,6 @@ class SubtaskController extends Controller
                 return new SubtaskResource($subtask);
             }
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
     }
