@@ -54,7 +54,6 @@ export default {
                         .then((res) => res.json())
                         .then((res) => {
                             board_data = res.data;
-                            console.log(task_data);
                             //  get task based on id for updating new board's name
                             fetch("/api/task/" + user_id + "/" + project_id, {
                                 method: "put",
