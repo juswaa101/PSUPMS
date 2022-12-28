@@ -1,9 +1,10 @@
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 .pad {
-    padding: 10px 100px;
+    padding: 10px 50px;
 }
 
 .flexbox {
@@ -19,7 +20,7 @@ html {
     border: 1px solid #c6c8ca;
     border-radius: 5px;
     overflow-y: auto;
-    height: 700px;
+    min-height: 700px;
 }
 
 .flexbox .board .task {
@@ -29,15 +30,4 @@ html {
     cursor: pointer;
     margin: 10px;
     font-size: 16px;
-}
-
-@media(max-width: 768px) {
-    .pad {
-        padding: 15px 40px;
-    }
-
-    .flexbox .board .task {
-        padding: 10px 15px;
-        margin: 10px;
-    }
 }

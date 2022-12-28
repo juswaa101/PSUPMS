@@ -59,8 +59,6 @@ class SubtaskController extends Controller
             if ($validate->fails()) {
                 return response()->json($validate->getMessageBag(), 400);
             } else {
-                $subtaskJoin = Subtask::join('task_progress', 'task_progress.task_id', 'subtasks.task_id')
-                    ->firstWhere('task_progress.task_id', $request->input('task_id'));
                 // Store Subtask
                 $subtask = Subtask::create([
                     'board_id' => $request->input('board_id'),
@@ -69,6 +67,9 @@ class SubtaskController extends Controller
                     'subtask_name' => $request->input('subtask_name'),
                     'subtask_description' => $request->input('subtask_description')
                 ]);
+
+                $subtaskJoin = Subtask::join('task_progress', 'task_progress.task_id', 'subtasks.task_id')
+                    ->firstWhere('task_progress.task_id', $request->input('task_id'));
 
                 $task = Task::firstWhere('id', $request->input('task_id'));
                 $project = Project::firstWhere('project_id', $task->project_id);
@@ -101,6 +102,7 @@ class SubtaskController extends Controller
                 return new SubtaskResource($subtask);
             }
         } catch (Exception $e) {
+            dd($e);
             abort_if($e, 500);
         }
     }

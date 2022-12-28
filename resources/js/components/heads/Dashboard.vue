@@ -199,7 +199,7 @@
                                                                     v-if="index < 1">
                                                                         <div v-if="is_head.is_project_head === 1">
                                                                             <div class="dropdown">
-                                                                                <i class="bx bx-dots-horizontal-rounded bx-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                                                                <i class="bx bx-dots-horizontal-rounded bx-sm float-end" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                                                                 <ul class="dropdown-menu" style="background-color:#E4E9F7;">
                                                                                     <li><a class="dropdown-item" @click="editBoard(board)">Edit</a></li>
                                                                                     <div class="dropdown-divider"></div>
@@ -244,7 +244,9 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="dropdown text-end">
-                                                                                    <i class="bx bx-dots-horizontal-rounded bx-md" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                                                                    <i class="bx bx-dots-horizontal-rounded bx-md" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                                                                    :style="{ color: currentTaskColor == '#673AB7' || currentTaskColor == '#424242' || currentTaskColor == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }"
+                                                                                    ></i>
                                                                                     <ul class="dropdown-menu" style="background-color:#E4E9F7;">
                                                                                         <li><a @click="showModal(task)" class="dropdown-item">View</a></li>
                                                                                         <div class="dropdown-divider"></div>
@@ -262,12 +264,11 @@
                                                                                 <div class="card-title">
                                                                                     <div class="container">
                                                                                         <div class="row">
-                                                                                            <h5 class="text-primary">{{ task.name.substring(0, 30) + "..." }}</h5>
-
+                                                                                            <h5 :style="{ color: currentTaskColor == '#673AB7' || currentTaskColor == '#424242' || currentTaskColor == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }">{{ task.name.substring(0, 30) }}</h5>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <p class="ps-4">
+                                                                                <p class="ps-4" :style="{ color: currentTaskColor == '#673AB7' || currentTaskColor == '#424242' || currentTaskColor == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }">
                                                                                     {{ task.description.substring(0, 50) + "..." }}
                                                                                 </p>
                                                                             </div>
@@ -297,23 +298,30 @@
                                                             <div class="container" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
                                                                 <table class="table table-bordered table-striped">
                                                                     <thead>
-                                                                    <tr>
-                                                                        <th scope="col">Task</th>
-                                                                        <th scope="col" v-if="item.create_subtask_status !== 0">Progress</th>
-                                                                        <th scope="col">Due Date</th>
+                                                                    <tr style="background-color:#152238; color:white">
+                                                                        <th scope="col" class="fw-normal">Task</th>
+                                                                        <th scope="col" class="fw-normal" v-if="item.create_subtask_status !== 0">Progress</th>
+                                                                        <th scope="col" class="fw-normal">Due Date</th>
                                                                     </tr>
-                                                                    <tr v-for="task in tasks" v-bind:key="task.id" v-if="board.id === task.board_id">
-                                                                        <th scope="col">{{ task.name }}</th>
-                                                                        <th scope="col" v-if="item.create_subtask_status !== 0">
-                                                                            <div class="progress">
-                                                                                <div class="progress-bar bg-success text-light display-6 fs-6" 
-                                                                                :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
-                                                                                role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                                    <tr v-for="task in tasks" v-bind:key="task.id" v-if="board.id === task.board_id" style="background-color: #ECECEC">
+                                                                        <th scope="col" class="fw-normal">{{ task.name }}</th>
+                                                                        <th scope="col" class="fw-normal" v-if="item.create_subtask_status !== 0">
+                                                                            <div class="row">
+                                                                                <div class="col-md-3 justify-content-center">
+                                                                                    <p class="text-dark fw-bold">{{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</p>
+                                                                                </div>
+                                                                                <div class="col-md-9 justify-content-center">
+                                                                                    <div class="progress">
+                                                                                        <div class="progress-bar bg-success text-light display-6 fs-6" 
+                                                                                        :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
+                                                                                        role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
-                                                                            </th>
-                                                                        <th scope="col" v-if="task.task_due_date">{{ task.task_due_date }}</th>
-                                                                        <th scope="col" v-else><p class="text text-danger">No Due Date Yet</p></th>
+                                                                        </th>
+                                                                        <th scope="col" class="fw-normal" v-if="task.task_due_date">{{ task.task_due_date }}</th>
+                                                                        <th scope="col" class="fw-normal" v-else><p class="text text-danger">No Due Date Yet</p></th>
                                                                     </tr>
                                                                     </thead>
                                                                 </table>
@@ -835,6 +843,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12" v-show="toggleUpload">
+                                <p class="text text-danger">File Uploads only allow jpg, png, jpeg, pdf, docx, ppt, txt file</p>
                                 <input type="file" class="mt-2" id="upload_file" name="upload_file">
                             </div>
                             <div class="col-md-12 mt-2">
@@ -955,13 +964,13 @@
                         <div class="form-group">
                             <label for="" class="form-label mt-2">Task start date:</label>
                             <input type="date" class="form-control" v-model="taskEdit.task_start_date" id="task_start_date"
-                                :min="item.project_start_date" :max="item.project_end_date" required
+                                :min="item.project_start_date" :max="item.project_end_date"
                             >
                         </div>
                         <div class="form-group">
                             <label for="" class="form-label mt-2">Task due date:</label>
                             <input type="date" class="form-control" v-model="taskEdit.task_due_date" id="task_due_date"
-                                :min="item.project_start_date" :max="item.project_end_date" required
+                                :min="item.project_start_date" :max="item.project_end_date"
                             >
                         </div>
                         <div class="form-group">

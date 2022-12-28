@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\ProjectUpdateRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProjectController extends Controller
 {
@@ -60,6 +61,8 @@ class ProjectController extends Controller
             return view('admin.project', ['members' => $members, 'notification' => $notification], compact('project'))
                 ->with('user_profile', $user_profile)
                 ->with('fetchLimitProject', $fetchLimitProject);
+        } catch (ModelNotFoundException $e) {
+            abort(404);
         } catch (Exception $e) {
             abort_if($e, 500);
         }
@@ -164,6 +167,8 @@ class ProjectController extends Controller
                 ->with('user_profile', $user_profile)
                 ->with('invitation', $invitation)
                 ->with('fetchLimitProject', $fetchLimitProject);
+        } catch (ModelNotFoundException $e) {
+            abort(404);
         } catch (Exception $e) {
             abort_if($e, 500);
         }

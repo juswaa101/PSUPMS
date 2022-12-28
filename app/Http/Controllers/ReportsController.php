@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReportsController extends Controller
@@ -54,7 +55,11 @@ class ReportsController extends Controller
             return view('admin.reports.reports', compact('project'), compact('notification'))
                 ->with('user_profile', $user_profile)
                 ->with('fetchLimitProject', $fetchLimitProject);
-        } catch (Exception $e) {
+        } 
+        catch (ModelNotFoundException $e) {
+            abort(404);
+        } 
+        catch (Exception $e) {
             abort_if($e, 500);
         }
     }
@@ -155,7 +160,11 @@ class ReportsController extends Controller
                 ->with('user_profile', $user_profile)
                 ->with('invitation', $invitation)
                 ->with('fetchLimitProject', $fetchLimitProject);
-        } catch (Exception $e) {
+        } 
+        catch (ModelNotFoundException $e) {
+            abort(404);
+        } 
+        catch (Exception $e) {
             abort_if($e, 500);
         }
     }
@@ -441,7 +450,11 @@ class ReportsController extends Controller
                 ->orderBy('users.name')
                 ->get();
             return response()->json(['users' => $users]);
-        } catch (Exception $e) {
+        } 
+        catch (ModelNotFoundException $e) {
+            abort(404);
+        } 
+        catch (Exception $e) {
             abort_if($e, 500);
         }
     }

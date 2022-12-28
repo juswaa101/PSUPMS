@@ -8079,7 +8079,7 @@ var render = function render() {
     }, [_c("div", {
       staticClass: "dropdown"
     }, [_c("i", {
-      staticClass: "bx bx-dots-horizontal-rounded bx-sm",
+      staticClass: "bx bx-dots-horizontal-rounded bx-sm float-end",
       attrs: {
         type: "button",
         "data-bs-toggle": "dropdown",
@@ -8178,6 +8178,9 @@ var render = function render() {
           staticClass: "dropdown text-end"
         }, [_c("i", {
           staticClass: "bx bx-dots-horizontal-rounded bx-md",
+          style: {
+            color: _vm.currentTaskColor == "#673AB7" || _vm.currentTaskColor == "#424242" || _vm.currentTaskColor == "#E91E63" || _vm.currentTaskColor == "#F44336" ? "white" : "black"
+          },
           attrs: {
             type: "button",
             "data-bs-toggle": "dropdown",
@@ -8236,9 +8239,14 @@ var render = function render() {
         }, [_c("div", {
           staticClass: "row"
         }, [_c("h5", {
-          staticClass: "text-primary"
+          style: {
+            color: _vm.currentTaskColor == "#673AB7" || _vm.currentTaskColor == "#424242" || _vm.currentTaskColor == "#E91E63" || _vm.currentTaskColor == "#F44336" ? "white" : "black"
+          }
         }, [_vm._v(_vm._s(task.name.substring(0, 30) + "..."))])])])]), _vm._v(" "), _c("p", {
-          staticClass: "ps-4"
+          staticClass: "ps-4",
+          style: {
+            color: _vm.currentTaskColor == "#673AB7" || _vm.currentTaskColor == "#424242" || _vm.currentTaskColor == "#E91E63" || _vm.currentTaskColor == "#F44336" ? "white" : "black"
+          }
         }, [_vm._v("\n                                                                                " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                            ")])]) : _vm._e();
       }), 0)])], 1) : _vm._e()]);
     }), 0)], 1);
@@ -8271,29 +8279,47 @@ var render = function render() {
         staticClass: "container"
       }, [_c("table", {
         staticClass: "table table-bordered table-striped"
-      }, [_c("thead", [_c("tr", [_c("th", {
+      }, [_c("thead", [_c("tr", {
+        staticStyle: {
+          "background-color": "#152238",
+          color: "white"
+        }
+      }, [_c("th", {
+        staticClass: "fw-normal",
         attrs: {
           scope: "col"
         }
       }, [_vm._v("Task")]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("th", {
+        staticClass: "fw-normal",
         attrs: {
           scope: "col"
         }
       }, [_vm._v("Progress")]) : _vm._e(), _vm._v(" "), _c("th", {
+        staticClass: "fw-normal",
         attrs: {
           scope: "col"
         }
       }, [_vm._v("Due Date")])]), _vm._v(" "), _vm._l(_vm.tasks, function (task) {
         return board.id === task.board_id ? _c("tr", {
-          key: task.id
+          key: task.id,
+          staticStyle: {
+            "background-color": "#ECECEC"
+          }
         }, [_c("th", {
+          staticClass: "fw-normal",
           attrs: {
             scope: "col"
           }
         }, [_vm._v(_vm._s(task.name))]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("th", {
-          attrs: {
-            scope: "col"
-          }
+          staticClass: "fw-normal"
+        }, [_c("div", {
+          staticClass: "row"
+        }, [_c("div", {
+          staticClass: "col-md-3 justify-content-center"
+        }, [_c("p", {
+          staticClass: "text-dark fw-bold"
+        }, [_vm._v(_vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))])]), _vm._v(" "), _c("div", {
+          staticClass: "col-md-9 justify-content-center"
         }, [_c("div", {
           staticClass: "progress"
         }, [_c("div", {
@@ -8307,11 +8333,13 @@ var render = function render() {
             "aria-valuemin": "0",
             "aria-valuemax": "100"
           }
-        })])]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", {
+        })])])])]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", {
+          staticClass: "fw-normal",
           attrs: {
             scope: "col"
           }
         }, [_vm._v(_vm._s(task.task_due_date))]) : _c("th", {
+          staticClass: "fw-normal",
           attrs: {
             scope: "col"
           }
@@ -8358,7 +8386,13 @@ var render = function render() {
       height: "180",
       width: "180"
     }
-  }), _vm._v(" "), _vm._m(15)])])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm._m(15), _vm._v(" "), _c("div", {
+    staticClass: "form-group mt-3"
+  }, [_c("p", [_c("b", {
+    staticStyle: {
+      color: "#0a53be"
+    }
+  }, [_vm._v(_vm._s(_vm.logged.role.toString().toUpperCase()))])])])])])]), _vm._v(" "), _c("div", {
     staticClass: "ps-2 row text"
   }, _vm._l(_vm.logged, function (value, key, index) {
     return index < 1 ? _c("div", [_c("div", {
@@ -9402,7 +9436,9 @@ var render = function render() {
       expression: "toggleUpload"
     }],
     staticClass: "col-md-12"
-  }, [_c("input", {
+  }, [_c("p", {
+    staticClass: "text text-danger"
+  }, [_vm._v("File Uploads only allow jpg, png, jpeg, pdf, docx, ppt, txt file")]), _vm._v(" "), _c("input", {
     staticClass: "mt-2",
     attrs: {
       type: "file",
@@ -9676,8 +9712,7 @@ var render = function render() {
       type: "date",
       id: "task_start_date",
       min: _vm.item.project_start_date,
-      max: _vm.item.project_end_date,
-      required: ""
+      max: _vm.item.project_end_date
     },
     domProps: {
       value: _vm.taskEdit.task_start_date
@@ -9708,8 +9743,7 @@ var render = function render() {
       type: "date",
       id: "task_due_date",
       min: _vm.item.project_start_date,
-      max: _vm.item.project_end_date,
-      required: ""
+      max: _vm.item.project_end_date
     },
     domProps: {
       value: _vm.taskEdit.task_due_date
@@ -10980,7 +11014,7 @@ var render = function render() {
       }, [_vm.is_head.is_project_head === 1 ? _c("div", [_c("div", {
         staticClass: "dropdown"
       }, [_c("i", {
-        staticClass: "bx bx-dots-horizontal-rounded bx-sm",
+        staticClass: "bx bx-dots-horizontal-rounded bx-sm float-end",
         attrs: {
           type: "button",
           "data-bs-toggle": "dropdown",
@@ -11081,6 +11115,9 @@ var render = function render() {
         staticClass: "dropdown text-end"
       }, [_c("i", {
         staticClass: "bx bx-dots-horizontal-rounded bx-md",
+        style: {
+          color: _vm.currentTaskColor == "#673AB7" || _vm.currentTaskColor == "#424242" || _vm.currentTaskColor == "#E91E63" || _vm.currentTaskColor == "#F44336" ? "white" : "black"
+        },
         attrs: {
           type: "button",
           "data-bs-toggle": "dropdown",
@@ -11145,9 +11182,14 @@ var render = function render() {
       }, [_c("div", {
         staticClass: "row"
       }, [_c("h5", {
-        staticClass: "text-primary"
-      }, [_vm._v(_vm._s(task.name.substring(0, 30) + "..."))])])])]), _vm._v(" "), _c("p", {
-        staticClass: "ps-4"
+        style: {
+          color: _vm.currentTaskColor == "#673AB7" || _vm.currentTaskColor == "#424242" || _vm.currentTaskColor == "#E91E63" || _vm.currentTaskColor == "#F44336" ? "white" : "black"
+        }
+      }, [_vm._v(_vm._s(task.name.substring(0, 30)))])])])]), _vm._v(" "), _c("p", {
+        staticClass: "ps-4",
+        style: {
+          color: _vm.currentTaskColor == "#673AB7" || _vm.currentTaskColor == "#424242" || _vm.currentTaskColor == "#E91E63" || _vm.currentTaskColor == "#F44336" ? "white" : "black"
+        }
       }, [_vm._v("\n                                                                                " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                            ")])], 2)])])], 1) : _vm._e()]);
     }), 0)], 1);
   }), 0)])]) : _c("div", [_vm._m(10)])]), _vm._v(" "), _c("div", {
@@ -11179,29 +11221,50 @@ var render = function render() {
         staticClass: "container"
       }, [_c("table", {
         staticClass: "table table-bordered table-striped"
-      }, [_c("thead", [_c("tr", [_c("th", {
+      }, [_c("thead", [_c("tr", {
+        staticStyle: {
+          "background-color": "#152238",
+          color: "white"
+        }
+      }, [_c("th", {
+        staticClass: "fw-normal",
         attrs: {
           scope: "col"
         }
       }, [_vm._v("Task")]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("th", {
+        staticClass: "fw-normal",
         attrs: {
           scope: "col"
         }
       }, [_vm._v("Progress")]) : _vm._e(), _vm._v(" "), _c("th", {
+        staticClass: "fw-normal",
         attrs: {
           scope: "col"
         }
       }, [_vm._v("Due Date")])]), _vm._v(" "), _vm._l(_vm.tasks, function (task) {
         return board.id === task.board_id ? _c("tr", {
-          key: task.id
+          key: task.id,
+          staticStyle: {
+            "background-color": "#ECECEC"
+          }
         }, [_c("th", {
+          staticClass: "fw-normal",
           attrs: {
             scope: "col"
           }
         }, [_vm._v(_vm._s(task.name))]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("th", {
+          staticClass: "fw-normal",
           attrs: {
             scope: "col"
           }
+        }, [_c("div", {
+          staticClass: "row"
+        }, [_c("div", {
+          staticClass: "col-md-3 justify-content-center"
+        }, [_c("p", {
+          staticClass: "text-dark fw-bold"
+        }, [_vm._v(_vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))])]), _vm._v(" "), _c("div", {
+          staticClass: "col-md-9 justify-content-center"
         }, [_c("div", {
           staticClass: "progress"
         }, [_c("div", {
@@ -11215,11 +11278,13 @@ var render = function render() {
             "aria-valuemin": "0",
             "aria-valuemax": "100"
           }
-        })])]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", {
+        })])])])]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", {
+          staticClass: "fw-normal",
           attrs: {
             scope: "col"
           }
         }, [_vm._v(_vm._s(task.task_due_date))]) : _c("th", {
+          staticClass: "fw-normal",
           attrs: {
             scope: "col"
           }
@@ -12318,7 +12383,9 @@ var render = function render() {
       expression: "toggleUpload"
     }],
     staticClass: "col-md-12"
-  }, [_c("input", {
+  }, [_c("p", {
+    staticClass: "text text-danger"
+  }, [_vm._v("File Uploads only allow jpg, png, jpeg, pdf, docx, ppt, txt file")]), _vm._v(" "), _c("input", {
     staticClass: "mt-2",
     attrs: {
       type: "file",
@@ -12592,8 +12659,7 @@ var render = function render() {
       type: "date",
       id: "task_start_date",
       min: _vm.item.project_start_date,
-      max: _vm.item.project_end_date,
-      required: ""
+      max: _vm.item.project_end_date
     },
     domProps: {
       value: _vm.taskEdit.task_start_date
@@ -12624,8 +12690,7 @@ var render = function render() {
       type: "date",
       id: "task_due_date",
       min: _vm.item.project_start_date,
-      max: _vm.item.project_end_date,
-      required: ""
+      max: _vm.item.project_end_date
     },
     domProps: {
       value: _vm.taskEdit.task_due_date

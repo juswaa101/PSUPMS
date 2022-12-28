@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Task;
+use Exception;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\Invitation;
 use App\Models\Notification;
-use App\Task;
-use Carbon\Carbon;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LoginController extends Controller
 {
@@ -103,6 +104,8 @@ class LoginController extends Controller
                 ->with('default', $default)
                 ->with('limitFinishedProject', $limitFinishedProject)
                 ->with('fetchLimitProject', $fetchLimitProject);
+        } catch (ModelNotFoundException $e) {
+            abort(404);
         } catch (Exception $e) {
             abort_if($e, 500);
         }
@@ -240,6 +243,8 @@ class LoginController extends Controller
                 ->with('default', $default)
                 ->with('limitFinishedProject', $limitFinishedProject)
                 ->with('fetchLimitProject', $fetchLimitProject);
+        } catch (ModelNotFoundException $e) {
+            abort(404);
         } catch (Exception $e) {
             abort_if($e, 500);
         }

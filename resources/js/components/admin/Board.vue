@@ -8,7 +8,7 @@
 export default {
     props: ["id"],
     methods: {
-        drop: e => {
+        drop: (e) => {
             //  get current user's id from meta tag
             const user_id = document
                 .querySelector("meta[name='user-id']")
@@ -33,17 +33,26 @@ export default {
             //  get task based on task id and current user id
             fetch(
                 "/api/task/" +
-                e.target.children[e.target.children.length - 1].id +
-                "/" +
-                user_id + "/" + project_id
+                    e.target.children[e.target.children.length - 1].id +
+                    "/" +
+                    user_id +
+                    "/" +
+                    project_id
             )
-                .then(res => res.json())
-                .then(res => {
+                .then((res) => res.json())
+                .then((res) => {
                     task_data = res.data;
                     //  get board based on board id and current user id
-                    fetch("/api/board/" + e.target.id + "/" + user_id + "/" + project_id)
-                        .then(res => res.json())
-                        .then(res => {
+                    fetch(
+                        "/api/board/" +
+                            e.target.id +
+                            "/" +
+                            user_id +
+                            "/" +
+                            project_id
+                    )
+                        .then((res) => res.json())
+                        .then((res) => {
                             board_data = res.data;
                             console.log(task_data);
                             //  get task based on id for updating new board's name
@@ -51,8 +60,8 @@ export default {
                                 method: "put",
                                 body: JSON.stringify({
                                     task_id:
-                                    e.target.children[
-                                    e.target.children.length - 1
+                                        e.target.children[
+                                            e.target.children.length - 1
                                         ].id,
                                     user_id: board_data.user_id,
                                     board_id: board_data.id,
@@ -62,18 +71,19 @@ export default {
                                     task_due_date: task_data.task_due_date,
                                     privacy_status: task_data.privacy_status,
                                     total_subtask: task_data.total_subtask,
-                                    total_subtask_done: task_data.total_subtask_done
+                                    total_subtask_done:
+                                        task_data.total_subtask_done,
                                 }),
                                 headers: {
-                                    "Content-Type": "application/json"
-                                }
+                                    "Content-Type": "application/json",
+                                },
                             })
-                            // .then(res => res.json())
-                            .then(() => window.location.reload())
-                            .catch(err => console.log(err));
+                                // .then(res => res.json())
+                                .then(() => window.location.reload())
+                                .catch((err) => console.log(err));
                         });
                 });
-        }
-    }
+        },
+    },
 };
 </script>

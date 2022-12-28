@@ -12,6 +12,7 @@ use App\Models\Project;
 use App\Models\Invitation;
 use App\Models\TaskMember;
 use App\Models\Notification;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +23,7 @@ class KanbanController extends Controller
     public function index($uuid)
     {
         try {
-            $project = Project::firstWhere('uuid', $uuid);
+            $project = Project::where('uuid', $uuid)->firstOrFail();
             $findProject = Project::all()->where('project_title', $project->project_title);
 
             $fetch = DB::table('projects')->join('users', 'projects.id', '=', 'users.id')
@@ -117,6 +118,8 @@ class KanbanController extends Controller
                 ->with(compact('kanbanTask'))
                 ->with(compact('kanbanBoardAndTask'))
                 ->with('fetchLimitProject', $fetchLimitProject);
+        } catch (ModelNotFoundException $e) {
+            abort(404);
         } catch (Exception $e) {
             abort_if($e, 500);
         }
@@ -125,7 +128,7 @@ class KanbanController extends Controller
     public function projectHead($uuid)
     {
         try {
-            $project = Project::firstWhere('uuid', $uuid);
+            $project = Project::where('uuid', $uuid)->firstOrFail();
             $findProject = Project::all()->where('project_title', $project->project_title);
 
             $isProjectHead = Project::join('users', 'projects.id', '=', 'users.id')
@@ -291,6 +294,8 @@ class KanbanController extends Controller
                 ->with(compact('kanbanTask'))
                 ->with(compact('kanbanBoardAndTask'))
                 ->with('fetchLimitProject', $fetchLimitProject);
+        } catch (ModelNotFoundException $e) {
+            abort(404);
         } catch (Exception $e) {
             abort_if($e, 500);
         }
@@ -389,8 +394,9 @@ class KanbanController extends Controller
                 }
                 return response()->json('Members updated successfully!');
             }
+        } catch (ModelNotFoundException $e) {
+            abort(404);
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
     }
@@ -401,6 +407,8 @@ class KanbanController extends Controller
             $project = Project::where('project_title', '=', $title);
             $project->delete();
             return response()->json(['message', 'Project deleted successfully!']);
+        } catch (ModelNotFoundException $e) {
+            abort(404);
         } catch (Exception $e) {
             abort_if($e, 500);
         }
@@ -430,7 +438,11 @@ class KanbanController extends Controller
                 $idQuery[] = $q->inv_user_id;
             }
             return response()->json(['invitation' => $idQuery]);
-        } catch (Exception $e) {
+        } 
+        catch (ModelNotFoundException $e) {
+            abort(404);
+        } 
+        catch (Exception $e) {
             abort_if($e, 500);
         }
     }
