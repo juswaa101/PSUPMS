@@ -5421,28 +5421,30 @@ __webpack_require__.r(__webpack_exports__);
     drop: function drop(e) {
       //  get current user's id from meta tag
       var user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
-      var project_id = document.querySelector("meta[name='project_id']").getAttribute("content"); //  get the target task based on task_id
+      var project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
 
-      var task_id = e.dataTransfer.getData("task_id"); //  get the element based on task_id
-
-      var task = document.getElementById(task_id); //  show the target task when dropped on the board
-
-      task.style.display = "block"; //  append the target task on the board where it is dropped
-
+      //  get the target task based on task_id
+      var task_id = e.dataTransfer.getData("task_id");
+      //  get the element based on task_id
+      var task = document.getElementById(task_id);
+      //  show the target task when dropped on the board
+      task.style.display = "block";
+      //  append the target task on the board where it is dropped
       e.target.appendChild(task);
       var task_data = "";
-      var board_data = ""; //  get task based on task id and current user id
+      var board_data = "";
 
+      //  get task based on task id and current user id
       fetch("/api/task/" + e.target.children[e.target.children.length - 1].id + "/" + user_id + "/" + project_id).then(function (res) {
         return res.json();
       }).then(function (res) {
-        task_data = res.data; //  get board based on board id and current user id
-
+        task_data = res.data;
+        //  get board based on board id and current user id
         fetch("/api/board/" + e.target.id + "/" + user_id + "/" + project_id).then(function (res) {
           return res.json();
         }).then(function (res) {
-          board_data = res.data; //  get task based on id for updating new board's name
-
+          board_data = res.data;
+          //  get task based on id for updating new board's name
           fetch("/api/task/" + user_id + "/" + project_id, {
             method: "put",
             body: JSON.stringify({
@@ -5460,7 +5462,8 @@ __webpack_require__.r(__webpack_exports__);
             headers: {
               "Content-Type": "application/json"
             }
-          }) // .then(res => res.json())
+          })
+          // .then(res => res.json())
           .then(function () {
             return window.location.reload();
           })["catch"](function (err) {
@@ -5489,12 +5492,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-cookies */ "./node_modules/vue-cookies/vue-cookies.js");
 /* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_cookies__WEBPACK_IMPORTED_MODULE_1__);
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 
 Vue.prototype.$currentUserArray = [];
@@ -5503,8 +5506,9 @@ Vue.prototype.$boardColumn = [];
 Vue.prototype.$taskColumn = [];
 Vue.prototype.$boardFinal = [];
 Vue.prototype.$boardFinal1 = [];
-Vue.prototype.$boardFinal2 = []; //  get current user's id from meta tag
+Vue.prototype.$boardFinal2 = [];
 
+//  get current user's id from meta tag
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5610,8 +5614,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
   },
   created: function created() {
     //  get all boards
-    this.fetchBoards(); //  get all tasks
-
+    this.fetchBoards();
+    //  get all tasks
     this.fetchTasks();
     this.appendMembers();
     this.getBoardColor();
@@ -5624,7 +5628,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     //  board data handling
     fetchBoards: function fetchBoards() {
       var _this = this;
-
       fetch("/api/boards/" + this.$user_id + "/" + this.$project_id).then(function (res) {
         return res.json();
       }).then(function (res) {
@@ -5633,7 +5636,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     deleteBoard: function deleteBoard(id) {
       var _this2 = this;
-
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -5650,11 +5652,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             return res.json();
           }).then(function (data) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Column Deleted', 'Column Deleted Successfully!', 'success');
-
             _this2.fetchBoards();
-
             _this2.fetchTasks();
-
             window.location.reload();
           })["catch"](function (error) {
             return console.log(error);
@@ -5664,7 +5663,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     addBoard: function addBoard() {
       var _this3 = this;
-
       fetch("/api/board/" + this.$user_id + "/" + this.$project_id, {
         method: "post",
         body: JSON.stringify(this.board),
@@ -5678,7 +5676,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           _this3.validationBoardError = error;
         } else {
           _this3.validationBoardError = '';
-
           if (_this3.boards.length < 7) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
               title: 'Column Added',
@@ -5690,9 +5687,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             }).then(function (confirm) {
               if (confirm.isConfirmed) {
                 _this3.fetchBoards();
-
                 _this3.fetchTasks();
-
                 window.location.reload();
               }
             });
@@ -5706,7 +5701,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
               allowEscapeKey: false
             });
           }
-
           _this3.board.name = "";
         }
       })["catch"](function (error) {
@@ -5722,7 +5716,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     updateBoard: function updateBoard() {
       var _this4 = this;
-
       fetch("/api/board/" + this.$user_id + "/" + this.$project_id, {
         method: "put",
         body: JSON.stringify(this.boardEdit),
@@ -5747,9 +5740,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this4.fetchBoards();
-
               _this4.fetchTasks();
-
               window.location.reload();
             }
           });
@@ -5761,18 +5752,15 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     //  task data handling
     fetchTasks: function fetchTasks() {
       var _this5 = this;
-
       fetch("/api/tasks/" + this.$user_id + "/" + this.$project_id).then(function (res) {
         return res.json();
       }).then(function (res) {
         _this5.tasks = res.data;
-
         _this5.fetchBoards();
       });
     },
     deleteTask: function deleteTask(id) {
       var _this6 = this;
-
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -5798,9 +5786,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             }).then(function (confirm) {
               if (confirm.isConfirmed) {
                 _this6.fetchTasks();
-
                 _this6.fetchBoards();
-
                 window.location.reload();
               }
             });
@@ -5812,7 +5798,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     addTask: function addTask() {
       var _this7 = this;
-
       fetch("/api/task/" + this.$user_id + "/" + this.$project_id, {
         method: "post",
         body: JSON.stringify(this.task),
@@ -5841,9 +5826,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this7.fetchTasks();
-
               _this7.fetchBoards();
-
               window.location.reload();
             }
           });
@@ -5852,7 +5835,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     updateTask: function updateTask() {
       var _this8 = this;
-
       fetch("/api/task/" + this.$user_id + "/" + this.$project_id, {
         method: "put",
         body: JSON.stringify(this.taskEdit),
@@ -5876,9 +5858,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this8.fetchTasks();
-
               _this8.fetchBoards();
-
               window.location.reload();
             }
           });
@@ -5907,14 +5887,11 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     assignedUserTask: function assignedUserTask(id) {
       var _this9 = this;
-
       axios.get('/admin/task/assigned/' + id).then(function (response) {
         _this9.user_assigned_task = response.data;
-
         _this9.user_assigned_task.forEach(function (task_person) {
           _this9.$currentAssignedTaskMember.push(task_person.user_id);
         });
-
         _this9.taskMembers.members = _this9.$currentAssignedTaskMember;
       });
     },
@@ -5925,7 +5902,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     assignMembersTask: function assignMembersTask() {
       var _this10 = this;
-
       axios.put('/admin/task/update-members/' + this.taskID, this.taskMembers).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
           title: 'Task Member assigned!',
@@ -5946,7 +5922,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     // subtask data handling
     addSubtask: function addSubtask() {
       var _this11 = this;
-
       if (this.addOrUpdateSubtask === false) {
         axios.post('/admin/subtask/create', {
           board_id: 0,
@@ -5967,9 +5942,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this11.fetchBoards();
-
               _this11.fetchTasks();
-
               _this11.fetchSubtask();
             }
           });
@@ -5984,11 +5957,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           task_id: this.show.id
         }).then(function () {
           _this11.fetchSubtask();
-
           _this11.fetchTasks();
-
           _this11.fetchBoards();
-
           _this11.toggleEditSubtask = false;
           _this11.addOrUpdateSubtask = false;
           _this11.formSubtask.subtask_name = '';
@@ -6008,7 +5978,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     deleteSubtask: function deleteSubtask(id) {
       var _this12 = this;
-
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -6026,36 +5995,28 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             _this12.formSubtask.subtask_description = '';
             _this12.formSubtask.subtask_start_date = '';
             _this12.formSubtask.subtask_end_date = '';
-
             _this12.fetchBoards();
-
             _this12.fetchTasks();
-
             _this12.fetchSubtask();
           })["catch"](function (error) {
             console.log(error);
           });
           sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Deleted!', 'A subtask has been deleted.', 'success');
         }
-
         _this12.fetchSubtask();
-
         _this12.fetchTasks();
       });
     },
     fetchSubtask: function fetchSubtask() {
       var _this13 = this;
-
       axios.get('/admin/subtask/' + this.show.id + '/' + this.logged.id).then(function (response) {
         _this13.subtasks = response.data.data;
-
         _this13.fetchTasks();
       });
     },
     // comment data handling
     addOrUpdateComment: function addOrUpdateComment() {
       var _this14 = this;
-
       if (this.formComment.is_edit === false) {
         this.formComment.comment = $('#commentArea').val();
         axios.post('/admin/comment/store', {
@@ -6063,9 +6024,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           task_id: this.show.id
         }).then(function () {
           $('#commentArea').data("emojioneArea").setText('');
-
           _this14.fetchComment();
-
           document.getElementById('comment_scroll').scrollIntoView();
         })["catch"](function (error) {
           console.log(error.response.data);
@@ -6078,7 +6037,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         }).then(function () {
           _this14.formComment.is_edit = false;
           _this14.formComment.comment = $('#commentArea').data("emojioneArea").setText('');
-
           _this14.fetchComment();
         })["catch"](function (error) {
           console.log(error.response.data);
@@ -6087,17 +6045,14 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     fetchComment: function fetchComment() {
       var _this15 = this;
-
       axios.get('/admin/comment/' + this.show.id).then(function (response) {
         _this15.comments = response.data;
       });
     },
     deleteComment: function deleteComment(id) {
       var _this16 = this;
-
       axios["delete"]('/admin/comment/delete/' + id).then(function () {
         _this16.formComment.comment = $('#commentArea').data('emojioneArea').setText('');
-
         _this16.fetchComment();
       })["catch"](function (error) {
         console.log(error);
@@ -6111,7 +6066,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     // project file upload data handling
     fetchFiles: function fetchFiles() {
       var _this17 = this;
-
       axios.get('/admin/file/uploads/' + this.show.id).then(function (response) {
         _this17.attachment = response.data;
       });
@@ -6132,7 +6086,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     removeFile: function removeFile(id, file) {
       var _this18 = this;
-
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -6145,7 +6098,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         if (result.isConfirmed) {
           axios["delete"]('/admin/file/destroy/' + id + '/' + file).then(function (response) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('File deleted', 'File has been deleted', 'success');
-
             _this18.fetchFiles();
           })["catch"](function (error) {
             console.log(error);
@@ -6184,7 +6136,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     updateProject: function updateProject() {
       var _this19 = this;
-
       axios.put('/admin/project/update/' + this.$project_id, this.formEdit).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project Updated!', 'Your project has been updated.', 'success').then(function (confirm) {
           if (confirm.isConfirmed) {
@@ -6197,16 +6148,13 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     appendMembers: function appendMembers() {
       var _this20 = this;
-
       this.staff.forEach(function (person) {
         _this20.$currentUserArray.push(person.user_id);
       });
     },
     updateMembers: function updateMembers() {
       var _this21 = this;
-
       this.formMembers.members = $('#selectMembers').val();
-
       try {
         axios.put('/admin/update-members/' + this.$project_id, this.formMembers).then(function () {
           sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project member updated!', 'Members in the project is updated', 'success').then(function (confirm) {
@@ -6223,13 +6171,11 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     fetchKanbanTask: function fetchKanbanTask() {
       var _this22 = this;
-
       this.$props.kanban_task.forEach(function (element) {
         var startDate = new Date(element.task_start_date);
         var endDate = new Date(element.task_due_date);
         var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
         var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
-
         _this22.$taskColumn.push({
           'name': element.name,
           'y': [startDateFormatted, endDateFormatted]
@@ -6238,7 +6184,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     fetchKanbanBoard: function fetchKanbanBoard() {
       var _this23 = this;
-
       var filter = [];
       this.$props.kanban_board_task.forEach(function (element) {
         filter = _this23.$props.kanban_task.filter(function (e) {
@@ -6256,9 +6201,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           });
         });
         var mapBoard = [];
-
         _this23.$boardColumn.push(element.name);
-
         filter.filter(function (value, index, self) {
           return self.findIndex(function (v) {
             return v.board_name === value.board_name;
@@ -6328,27 +6271,23 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     getBoardColor: function getBoardColor() {
       var _this24 = this;
-
       axios.get('/admin/board-color/' + this.$project_id).then(function (response) {
         _this24.currentBoardColor = response.data.board_color;
       });
     },
     getTaskColor: function getTaskColor() {
       var _this25 = this;
-
       axios.get('/admin/task-color/' + this.$project_id).then(function (response) {
         _this25.currentTaskColor = response.data.task_color;
       });
     },
     changeBoardColor: function changeBoardColor(color) {
       var _this26 = this;
-
       this.currentBoardColor = color;
       axios.put('/admin/board-color/update/' + this.$project_id, {
         'board_color': this.currentBoardColor
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color updated!', 'Board color has been changed!', 'success');
-
         _this26.getBoardColor();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color not updated!', 'Something went wrong!', 'error');
@@ -6356,13 +6295,11 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     changeTaskColor: function changeTaskColor(color) {
       var _this27 = this;
-
       this.currentTaskColor = color;
       axios.put('/admin/task-color/update/' + this.$project_id, {
         'task_color': this.currentTaskColor
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color updated!', 'Task color has been changed!', 'success');
-
         _this27.getTaskColor();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color not updated!', 'Something went wrong!', 'error');
@@ -6380,7 +6317,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
   },
   mounted: function mounted() {
     var _this28 = this;
-
     var inputElement = document.querySelector('input[id="upload_file"]');
     var pond = FilePond.create(inputElement, {
       labelFileTypeNotAllowed: 'File type not allowed ',
@@ -6419,15 +6355,12 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     });
     this.currentColor = vue_cookies__WEBPACK_IMPORTED_MODULE_1___default().get('theme');
     var arrow = document.querySelectorAll(".arrow");
-
     for (var i = 0; i < arrow.length; i++) {
       arrow[i].addEventListener("click", function (e) {
         var arrowParent = e.target.parentElement.parentElement; //selecting main parent of arrow
-
         arrowParent.classList.toggle("showMenu");
       });
     }
-
     var sidebar = document.querySelector(".sidebar");
     var sidebarBtn = document.querySelector(".bx-menu");
     sidebarBtn === null || sidebarBtn === void 0 ? void 0 : sidebarBtn.addEventListener("click", function () {
@@ -6483,24 +6416,19 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       series: this.$boardFinal1
     });
     chart.redraw();
-
     function pointLabelText(point) {
       var pY = point.options('y');
       var pRange = pY.map(norm);
-
       if (thresholdDate > pRange[1]) {
         return getIconText('material/navigation/check', '#66BB6A', 16);
       } else if (thresholdDate > pRange[0]) {
         return getIconText('material/notification/sync', '#FDD835', 20);
       }
-
       return getIconText('material/navigation/close', '#FF5252', 16);
     }
-
     function norm(d) {
       return new Date(d).getTime();
     }
-
     function getIconText(name, color, size) {
       return '<icon name=' + name + ' size=' + size + ' fill=' + color + '>';
     }
@@ -6524,10 +6452,11 @@ __webpack_require__.r(__webpack_exports__);
   props: ["id", "draggable"],
   methods: {
     dragStart: function dragStart(e) {
-      var target = e.target; //  set the task_id with target task's id
+      var target = e.target;
+      //  set the task_id with target task's id
+      e.dataTransfer.setData("task_id", target.id);
 
-      e.dataTransfer.setData("task_id", target.id); //  hide the target task when the drag starts
-
+      //  hide the target task when the drag starts
       setTimeout(function () {
         target.style.display = "none";
       }, 0);
@@ -6557,14 +6486,18 @@ __webpack_require__.r(__webpack_exports__);
     },
     drop: function drop(e) {
       var user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
-      var task_id = document.querySelector("input[name='task_id']").getAttribute("value"); //  get the target task based on subtask_id
+      var task_id = document.querySelector("input[name='task_id']").getAttribute("value");
 
-      var subtask_id = e.dataTransfer.getData("subtask_id"); //  get the element based on subtask_id
+      //  get the target task based on subtask_id
+      var subtask_id = e.dataTransfer.getData("subtask_id");
 
-      var subtask = document.getElementById(subtask_id); //  show the target subtask when dropped on the board
+      //  get the element based on subtask_id
+      var subtask = document.getElementById(subtask_id);
 
-      subtask.style.display = "block"; //  append the target subtask on the board where it is dropped
+      //  show the target subtask when dropped on the board
+      subtask.style.display = "block";
 
+      //  append the target subtask on the board where it is dropped
       e.target.appendChild(subtask);
       var task_data = '';
       fetch('/admin/subtask/' + e.target.children[e.target.children.length - 1].id + '/' + task_id + '/' + user_id).then(function (response) {
@@ -6612,10 +6545,12 @@ __webpack_require__.r(__webpack_exports__);
   props: ["id", "draggable"],
   methods: {
     dragStart: function dragStart(e) {
-      var target = e.target; //  set the subtask_id with target task's id
+      var target = e.target;
 
-      e.dataTransfer.setData("subtask_id", target.id); //  hide the target task when the drag starts
+      //  set the subtask_id with target task's id
+      e.dataTransfer.setData("subtask_id", target.id);
 
+      //  hide the target task when the drag starts
       setTimeout(function () {
         target.style.display = "none";
       }, 0);
@@ -6642,28 +6577,30 @@ __webpack_require__.r(__webpack_exports__);
     drop: function drop(e) {
       //  get current user's id from meta tag
       var user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
-      var project_id = document.querySelector("meta[name='project_id']").getAttribute("content"); //  get the target task based on task_id
+      var project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
 
-      var task_id = e.dataTransfer.getData("task_id"); //  get the element based on task_id
-
-      var task = document.getElementById(task_id); //  show the target task when dropped on the board
-
-      task.style.display = "block"; //  append the target task on the board where it is dropped
-
+      //  get the target task based on task_id
+      var task_id = e.dataTransfer.getData("task_id");
+      //  get the element based on task_id
+      var task = document.getElementById(task_id);
+      //  show the target task when dropped on the board
+      task.style.display = "block";
+      //  append the target task on the board where it is dropped
       e.target.appendChild(task);
       var task_data = "";
-      var board_data = ""; //  get task based on task id and current user id
+      var board_data = "";
 
+      //  get task based on task id and current user id
       fetch("/api/task/" + e.target.children[e.target.children.length - 1].id + "/" + user_id + "/" + project_id).then(function (res) {
         return res.json();
       }).then(function (res) {
-        task_data = res.data; //  get board based on board id and current user id
-
+        task_data = res.data;
+        //  get board based on board id and current user id
         fetch("/api/board/" + e.target.id + "/" + user_id + "/" + project_id).then(function (res) {
           return res.json();
         }).then(function (res) {
-          board_data = res.data; //  get task based on id for updating new board's name
-
+          board_data = res.data;
+          //  get task based on id for updating new board's name
           fetch("/api/task/" + user_id + "/" + project_id, {
             method: "put",
             body: JSON.stringify({
@@ -6681,7 +6618,8 @@ __webpack_require__.r(__webpack_exports__);
             headers: {
               "Content-Type": "application/json"
             }
-          }) // .then((res) => {
+          })
+          // .then((res) => {
           //     res.json();
           // })
           .then(function () {
@@ -6712,12 +6650,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-cookies */ "./node_modules/vue-cookies/vue-cookies.js");
 /* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_cookies__WEBPACK_IMPORTED_MODULE_1__);
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 
 Vue.prototype.$currentUserArray = [];
@@ -6725,8 +6663,9 @@ Vue.prototype.$currentAssignedTaskMember = [];
 Vue.prototype.$boardColumn = [];
 Vue.prototype.$taskColumn = [];
 Vue.prototype.$boardFinal = [];
-Vue.prototype.$boardFinal1 = []; //  get current user's id from meta tag
+Vue.prototype.$boardFinal1 = [];
 
+//  get current user's id from meta tag
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -6831,8 +6770,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
   },
   created: function created() {
     //  get all boards
-    this.fetchBoards(); //  get all tasks
-
+    this.fetchBoards();
+    //  get all tasks
     this.fetchTasks();
     this.appendMembers();
     this.getBoardColor();
@@ -6845,7 +6784,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     //  board data handling
     fetchBoards: function fetchBoards() {
       var _this = this;
-
       fetch("/api/boards/" + this.$user_id + "/" + this.$project_id).then(function (res) {
         return res.json();
       }).then(function (res) {
@@ -6854,7 +6792,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     deleteBoard: function deleteBoard(id) {
       var _this2 = this;
-
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -6871,11 +6808,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             return res.json();
           }).then(function (data) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Column Deleted', 'Column Deleted Successfully!', 'success');
-
             _this2.fetchBoards();
-
             _this2.fetchTasks();
-
             window.location.reload();
           })["catch"](function (error) {
             return console.log(error);
@@ -6885,7 +6819,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     addBoard: function addBoard() {
       var _this3 = this;
-
       fetch("/api/board/" + this.$user_id + "/" + this.$project_id, {
         method: "post",
         body: JSON.stringify(this.board),
@@ -6899,7 +6832,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           _this3.validationBoardError = error;
         } else {
           _this3.validationBoardError = '';
-
           if (_this3.boards.length < 7) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
               title: 'Column Added',
@@ -6911,9 +6843,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             }).then(function (confirm) {
               if (confirm.isConfirmed) {
                 _this3.fetchBoards();
-
                 _this3.fetchTasks();
-
                 window.location.reload();
               }
             });
@@ -6927,7 +6857,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
               allowEscapeKey: false
             });
           }
-
           _this3.board.name = "";
         }
       })["catch"](function (error) {
@@ -6943,7 +6872,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     updateBoard: function updateBoard() {
       var _this4 = this;
-
       fetch("/api/board/" + this.$user_id + "/" + this.$project_id, {
         method: "put",
         body: JSON.stringify(this.boardEdit),
@@ -6968,7 +6896,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this4.fetchBoards();
-
               window.location.reload();
             }
           });
@@ -6980,18 +6907,15 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     //  task data handling
     fetchTasks: function fetchTasks() {
       var _this5 = this;
-
       fetch("/api/tasks/" + this.$user_id + "/" + this.$project_id).then(function (res) {
         return res.json();
       }).then(function (res) {
         _this5.tasks = res.data;
-
         _this5.fetchBoards();
       });
     },
     deleteTask: function deleteTask(id) {
       var _this6 = this;
-
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -7017,9 +6941,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             }).then(function (confirm) {
               if (confirm.isConfirmed) {
                 _this6.fetchBoards();
-
                 _this6.fetchTasks();
-
                 window.location.reload();
               }
             });
@@ -7031,7 +6953,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     addTask: function addTask() {
       var _this7 = this;
-
       fetch("/api/task/" + this.$user_id + "/" + this.$project_id, {
         method: "post",
         body: JSON.stringify(this.task),
@@ -7060,9 +6981,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this7.fetchTasks();
-
               _this7.fetchBoards();
-
               window.location.reload();
             }
           });
@@ -7071,7 +6990,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     updateTask: function updateTask() {
       var _this8 = this;
-
       fetch("/api/task/" + this.$user_id + "/" + this.$project_id, {
         method: "put",
         body: JSON.stringify(this.taskEdit),
@@ -7095,9 +7013,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this8.fetchTasks();
-
               _this8.fetchBoards();
-
               window.location.reload();
             }
           });
@@ -7126,14 +7042,11 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     assignedUserTask: function assignedUserTask(id) {
       var _this9 = this;
-
       axios.get('/head/task/assigned/' + id).then(function (response) {
         _this9.user_assigned_task = response.data;
-
         _this9.user_assigned_task.forEach(function (task_person) {
           _this9.$currentAssignedTaskMember.push(task_person.user_id);
         });
-
         _this9.taskMembers.members = _this9.$currentAssignedTaskMember;
       });
     },
@@ -7144,7 +7057,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     assignMembersTask: function assignMembersTask() {
       var _this10 = this;
-
       axios.put('/head/task/update-members/' + this.taskID, this.taskMembers).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
           title: 'Task Member assigned!',
@@ -7165,7 +7077,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     // subtask data handling
     addSubtask: function addSubtask() {
       var _this11 = this;
-
       if (this.addOrUpdateSubtask === false) {
         axios.post('/head/subtask/create', {
           board_id: 0,
@@ -7186,9 +7097,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }).then(function (confirm) {
             if (confirm.isConfirmed) {
               _this11.fetchBoards();
-
               _this11.fetchTasks();
-
               _this11.fetchSubtask();
             }
           });
@@ -7203,9 +7112,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           task_id: this.show.id
         }).then(function () {
           _this11.fetchSubtask();
-
           _this11.fetchTasks();
-
           _this11.toggleEditSubtask = false;
           _this11.addOrUpdateSubtask = false;
           _this11.formSubtask.subtask_name = '';
@@ -7225,7 +7132,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     deleteSubtask: function deleteSubtask(id) {
       var _this12 = this;
-
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -7241,36 +7147,28 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             _this12.addOrUpdateSubtask = false;
             _this12.formSubtask.subtask_name = '';
             _this12.formSubtask.subtask_description = '';
-
             _this12.fetchBoards();
-
             _this12.fetchTasks();
-
             _this12.fetchSubtask();
           })["catch"](function (error) {
             console.log(error);
           });
           sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Deleted!', 'A subtask has been deleted.', 'success');
         }
-
         _this12.fetchSubtask();
-
         _this12.fetchTasks();
       });
     },
     fetchSubtask: function fetchSubtask() {
       var _this13 = this;
-
       axios.get('/head/subtask/' + this.show.id + '/' + this.logged.id).then(function (response) {
         _this13.subtasks = response.data.data;
-
         _this13.fetchTasks();
       });
     },
     // comment data handling
     addOrUpdateComment: function addOrUpdateComment() {
       var _this14 = this;
-
       if (this.formComment.is_edit === false) {
         this.formComment.comment = $('#commentArea').val();
         axios.post('/head/comment/store', {
@@ -7278,9 +7176,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           task_id: this.show.id
         }).then(function () {
           $('#commentArea').data("emojioneArea").setText('');
-
           _this14.fetchComment();
-
           document.getElementById('comment_scroll').scrollIntoView();
         })["catch"](function (error) {
           console.log(error.response.data);
@@ -7293,7 +7189,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         }).then(function () {
           _this14.formComment.is_edit = false;
           _this14.formComment.comment = $('#commentArea').data("emojioneArea").setText('');
-
           _this14.fetchComment();
         })["catch"](function (error) {
           console.log(error.response.data);
@@ -7302,17 +7197,14 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     fetchComment: function fetchComment() {
       var _this15 = this;
-
       axios.get('/head/comment/' + this.show.id).then(function (response) {
         _this15.comments = response.data;
       });
     },
     deleteComment: function deleteComment(id) {
       var _this16 = this;
-
       axios["delete"]('/head/comment/delete/' + id).then(function () {
         _this16.formComment.comment = $('#commentArea').data('emojioneArea').setText('');
-
         _this16.fetchComment();
       })["catch"](function (error) {
         console.log(error);
@@ -7326,7 +7218,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     // project file upload data handling
     fetchFiles: function fetchFiles() {
       var _this17 = this;
-
       axios.get('/head/file/uploads/' + this.show.id).then(function (response) {
         _this17.attachment = response.data;
       });
@@ -7347,7 +7238,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     removeFile: function removeFile(id, file) {
       var _this18 = this;
-
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -7360,7 +7250,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         if (result.isConfirmed) {
           axios["delete"]('/head/file/destroy/' + id + '/' + file).then(function (response) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('File deleted', 'File has been deleted', 'success');
-
             _this18.fetchFiles();
           })["catch"](function (error) {
             console.log(error);
@@ -7371,7 +7260,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     // project data handling
     deleteProject: function deleteProject(title) {
       var _this19 = this;
-
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -7401,7 +7289,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     updateProject: function updateProject() {
       var _this20 = this;
-
       axios.put('/head/project/update/' + this.$project_id, this.formEdit).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project Updated!', 'Your project has been updated.', 'success').then(function (confirm) {
           if (confirm.isConfirmed) {
@@ -7414,14 +7301,12 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     appendMembers: function appendMembers() {
       var _this21 = this;
-
       this.staff.forEach(function (person) {
         _this21.$currentUserArray.push(person.user_id);
       });
     },
     updateMembers: function updateMembers() {
       var _this22 = this;
-
       this.formMembers.members = $('#selectMembers').val();
       axios.put('/head/update-members/' + this.$project_id, this.formMembers).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project member updated!', 'Members in the project is updated', 'success').then(function (confirm) {
@@ -7435,13 +7320,11 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     fetchKanbanTask: function fetchKanbanTask() {
       var _this23 = this;
-
       this.$props.kanban_task.forEach(function (element) {
         var startDate = new Date(element.task_start_date);
         var endDate = new Date(element.task_due_date);
         var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
         var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
-
         _this23.$taskColumn.push({
           'name': element.name,
           'y': [startDateFormatted, endDateFormatted]
@@ -7450,7 +7333,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     fetchKanbanBoard: function fetchKanbanBoard() {
       var _this24 = this;
-
       var filter = [];
       this.$props.kanban_board_task.forEach(function (element) {
         filter = _this24.$props.kanban_task.filter(function (e) {
@@ -7468,9 +7350,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           });
         });
         var mapBoard = [];
-
         _this24.$boardColumn.push(element.name);
-
         filter.filter(function (value, index, self) {
           return self.findIndex(function (v) {
             return v.board_name === value.board_name;
@@ -7540,27 +7420,23 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     getBoardColor: function getBoardColor() {
       var _this25 = this;
-
       axios.get('/head/board-color/' + this.$project_id).then(function (response) {
         _this25.currentBoardColor = response.data.board_color;
       });
     },
     getTaskColor: function getTaskColor() {
       var _this26 = this;
-
       axios.get('/head/task-color/' + this.$project_id).then(function (response) {
         _this26.currentTaskColor = response.data.task_color;
       });
     },
     changeBoardColor: function changeBoardColor(color) {
       var _this27 = this;
-
       this.currentBoardColor = color;
       axios.put('/head/board-color/update/' + this.$project_id, {
         'board_color': this.currentBoardColor
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color updated!', 'Board color has been changed!', 'success');
-
         _this27.getBoardColor();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color not updated!', 'Something went wrong!', 'error');
@@ -7568,13 +7444,11 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     changeTaskColor: function changeTaskColor(color) {
       var _this28 = this;
-
       this.currentTaskColor = color;
       axios.put('/head/task-color/update/' + this.$project_id, {
         'task_color': this.currentTaskColor
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color updated!', 'Task color has been changed!', 'success');
-
         _this28.getTaskColor();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color not updated!', 'Something went wrong!', 'error');
@@ -7582,7 +7456,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     toggleFinishedProject: function toggleFinishedProject(id) {
       var _this29 = this;
-
       axios.get('/head/finish-project/' + id).then(function (response) {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project Finished!', 'Your project is set to finished.', 'success').then(function (confirm) {
           if (confirm.isConfirmed) {
@@ -7594,7 +7467,6 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
   },
   mounted: function mounted() {
     var _this30 = this;
-
     var inputElement = document.querySelector('input[id="upload_file"]');
     var pond = FilePond.create(inputElement, {
       labelFileTypeNotAllowed: 'File type not allowed ',
@@ -7633,15 +7505,12 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     });
     this.currentColor = vue_cookies__WEBPACK_IMPORTED_MODULE_1___default().get('theme');
     var arrow = document.querySelectorAll(".arrow");
-
     for (var i = 0; i < arrow.length; i++) {
       arrow[i].addEventListener("click", function (e) {
         var arrowParent = e.target.parentElement.parentElement; //selecting main parent of arrow
-
         arrowParent.classList.toggle("showMenu");
       });
     }
-
     var sidebar = document.querySelector(".sidebar");
     var sidebarBtn = document.querySelector(".bx-menu");
     sidebarBtn === null || sidebarBtn === void 0 ? void 0 : sidebarBtn.addEventListener("click", function () {
@@ -7697,24 +7566,19 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       series: this.$boardFinal1
     });
     chart.redraw();
-
     function pointLabelText(point) {
       var pY = point.options('y');
       var pRange = pY.map(norm);
-
       if (thresholdDate > pRange[1]) {
         return getIconText('material/navigation/check', '#66BB6A', 16);
       } else if (thresholdDate > pRange[0]) {
         return getIconText('material/notification/sync', '#FDD835', 20);
       }
-
       return getIconText('material/navigation/close', '#FF5252', 16);
     }
-
     function norm(d) {
       return new Date(d).getTime();
     }
-
     function getIconText(name, color, size) {
       return '<icon name=' + name + ' size=' + size + ' fill=' + color + '>';
     }
@@ -7738,10 +7602,11 @@ __webpack_require__.r(__webpack_exports__);
   props: ["id", "draggable"],
   methods: {
     dragStart: function dragStart(e) {
-      var target = e.target; //  set the task_id with target task's id
+      var target = e.target;
+      //  set the task_id with target task's id
+      e.dataTransfer.setData("task_id", target.id);
 
-      e.dataTransfer.setData("task_id", target.id); //  hide the target task when the drag starts
-
+      //  hide the target task when the drag starts
       setTimeout(function () {
         target.style.display = "none";
       }, 0);
@@ -7771,14 +7636,18 @@ __webpack_require__.r(__webpack_exports__);
     },
     drop: function drop(e) {
       var user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
-      var task_id = document.querySelector("input[name='task_id']").getAttribute("value"); //  get the target task based on subtask_id
+      var task_id = document.querySelector("input[name='task_id']").getAttribute("value");
 
-      var subtask_id = e.dataTransfer.getData("subtask_id"); //  get the element based on subtask_id
+      //  get the target task based on subtask_id
+      var subtask_id = e.dataTransfer.getData("subtask_id");
 
-      var subtask = document.getElementById(subtask_id); //  show the target subtask when dropped on the board
+      //  get the element based on subtask_id
+      var subtask = document.getElementById(subtask_id);
 
-      subtask.style.display = "block"; //  append the target subtask on the board where it is dropped
+      //  show the target subtask when dropped on the board
+      subtask.style.display = "block";
 
+      //  append the target subtask on the board where it is dropped
       e.target.appendChild(subtask);
       var task_data = '';
       fetch('/head/subtask/' + e.target.children[e.target.children.length - 1].id + '/' + task_id + '/' + user_id).then(function (response) {
@@ -7826,10 +7695,12 @@ __webpack_require__.r(__webpack_exports__);
   props: ["id", "draggable"],
   methods: {
     dragStart: function dragStart(e) {
-      var target = e.target; //  set the subtask_id with target task's id
+      var target = e.target;
 
-      e.dataTransfer.setData("subtask_id", target.id); //  hide the target task when the drag starts
+      //  set the subtask_id with target task's id
+      e.dataTransfer.setData("subtask_id", target.id);
 
+      //  hide the target task when the drag starts
       setTimeout(function () {
         target.style.display = "none";
       }, 0);
@@ -7853,8 +7724,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var render = function render() {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "board",
     attrs: {
@@ -7871,7 +7741,6 @@ var render = function render() {
     }
   }, [_vm._t("default")], 2);
 };
-
 var staticRenderFns = [];
 render._withStripped = true;
 
@@ -7892,8 +7761,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var render = function render() {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", [_c("div", {
     "class": {
       sidebar: _vm.isSidebar
@@ -8550,7 +8418,6 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-
         _vm.$set(_vm.task, "board_id", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }, function ($event) {
         _vm.validationTaskError.board_id ? _vm.validationTaskError.board_id = null : null;
@@ -8594,7 +8461,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.task, "name", $event.target.value);
       }
     }
@@ -8623,7 +8489,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.task, "description", $event.target.value);
       }
     }
@@ -8650,7 +8515,6 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-
         _vm.$set(_vm.task, "privacy_status", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }, function ($event) {
         _vm.validationTaskError.privacy_status ? _vm.validationTaskError.privacy_status = null : null;
@@ -8732,7 +8596,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.board, "name", $event.target.value);
       }
     }
@@ -8862,7 +8725,6 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-
         _vm.$set(_vm.formMembers, "members", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }
     }
@@ -8932,7 +8794,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formEdit, "project_title", $event.target.value);
       }
     }
@@ -8969,7 +8830,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formEdit, "project_description", $event.target.value);
       }
     }
@@ -9009,7 +8869,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formEdit, "project_start_date", $event.target.value);
       }
     }
@@ -9046,7 +8905,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formEdit, "project_end_date", $event.target.value);
       }
     }
@@ -9287,7 +9145,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formSubtask, "subtask_name", $event.target.value);
       }
     }
@@ -9322,7 +9179,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formSubtask, "subtask_description", $event.target.value);
       }
     }
@@ -9378,7 +9234,6 @@ var render = function render() {
       }
     }, _vm._l(_vm.subtasks, function (subtask) {
       var _subtask$subtask_desc;
-
       return _c("div", {
         key: subtask.id
       }, [index === subtask.board_id ? _c("div", [_c("Subtask", {
@@ -9597,7 +9452,6 @@ var render = function render() {
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formComment, "comment", $event.target.value);
       }
     }
@@ -9654,7 +9508,6 @@ var render = function render() {
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.taskEdit, "name", $event.target.value);
       }
     }
@@ -9687,7 +9540,6 @@ var render = function render() {
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.taskEdit, "description", $event.target.value);
       }
     }
@@ -9718,7 +9570,6 @@ var render = function render() {
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.taskEdit, "task_start_date", $event.target.value);
       }
     }
@@ -9749,7 +9600,6 @@ var render = function render() {
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.taskEdit, "task_due_date", $event.target.value);
       }
     }
@@ -9779,7 +9629,6 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-
         _vm.$set(_vm.taskEdit, "privacy_status", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }
     }
@@ -9871,7 +9720,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.boardEdit, "name", $event.target.value);
       }
     }
@@ -9965,11 +9813,9 @@ var render = function render() {
     }
   }, [_vm._v("CANCEL")])], 2)])])]);
 };
-
 var staticRenderFns = [function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("a", {
     attrs: {
       href: "/admin/dashboard"
@@ -9988,8 +9834,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Dashboard")])])])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("a", {
     attrs: {
       href: "/admin/user-management"
@@ -10008,8 +9853,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("User Management")])])])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "icon-link"
   }, [_c("a", {
@@ -10025,8 +9869,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("a", {
     staticClass: "link_name",
     attrs: {
@@ -10035,8 +9878,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Projects")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("a", {
     attrs: {
       href: "/admin/reports"
@@ -10055,8 +9897,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Reports")])])])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("div", {
     staticClass: "profile-details"
   }, [_c("div", {
@@ -10080,8 +9921,7 @@ var staticRenderFns = [function () {
   })])])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "home-content"
   }, [_c("i", {
@@ -10107,8 +9947,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("a", {
     staticClass: "dropdown-item",
     attrs: {
@@ -10118,36 +9957,31 @@ var staticRenderFns = [function () {
   }, [_vm._v("View Project")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("hr", {
     staticClass: "dropdown-divider"
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("hr", {
     staticClass: "dropdown-divider"
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("hr", {
     staticClass: "dropdown-divider"
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("hr", {
     staticClass: "dropdown-divider"
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("nav", [_c("div", {
     staticClass: "nav nav-tabs",
     attrs: {
@@ -10201,8 +10035,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Create Task\n                                    ")])])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "container-fluid mt-4"
   }, [_c("h1", {
@@ -10210,8 +10043,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("No Columns and Task Yet!")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -10232,8 +10064,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "form-group mt-3"
   }, [_c("p", [_c("b", {
@@ -10243,8 +10074,7 @@ var staticRenderFns = [function () {
   })])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "col-md-1"
   }, [_c("i", {
@@ -10252,8 +10082,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "col-md-1"
   }, [_c("i", {
@@ -10261,8 +10090,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "col-md-1"
   }, [_c("i", {
@@ -10270,8 +10098,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -10292,8 +10119,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -10314,8 +10140,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("label", {
     attrs: {
       "for": "task-name"
@@ -10325,8 +10150,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Board Name")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("label", {
     attrs: {
       "for": "task-name"
@@ -10336,8 +10160,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Task Name")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("label", {
     attrs: {
       "for": "task-decription"
@@ -10347,8 +10170,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Task Description")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("label", {
     attrs: {
       "for": "task-status"
@@ -10358,8 +10180,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Status")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -10380,8 +10201,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -10402,8 +10222,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -10424,8 +10243,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -10446,8 +10264,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -10468,8 +10285,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -10490,8 +10306,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "col-md-3"
   }, [_c("i", {
@@ -10502,15 +10317,13 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("hr", {
     staticClass: "dropdown-divider"
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -10531,8 +10344,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -10553,13 +10365,11 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("thead", [_c("tr", [_c("th", [_vm._v("Column Position")]), _vm._v(" "), _c("th", [_vm._v("Column Name")])])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -10598,8 +10408,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var render = function render() {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "task",
     attrs: {
@@ -10614,7 +10423,6 @@ var render = function render() {
     }
   }, [_vm._t("default")], 2);
 };
-
 var staticRenderFns = [];
 render._withStripped = true;
 
@@ -10635,8 +10443,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var render = function render() {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "board",
     attrs: {
@@ -10653,7 +10460,6 @@ var render = function render() {
     }
   }, [_vm._t("default")], 2);
 };
-
 var staticRenderFns = [];
 render._withStripped = true;
 
@@ -10674,8 +10480,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var render = function render() {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "task",
     attrs: {
@@ -10690,7 +10495,6 @@ var render = function render() {
     }
   }, [_vm._t("default")], 2);
 };
-
 var staticRenderFns = [];
 render._withStripped = true;
 
@@ -10711,8 +10515,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var render = function render() {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "board",
     attrs: {
@@ -10729,7 +10532,6 @@ var render = function render() {
     }
   }, [_vm._t("default")], 2);
 };
-
 var staticRenderFns = [];
 render._withStripped = true;
 
@@ -10750,8 +10552,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var render = function render() {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", [_c("div", {
     "class": {
       sidebar: _vm.isSidebar
@@ -11094,7 +10895,10 @@ var render = function render() {
           key: _vm.item.id,
           staticClass: "col"
         }, [_vm.item.create_subtask_status !== 0 ? _c("h5", {
-          staticClass: "display-5 fs-5 title-text"
+          staticClass: "display-5 fs-5 title-text",
+          style: {
+            color: _vm.currentTaskColor == "#673AB7" || _vm.currentTaskColor == "#424242" || _vm.currentTaskColor == "#E91E63" || _vm.currentTaskColor == "#F44336" ? "white" : "black"
+          }
         }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]) : _vm._e(), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
           staticClass: "progress"
         }, [_c("div", {
@@ -11497,7 +11301,6 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-
         _vm.$set(_vm.task, "board_id", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }, function ($event) {
         _vm.validationTaskError.board_id ? _vm.validationTaskError.board_id = null : null;
@@ -11541,7 +11344,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.task, "name", $event.target.value);
       }
     }
@@ -11570,7 +11372,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.task, "description", $event.target.value);
       }
     }
@@ -11597,7 +11398,6 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-
         _vm.$set(_vm.task, "privacy_status", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }, function ($event) {
         _vm.validationTaskError.privacy_status ? _vm.validationTaskError.privacy_status = null : null;
@@ -11679,7 +11479,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.board, "name", $event.target.value);
       }
     }
@@ -11809,7 +11608,6 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-
         _vm.$set(_vm.formMembers, "members", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }
     }
@@ -11879,7 +11677,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formEdit, "project_title", $event.target.value);
       }
     }
@@ -11916,7 +11713,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formEdit, "project_description", $event.target.value);
       }
     }
@@ -11956,7 +11752,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formEdit, "project_start_date", $event.target.value);
       }
     }
@@ -11993,7 +11788,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formEdit, "project_end_date", $event.target.value);
       }
     }
@@ -12234,7 +12028,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formSubtask, "subtask_name", $event.target.value);
       }
     }
@@ -12269,7 +12062,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formSubtask, "subtask_description", $event.target.value);
       }
     }
@@ -12325,7 +12117,6 @@ var render = function render() {
       }
     }, _vm._l(_vm.subtasks, function (subtask) {
       var _subtask$subtask_desc;
-
       return _c("div", {
         key: subtask.id
       }, [index === subtask.board_id ? _c("div", [_c("SubtaskHeadTask", {
@@ -12544,7 +12335,6 @@ var render = function render() {
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.formComment, "comment", $event.target.value);
       }
     }
@@ -12601,7 +12391,6 @@ var render = function render() {
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.taskEdit, "name", $event.target.value);
       }
     }
@@ -12634,7 +12423,6 @@ var render = function render() {
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.taskEdit, "description", $event.target.value);
       }
     }
@@ -12665,7 +12453,6 @@ var render = function render() {
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.taskEdit, "task_start_date", $event.target.value);
       }
     }
@@ -12696,7 +12483,6 @@ var render = function render() {
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.taskEdit, "task_due_date", $event.target.value);
       }
     }
@@ -12726,7 +12512,6 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-
         _vm.$set(_vm.taskEdit, "privacy_status", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }
     }
@@ -12818,7 +12603,6 @@ var render = function render() {
       },
       input: function input($event) {
         if ($event.target.composing) return;
-
         _vm.$set(_vm.boardEdit, "name", $event.target.value);
       }
     }
@@ -12988,11 +12772,9 @@ var render = function render() {
     staticClass: "text-center"
   }, [_vm._v("No Invitations Yet")])])])])]);
 };
-
 var staticRenderFns = [function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "icon-link"
   }, [_c("a", {
@@ -13008,8 +12790,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("a", {
     staticClass: "link_name",
     attrs: {
@@ -13018,8 +12799,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Projects")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("a", {
     attrs: {
       href: "/head/reports"
@@ -13038,8 +12818,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Reports")])])])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("div", {
     staticClass: "profile-details"
   }, [_c("div", {
@@ -13063,8 +12842,7 @@ var staticRenderFns = [function () {
   })])])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "home-content"
   }, [_c("i", {
@@ -13100,8 +12878,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("a", {
     staticClass: "dropdown-item",
     attrs: {
@@ -13111,36 +12888,31 @@ var staticRenderFns = [function () {
   }, [_vm._v("View Project")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("hr", {
     staticClass: "dropdown-divider"
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("hr", {
     staticClass: "dropdown-divider"
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("hr", {
     staticClass: "dropdown-divider"
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("hr", {
     staticClass: "dropdown-divider"
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "container-fluid mt-4"
   }, [_c("h1", {
@@ -13148,8 +12920,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("No Columns and Task Yet!")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13170,8 +12941,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "form-group mt-3"
   }, [_c("p", [_c("b", {
@@ -13181,8 +12951,7 @@ var staticRenderFns = [function () {
   })])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "col-md-1"
   }, [_c("i", {
@@ -13190,8 +12959,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "col-md-1"
   }, [_c("i", {
@@ -13199,8 +12967,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "col-md-1"
   }, [_c("i", {
@@ -13208,8 +12975,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13230,8 +12996,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13252,8 +13017,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("label", {
     attrs: {
       "for": "task-name"
@@ -13263,8 +13027,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Board Name")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("label", {
     attrs: {
       "for": "task-name"
@@ -13274,8 +13037,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Task Name")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("label", {
     attrs: {
       "for": "task-decription"
@@ -13285,8 +13047,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Task Description")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("label", {
     attrs: {
       "for": "task-status"
@@ -13296,8 +13057,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Status")])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13318,8 +13078,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13340,8 +13099,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13362,8 +13120,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13384,8 +13141,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13406,8 +13162,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13428,8 +13183,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "col-md-3"
   }, [_c("i", {
@@ -13440,15 +13194,13 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("li", [_c("hr", {
     staticClass: "dropdown-divider"
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13469,8 +13221,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13491,13 +13242,11 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("thead", [_c("tr", [_c("th", [_vm._v("Column Position")]), _vm._v(" "), _c("th", [_vm._v("Column Name")])])]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13518,8 +13267,7 @@ var staticRenderFns = [function () {
   })]);
 }, function () {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "offcanvas-header text-white",
     staticStyle: {
@@ -13558,8 +13306,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var render = function render() {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "task",
     attrs: {
@@ -13574,7 +13321,6 @@ var render = function render() {
     }
   }, [_vm._t("default")], 2);
 };
-
 var staticRenderFns = [];
 render._withStripped = true;
 
@@ -13595,8 +13341,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var render = function render() {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "board",
     attrs: {
@@ -13613,7 +13358,6 @@ var render = function render() {
     }
   }, [_vm._t("default")], 2);
 };
-
 var staticRenderFns = [];
 render._withStripped = true;
 
@@ -13634,8 +13378,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var render = function render() {
   var _vm = this,
-      _c = _vm._self._c;
-
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "task",
     attrs: {
@@ -13650,7 +13393,6 @@ var render = function render() {
     }
   }, [_vm._t("default")], 2);
 };
-
 var staticRenderFns = [];
 render._withStripped = true;
 
@@ -13674,9 +13416,10 @@ __webpack_require__.r(__webpack_exports__);
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
+__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 window.Vue = (__webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js")["default"]);
+
 
 
 
@@ -13687,9 +13430,9 @@ window.Vue = (__webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js
  *
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
+
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].component('v-select', (vue_select__WEBPACK_IMPORTED_MODULE_0___default()));
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].component('SubtaskBoard', (__webpack_require__(/*! ./components/admin/subtask/Board.vue */ "./resources/js/components/admin/subtask/Board.vue")["default"]));
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].component('Subtask', (__webpack_require__(/*! ./components/admin/subtask/Task.vue */ "./resources/js/components/admin/subtask/Task.vue")["default"]));
@@ -13701,6 +13444,7 @@ vue__WEBPACK_IMPORTED_MODULE_2__["default"].component('Task', (__webpack_require
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].component('heads', (__webpack_require__(/*! ./components/heads/Dashboard.vue */ "./resources/js/components/heads/Dashboard.vue")["default"]));
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].component('heads-board', (__webpack_require__(/*! ./components/heads/Board */ "./resources/js/components/heads/Board.vue")["default"]));
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].component('heads-task', (__webpack_require__(/*! ./components/heads/Task.vue */ "./resources/js/components/heads/Task.vue")["default"]));
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -13720,26 +13464,29 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
-
 try {
   __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/bootstrap.esm.js");
 } catch (e) {}
+
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.
  */
+
 // import Echo from 'laravel-echo';
+
 // window.Pusher = require('pusher-js');
+
 // window.Echo = new Echo({
 //     broadcaster: 'pusher',
 //     key: process.env.MIX_PUSHER_APP_KEY,
@@ -18996,7 +18743,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ":root{--vs-colors--lightest:rgba(60,60,60,0.26);--vs-colors--light:rgba(60,60,60,0.5);--vs-colors--dark:#333;--vs-colors--darkest:rgba(0,0,0,0.15);--vs-search-input-color:inherit;--vs-search-input-bg:#fff;--vs-search-input-placeholder-color:inherit;--vs-font-size:1rem;--vs-line-height:1.4;--vs-state-disabled-bg:#f8f8f8;--vs-state-disabled-color:var(--vs-colors--light);--vs-state-disabled-controls-color:var(--vs-colors--light);--vs-state-disabled-cursor:not-allowed;--vs-border-color:var(--vs-colors--lightest);--vs-border-width:1px;--vs-border-style:solid;--vs-border-radius:4px;--vs-actions-padding:4px 6px 0 3px;--vs-controls-color:var(--vs-colors--light);--vs-controls-size:1;--vs-controls--deselect-text-shadow:0 1px 0 #fff;--vs-selected-bg:#f0f0f0;--vs-selected-color:var(--vs-colors--dark);--vs-selected-border-color:var(--vs-border-color);--vs-selected-border-style:var(--vs-border-style);--vs-selected-border-width:var(--vs-border-width);--vs-dropdown-bg:#fff;--vs-dropdown-color:inherit;--vs-dropdown-z-index:1000;--vs-dropdown-min-width:160px;--vs-dropdown-max-height:350px;--vs-dropdown-box-shadow:0px 3px 6px 0px var(--vs-colors--darkest);--vs-dropdown-option-bg:#000;--vs-dropdown-option-color:var(--vs-dropdown-color);--vs-dropdown-option-padding:3px 20px;--vs-dropdown-option--active-bg:#5897fb;--vs-dropdown-option--active-color:#fff;--vs-dropdown-option--deselect-bg:#fb5858;--vs-dropdown-option--deselect-color:#fff;--vs-transition-timing-function:cubic-bezier(1,-0.115,0.975,0.855);--vs-transition-duration:150ms}.v-select{font-family:inherit;position:relative}.v-select,.v-select *{box-sizing:border-box}:root{--vs-transition-timing-function:cubic-bezier(1,0.5,0.8,1);--vs-transition-duration:0.15s}@-webkit-keyframes vSelectSpinner{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@keyframes vSelectSpinner{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}.vs__fade-enter-active,.vs__fade-leave-active{pointer-events:none;transition:opacity var(--vs-transition-duration) var(--vs-transition-timing-function)}.vs__fade-enter,.vs__fade-leave-to{opacity:0}:root{--vs-disabled-bg:var(--vs-state-disabled-bg);--vs-disabled-color:var(--vs-state-disabled-color);--vs-disabled-cursor:var(--vs-state-disabled-cursor)}.vs--disabled .vs__clear,.vs--disabled .vs__dropdown-toggle,.vs--disabled .vs__open-indicator,.vs--disabled .vs__search,.vs--disabled .vs__selected{background-color:var(--vs-disabled-bg);cursor:var(--vs-disabled-cursor)}.v-select[dir=rtl] .vs__actions{padding:0 3px 0 6px}.v-select[dir=rtl] .vs__clear{margin-left:6px;margin-right:0}.v-select[dir=rtl] .vs__deselect{margin-left:0;margin-right:2px}.v-select[dir=rtl] .vs__dropdown-menu{text-align:right}.vs__dropdown-toggle{-webkit-appearance:none;-moz-appearance:none;appearance:none;background:var(--vs-search-input-bg);border:var(--vs-border-width) var(--vs-border-style) var(--vs-border-color);border-radius:var(--vs-border-radius);display:flex;padding:0 0 4px;white-space:normal}.vs__selected-options{display:flex;flex-basis:100%;flex-grow:1;flex-wrap:wrap;padding:0 2px;position:relative}.vs__actions{align-items:center;display:flex;padding:var(--vs-actions-padding)}.vs--searchable .vs__dropdown-toggle{cursor:text}.vs--unsearchable .vs__dropdown-toggle{cursor:pointer}.vs--open .vs__dropdown-toggle{border-bottom-color:transparent;border-bottom-left-radius:0;border-bottom-right-radius:0}.vs__open-indicator{fill:var(--vs-controls-color);transform:scale(var(--vs-controls-size));transition:transform var(--vs-transition-duration) var(--vs-transition-timing-function);transition-timing-function:var(--vs-transition-timing-function)}.vs--open .vs__open-indicator{transform:rotate(180deg) scale(var(--vs-controls-size))}.vs--loading .vs__open-indicator{opacity:0}.vs__clear{fill:var(--vs-controls-color);background-color:transparent;border:0;cursor:pointer;margin-right:8px;padding:0}.vs__dropdown-menu{background:var(--vs-dropdown-bg);border:var(--vs-border-width) var(--vs-border-style) var(--vs-border-color);border-radius:0 0 var(--vs-border-radius) var(--vs-border-radius);border-top-style:none;box-shadow:var(--vs-dropdown-box-shadow);box-sizing:border-box;color:var(--vs-dropdown-color);display:block;left:0;list-style:none;margin:0;max-height:var(--vs-dropdown-max-height);min-width:var(--vs-dropdown-min-width);overflow-y:auto;padding:5px 0;position:absolute;text-align:left;top:calc(100% - var(--vs-border-width));width:100%;z-index:var(--vs-dropdown-z-index)}.vs__no-options{text-align:center}.vs__dropdown-option{clear:both;color:var(--vs-dropdown-option-color);cursor:pointer;display:block;line-height:1.42857143;padding:var(--vs-dropdown-option-padding);white-space:nowrap}.vs__dropdown-option--highlight{background:var(--vs-dropdown-option--active-bg);color:var(--vs-dropdown-option--active-color)}.vs__dropdown-option--deselect{background:var(--vs-dropdown-option--deselect-bg);color:var(--vs-dropdown-option--deselect-color)}.vs__dropdown-option--disabled{background:var(--vs-state-disabled-bg);color:var(--vs-state-disabled-color);cursor:var(--vs-state-disabled-cursor)}.vs__selected{align-items:center;background-color:var(--vs-selected-bg);border:var(--vs-selected-border-width) var(--vs-selected-border-style) var(--vs-selected-border-color);border-radius:var(--vs-border-radius);color:var(--vs-selected-color);display:flex;line-height:var(--vs-line-height);margin:4px 2px 0;padding:0 .25em;z-index:0}.vs__deselect{fill:var(--vs-controls-color);-webkit-appearance:none;-moz-appearance:none;appearance:none;background:none;border:0;cursor:pointer;display:inline-flex;margin-left:4px;padding:0;text-shadow:var(--vs-controls--deselect-text-shadow)}.vs--single .vs__selected{background-color:transparent;border-color:transparent}.vs--single.vs--loading .vs__selected,.vs--single.vs--open .vs__selected{opacity:.4;position:absolute}.vs--single.vs--searching .vs__selected{display:none}.vs__search::-webkit-search-cancel-button{display:none}.vs__search::-ms-clear,.vs__search::-webkit-search-decoration,.vs__search::-webkit-search-results-button,.vs__search::-webkit-search-results-decoration{display:none}.vs__search,.vs__search:focus{-webkit-appearance:none;-moz-appearance:none;appearance:none;background:none;border:1px solid transparent;border-left:none;box-shadow:none;color:var(--vs-search-input-color);flex-grow:1;font-size:var(--vs-font-size);line-height:var(--vs-line-height);margin:4px 0 0;max-width:100%;outline:none;padding:0 7px;width:0;z-index:1}.vs__search::-moz-placeholder{color:var(--vs-search-input-placeholder-color)}.vs__search::placeholder{color:var(--vs-search-input-placeholder-color)}.vs--unsearchable .vs__search{opacity:1}.vs--unsearchable:not(.vs--disabled) .vs__search{cursor:pointer}.vs--single.vs--searching:not(.vs--open):not(.vs--loading) .vs__search{opacity:.2}.vs__spinner{align-self:center;-webkit-animation:vSelectSpinner 1.1s linear infinite;animation:vSelectSpinner 1.1s linear infinite;border:.9em solid hsla(0,0%,39%,.1);border-left-color:rgba(60,60,60,.45);font-size:5px;opacity:0;overflow:hidden;text-indent:-9999em;transform:translateZ(0) scale(var(--vs-controls--spinner-size,var(--vs-controls-size)));transition:opacity .1s}.vs__spinner,.vs__spinner:after{border-radius:50%;height:5em;transform:scale(var(--vs-controls--spinner-size,var(--vs-controls-size)));width:5em}.vs--loading .vs__spinner{opacity:1}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ":root{--vs-colors--lightest:rgba(60,60,60,0.26);--vs-colors--light:rgba(60,60,60,0.5);--vs-colors--dark:#333;--vs-colors--darkest:rgba(0,0,0,0.15);--vs-search-input-color:inherit;--vs-search-input-bg:#fff;--vs-search-input-placeholder-color:inherit;--vs-font-size:1rem;--vs-line-height:1.4;--vs-state-disabled-bg:#f8f8f8;--vs-state-disabled-color:var(--vs-colors--light);--vs-state-disabled-controls-color:var(--vs-colors--light);--vs-state-disabled-cursor:not-allowed;--vs-border-color:var(--vs-colors--lightest);--vs-border-width:1px;--vs-border-style:solid;--vs-border-radius:4px;--vs-actions-padding:4px 6px 0 3px;--vs-controls-color:var(--vs-colors--light);--vs-controls-size:1;--vs-controls--deselect-text-shadow:0 1px 0 #fff;--vs-selected-bg:#f0f0f0;--vs-selected-color:var(--vs-colors--dark);--vs-selected-border-color:var(--vs-border-color);--vs-selected-border-style:var(--vs-border-style);--vs-selected-border-width:var(--vs-border-width);--vs-dropdown-bg:#fff;--vs-dropdown-color:inherit;--vs-dropdown-z-index:1000;--vs-dropdown-min-width:160px;--vs-dropdown-max-height:350px;--vs-dropdown-box-shadow:0px 3px 6px 0px var(--vs-colors--darkest);--vs-dropdown-option-bg:#000;--vs-dropdown-option-color:var(--vs-dropdown-color);--vs-dropdown-option-padding:3px 20px;--vs-dropdown-option--active-bg:#5897fb;--vs-dropdown-option--active-color:#fff;--vs-dropdown-option--deselect-bg:#fb5858;--vs-dropdown-option--deselect-color:#fff;--vs-transition-timing-function:cubic-bezier(1,-0.115,0.975,0.855);--vs-transition-duration:150ms}.v-select{font-family:inherit;position:relative}.v-select,.v-select *{box-sizing:border-box}:root{--vs-transition-timing-function:cubic-bezier(1,0.5,0.8,1);--vs-transition-duration:0.15s}@keyframes vSelectSpinner{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}.vs__fade-enter-active,.vs__fade-leave-active{pointer-events:none;transition:opacity var(--vs-transition-duration) var(--vs-transition-timing-function)}.vs__fade-enter,.vs__fade-leave-to{opacity:0}:root{--vs-disabled-bg:var(--vs-state-disabled-bg);--vs-disabled-color:var(--vs-state-disabled-color);--vs-disabled-cursor:var(--vs-state-disabled-cursor)}.vs--disabled .vs__clear,.vs--disabled .vs__dropdown-toggle,.vs--disabled .vs__open-indicator,.vs--disabled .vs__search,.vs--disabled .vs__selected{background-color:var(--vs-disabled-bg);cursor:var(--vs-disabled-cursor)}.v-select[dir=rtl] .vs__actions{padding:0 3px 0 6px}.v-select[dir=rtl] .vs__clear{margin-left:6px;margin-right:0}.v-select[dir=rtl] .vs__deselect{margin-left:0;margin-right:2px}.v-select[dir=rtl] .vs__dropdown-menu{text-align:right}.vs__dropdown-toggle{-webkit-appearance:none;-moz-appearance:none;appearance:none;background:var(--vs-search-input-bg);border:var(--vs-border-width) var(--vs-border-style) var(--vs-border-color);border-radius:var(--vs-border-radius);display:flex;padding:0 0 4px;white-space:normal}.vs__selected-options{display:flex;flex-basis:100%;flex-grow:1;flex-wrap:wrap;padding:0 2px;position:relative}.vs__actions{align-items:center;display:flex;padding:var(--vs-actions-padding)}.vs--searchable .vs__dropdown-toggle{cursor:text}.vs--unsearchable .vs__dropdown-toggle{cursor:pointer}.vs--open .vs__dropdown-toggle{border-bottom-color:transparent;border-bottom-left-radius:0;border-bottom-right-radius:0}.vs__open-indicator{fill:var(--vs-controls-color);transform:scale(var(--vs-controls-size));transition:transform var(--vs-transition-duration) var(--vs-transition-timing-function);transition-timing-function:var(--vs-transition-timing-function)}.vs--open .vs__open-indicator{transform:rotate(180deg) scale(var(--vs-controls-size))}.vs--loading .vs__open-indicator{opacity:0}.vs__clear{fill:var(--vs-controls-color);background-color:transparent;border:0;cursor:pointer;margin-right:8px;padding:0}.vs__dropdown-menu{background:var(--vs-dropdown-bg);border:var(--vs-border-width) var(--vs-border-style) var(--vs-border-color);border-radius:0 0 var(--vs-border-radius) var(--vs-border-radius);border-top-style:none;box-shadow:var(--vs-dropdown-box-shadow);box-sizing:border-box;color:var(--vs-dropdown-color);display:block;left:0;list-style:none;margin:0;max-height:var(--vs-dropdown-max-height);min-width:var(--vs-dropdown-min-width);overflow-y:auto;padding:5px 0;position:absolute;text-align:left;top:calc(100% - var(--vs-border-width));width:100%;z-index:var(--vs-dropdown-z-index)}.vs__no-options{text-align:center}.vs__dropdown-option{clear:both;color:var(--vs-dropdown-option-color);cursor:pointer;display:block;line-height:1.42857143;padding:var(--vs-dropdown-option-padding);white-space:nowrap}.vs__dropdown-option--highlight{background:var(--vs-dropdown-option--active-bg);color:var(--vs-dropdown-option--active-color)}.vs__dropdown-option--deselect{background:var(--vs-dropdown-option--deselect-bg);color:var(--vs-dropdown-option--deselect-color)}.vs__dropdown-option--disabled{background:var(--vs-state-disabled-bg);color:var(--vs-state-disabled-color);cursor:var(--vs-state-disabled-cursor)}.vs__selected{align-items:center;background-color:var(--vs-selected-bg);border:var(--vs-selected-border-width) var(--vs-selected-border-style) var(--vs-selected-border-color);border-radius:var(--vs-border-radius);color:var(--vs-selected-color);display:flex;line-height:var(--vs-line-height);margin:4px 2px 0;padding:0 .25em;z-index:0}.vs__deselect{fill:var(--vs-controls-color);-webkit-appearance:none;-moz-appearance:none;appearance:none;background:none;border:0;cursor:pointer;display:inline-flex;margin-left:4px;padding:0;text-shadow:var(--vs-controls--deselect-text-shadow)}.vs--single .vs__selected{background-color:transparent;border-color:transparent}.vs--single.vs--loading .vs__selected,.vs--single.vs--open .vs__selected{opacity:.4;position:absolute}.vs--single.vs--searching .vs__selected{display:none}.vs__search::-webkit-search-cancel-button{display:none}.vs__search::-ms-clear,.vs__search::-webkit-search-decoration,.vs__search::-webkit-search-results-button,.vs__search::-webkit-search-results-decoration{display:none}.vs__search,.vs__search:focus{-webkit-appearance:none;-moz-appearance:none;appearance:none;background:none;border:1px solid transparent;border-left:none;box-shadow:none;color:var(--vs-search-input-color);flex-grow:1;font-size:var(--vs-font-size);line-height:var(--vs-line-height);margin:4px 0 0;max-width:100%;outline:none;padding:0 7px;width:0;z-index:1}.vs__search::-moz-placeholder{color:var(--vs-search-input-placeholder-color)}.vs__search::placeholder{color:var(--vs-search-input-placeholder-color)}.vs--unsearchable .vs__search{opacity:1}.vs--unsearchable:not(.vs--disabled) .vs__search{cursor:pointer}.vs--single.vs--searching:not(.vs--open):not(.vs--loading) .vs__search{opacity:.2}.vs__spinner{align-self:center;animation:vSelectSpinner 1.1s linear infinite;border:.9em solid hsla(0,0%,39%,.1);border-left-color:rgba(60,60,60,.45);font-size:5px;opacity:0;overflow:hidden;text-indent:-9999em;transform:translateZ(0) scale(var(--vs-controls--spinner-size,var(--vs-controls-size)));transition:opacity .1s}.vs__spinner,.vs__spinner:after{border-radius:50%;height:5em;transform:scale(var(--vs-controls--spinner-size,var(--vs-controls-size)));width:5em}.vs--loading .vs__spinner{opacity:1}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

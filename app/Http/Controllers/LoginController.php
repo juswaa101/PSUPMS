@@ -125,14 +125,16 @@ class LoginController extends Controller
                 ->where('invitations.status', 1)
                 ->where('projects.template', 'research_extension')
                 ->orderBy('projects.created_at', 'desc')
-                ->get();
+                ->get()
+                ->unique('projects.project_title');
             $igp = Project::join('invitations', 'invitations.project_id', '=', 'projects.project_id')
                 ->orderByDesc('projects.created_at')
                 ->where('projects.id', Auth::user()->id)
                 ->where('invitations.status', 1)
                 ->where('projects.template', 'igp')
                 ->orderBy('projects.created_at', 'desc')
-                ->get();
+                ->get()
+                ->unique('projects.project_title');
             $extension = Project::join('invitations', 'invitations.project_id', '=', 'projects.project_id')
                 ->orderByDesc('projects.created_at')
                 ->where('projects.id', Auth::user()->id)
@@ -140,14 +142,16 @@ class LoginController extends Controller
                 ->orWhere('invitations.status', 1)
                 ->where('projects.template', 'extension_project')
                 ->orderBy('projects.created_at', 'desc')
-                ->get();
+                ->get()
+                ->unique('projects.project_title');
             $default = Project::join('invitations', 'invitations.project_id', '=', 'projects.project_id')
                 ->orderByDesc('projects.created_at')
                 ->where('projects.id', Auth::user()->id)
                 ->where('invitations.status', 1)
                 ->where('projects.template', 'default')
                 ->orderBy('projects.created_at', 'desc')
-                ->get();
+                ->get()
+                ->unique('projects.project_title');
             $user_profile = User::where('uuid', $uuid)->get();
             $project = $fetch->unique('project_title');
             $fetchLimitProject = Project::join('invitations', 'invitations.project_id', '=', 'projects.project_id')

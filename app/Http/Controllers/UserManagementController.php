@@ -48,7 +48,7 @@ class UserManagementController extends Controller
                 ->orderByDesc('notifications.created_at')
                 ->select(['notifications.id as notify_id', 'notifications.created_at as created', 'notifications.*', 'users.*'])
                 ->get();
-            $fetchLimitProject = Project::limit(5)->orderByDesc('created_at')->get()->unique('project_title');
+            $fetchLimitProject = Project::where('id', Auth::user()->id)->limit(5)->orderByDesc('created_at')->get()->unique('project_title');
             return view('admin.UserManagement', compact('project'), compact('notification'))
                 ->with('user_profile', $user_profile)
                 ->with('fetchLimitProject', $fetchLimitProject);
