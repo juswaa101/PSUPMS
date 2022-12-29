@@ -397,7 +397,7 @@
     </style>
 </head>
 
-<body>
+<body oncontextmenu="return false;">
     @yield('content')
     @if (isset(Auth::user()->email))
 
@@ -641,6 +641,26 @@
 
 </html>
 
+<script>
+    document.onkeydown = function(e) {
+        if (event.keyCode == 123) {
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+            return false;
+        }
+        if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+            return false;
+        }
+    }
+</script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.5/datatables.min.js"></script>
 
@@ -666,7 +686,7 @@
         http.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 let countNotification = document.getElementById("countNotification");
-                countNotification.innerHTML = 
+                countNotification.innerHTML =
                     parseInt(this.responseText) > 99 ? "99+" : parseInt(this.responseText) == 0 ?
                     countNotification.style.display = "none" :
                     countNotification.innerHTML = this.responseText;
