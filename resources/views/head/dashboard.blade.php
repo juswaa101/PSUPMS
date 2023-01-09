@@ -67,7 +67,7 @@
 
                             <div class="col-md-6 text-start">
                                 <button class="btn btn-warning w-100" data-bs-toggle="offcanvas"
-                                    data-bs-target="#reOffcanvas">Research Extension</button>
+                                    data-bs-target="#reOffcanvas">Research Project</button>
                             </div>
                         </div>
                         <div class="row mt-3">
@@ -117,7 +117,7 @@
         <div id="reOffcanvas" aria-labelledby="offcanvasWithBothOptionsLabel" class="offcanvas offcanvas-end"
             data-bs-scroll="true" tabindex="-1">
             <div class="offcanvas-header text-white" style="background-color: #00305F;">
-                <h4 id="offcanvasWithBothOptionsLabel" class="offcanvas-title">All Projects in Research Extension</h4>
+                <h4 id="offcanvasWithBothOptionsLabel" class="offcanvas-title">All Projects in Research Project</h4>
             </div>
             <div class="offcanvas-body" style="background-color: #E4E9F7;">
                 @forelse($research as $ref)
@@ -136,7 +136,7 @@
                     </div>
                 @empty
                     <div class="container p-3">
-                        <h4 class="text-center">No Project Yet in Research Extension</h4>
+                        <h4 class="text-center">No Project Yet in Research Project</h4>
                     </div>
                 @endforelse
             </div>

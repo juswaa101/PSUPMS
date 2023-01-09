@@ -191,8 +191,8 @@ class ProjectController extends Controller
     {
         try {
             $validate = Validator::make($request->all(), [
-                'title' => 'required|unique:projects,project_title|max:255',
-                'description' => 'required',
+                'title' => 'required|unique:projects,project_title|max:255|regex:/^[\s\w-]*$/',
+                'description' => 'required|regex:/^[\s\w-]*$/',
                 'project_start_date' => 'required',
                 'project_end_date' => 'required|after:project_start_date',
                 'head' => 'required',
@@ -327,8 +327,8 @@ class ProjectController extends Controller
     {
         try {
             $validate = Validator::make($request->all(), [
-                'title' => 'required|unique:projects,project_title|max:255',
-                'description' => 'required',
+                'title' => 'required|unique:projects,project_title|max:255|regex:/^[\s\w-]*$/',
+                'description' => 'required|regex:/^[\s\w-]*$/',
                 'project_start_date' => 'required',
                 'project_end_date' => 'required|after:project_start_date',
                 'staff' => 'required',

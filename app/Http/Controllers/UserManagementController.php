@@ -102,12 +102,12 @@ class UserManagementController extends Controller
     {
         try {
             $validate = Validator::make($request->all(), [
-                'full_name' => 'required',
-                'username' => 'required',
+                'full_name' => 'required|regex:/^[\s\w-]*$/',
+                'username' => 'required|regex:/^[\s\w-]*$/',
                 'email' => 'required|unique:users,email',
                 'department' => 'required',
-                'password' => 'required|min:6',
-                'confirm_password' => 'required|same:password|min:6',
+                'password' => 'required|min:6|regex:/^[\s\w-]*$/',
+                'confirm_password' => 'required|same:password|min:6|regex:/^[\s\w-]*$/',
                 'image' => 'required|image|mimes:jpg,png,jpeg|max:4096',
             ]);
 
@@ -166,11 +166,11 @@ class UserManagementController extends Controller
     {
         try {
             $validate = Validator::make($request->all(), [
-                'full_name' => 'required',
-                'username' => 'required',
-                'email' => 'required', Rule::unique('users')->ignore($id),
+                'full_name' => 'required|regex:/^[\s\w-]*$/',
+                'username' => 'required|regex:/^[\s\w-]*$/',
+                'email' => ['required', Rule::unique('users')->ignore($id)],
                 'department' => 'required',
-                'confirm_password' => 'same:password',
+                'confirm_password' => 'same:password|regex:/^[\s\w-]*$/',
             ]);
 
 

@@ -60,8 +60,8 @@ class TaskController extends Controller
         try {
             $validate = Validator::make($request->all(), [
                 'board_id' => 'required',
-                'name' => 'required|max:255',
-                'description' => 'required|max:255',
+                'name' => 'required|max:255|regex:/^[\s\w-]*$/',
+                'description' => 'required|regex:/^[\s\w-]*$/',
                 'privacy_status' => 'required'
             ]);
             if ($validate->fails()) {
@@ -184,8 +184,8 @@ class TaskController extends Controller
         try {
             $validate = Validator::make($request->all(), [
                 'board_id' => 'required',
-                'name' => 'required',
-                'description' => 'required',
+                'name' => 'required|regex:/^[\s\w-]*$/|max:255',
+                'description' => 'required|regex:/^[\s\w-]*$/',
             ]);
 
             if ($validate->fails()) {
@@ -217,7 +217,6 @@ class TaskController extends Controller
 
                 if ($task->save()) {
                     if ($old_board_id != $task->board_id) {
-                        Subtask::where('task_id', $task->id)->update(['board_id' => 0]);
                         $totalSubtask = Subtask::where('task_id', $task->id)->get()->count();
                         $totalSubtaskDone = Subtask::where('task_id', $task->id)
                             ->where('board_id', 2)

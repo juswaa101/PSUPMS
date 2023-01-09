@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('board_colors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('project_id')->references('project_id')->on('projects')->onDelete('cascade');
+            $table->foreignId('board_id')->references('id')->on('boards')->onDelete('cascade');
             $table->string('board_color');
             $table->timestamps();
         });

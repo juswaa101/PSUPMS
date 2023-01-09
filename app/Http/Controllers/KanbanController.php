@@ -44,6 +44,7 @@ class KanbanController extends Controller
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('projects.is_project_head', '=', 0)
                 ->where('invitations.status', 1)
+                ->orWhere('invitations.status', 0)
                 ->whereNull('users.deleted_at')
                 ->select(['*', 'users.id as user_id'])
                 ->get();
@@ -156,6 +157,7 @@ class KanbanController extends Controller
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('projects.is_project_head', '=', 0)
                 ->where('invitations.status', 1)
+                ->orWhere('invitations.status', 0)
                 ->whereNull('users.deleted_at')
                 ->select(['*', 'users.id as user_id'])
                 ->get();
@@ -279,6 +281,10 @@ class KanbanController extends Controller
                 ->select('boards.*', 'tasks.*', 'boards.name as board_name', 'tasks.name as task_name')
                 ->get();
 
+            $getProjectHead = Project::where('project_title', $project->project_title)->whereNot('id', 1)
+                ->where('is_project_head', 1)
+                ->first();
+
             $kanbanBoardAndTask = Board::orderBy('index')->whereIn('project_id', $project_id)->get();
             return view('head.kanban', compact('project'))
                 ->with('users', $users)
@@ -293,6 +299,7 @@ class KanbanController extends Controller
                 ->with(compact('invitation'))
                 ->with(compact('kanbanTask'))
                 ->with(compact('kanbanBoardAndTask'))
+                ->with(compact('getProjectHead'))
                 ->with('fetchLimitProject', $fetchLimitProject);
         } catch (ModelNotFoundException $e) {
             abort(404);

@@ -63,7 +63,7 @@ class BoardController extends Controller
     {
         try {
             $validate = Validator::make($request->all(), [
-                'name' => 'required',
+                'name' => 'required|regex:/^[\s\w-]*$/',
             ]);
     
             if ($validate->fails()) {
@@ -166,7 +166,7 @@ class BoardController extends Controller
     {
         try {
             $validate = Validator::make($request->all(), [
-                'name' => 'required',
+                'name' => 'required|regex:/^[\s\w-]*$/',
             ]);
     
             if ($validate->fails()) {

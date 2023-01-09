@@ -9,27 +9,15 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskColorController extends Controller
 {
-    public function getTaskColor($id)
-    {
-        try {
-            $getTaskColor = TaskColor::where('user_id', Auth::user()->id)
-                ->where('project_id', $id)->first();
-            return response()->json($getTaskColor);
-        } catch (Exception $e) {
-            abort_if($e, 500);
-        }
-    }
-
     public function updateTaskColor(Request $request, $id)
     {
         try {
             TaskColor::updateOrCreate(
                 [
-                    'project_id' => $id,
-                    'user_id' => Auth::user()->id,
+                    'task_id' => $id,
                 ],
                 [
-                    'project_id' => $id,
+                    'task_id' => $id,
                     'user_id' => Auth::user()->id,
                     'task_color' => $request->input('task_color')
                 ]

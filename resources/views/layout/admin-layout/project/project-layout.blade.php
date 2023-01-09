@@ -605,7 +605,7 @@
                                         <label for="template">Project template: </label>
                                         <select class="form-select mt-2" name="template">
                                             <option value="default">Default</option>
-                                            <option value="research_extension">Research Extension</option>
+                                            <option value="research_project">Research Project</option>
                                             <option value="igp">IGP</option>
                                             <option value="extension_project">Extension Project</option>
 

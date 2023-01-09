@@ -18,7 +18,8 @@
                         :user_assigned="{{ $userAssignedProject }}" :user_head="{{ $user_head }}"
                         :is_head="{{ $isProjectHead }}" :notification="{{ $notification }}"
                         :projects="{{ $projects }}" :invitation="{{ $invitation }}"
-                        :kanban_task="{{ $kanbanTask }}" :kanban_board_task="{{ $kanbanBoardAndTask }}"></heads>
+                        :kanban_task="{{ $kanbanTask }}" :kanban_board_task="{{ $kanbanBoardAndTask }}"
+                        :project_head="{{ $getProjectHead }}"></heads>
                 @endif
             </div>
         </div>

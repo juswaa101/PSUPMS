@@ -22,7 +22,9 @@ class BoardResource extends JsonResource
             'name' => $this->name,
             'index' => $this->index,
             'board_progress' => DB::table('board_progress')->where('board_id', $this->id)->first(),
-            'board_done' => DB::table('board_progress')->where('board_id', $this->id)->first()
+            'board_done' => DB::table('board_progress')->where('board_id', $this->id)->first(),
+            'color' => DB::table('board_colors')->where('board_id', $this->id)->first() == null ? "#FFFFFF"
+                : DB::table('board_colors')->where('board_id', $this->id)->first()
         ];
     }
 }

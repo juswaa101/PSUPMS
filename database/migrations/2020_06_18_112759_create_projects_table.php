@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id('project_id');
             $table->uuid('uuid')->unique();
             $table->string('project_title');
-            $table->string('project_description');
+            $table->longText('project_description');
             $table->date('project_start_date');
             $table->date('project_end_date');
             $table->foreignId('id')->references('id')->on('users')->onDelete('cascade');

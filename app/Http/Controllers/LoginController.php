@@ -30,7 +30,7 @@ class LoginController extends Controller
         try {
             $validate = Validator::make($request->all(), [
                 'email' => 'required|email',
-                'password' => 'required|min:6'
+                'password' => 'required|min:6|regex:/^[\s\w-]*$/'
             ]);
 
             $user_data = array(
@@ -61,7 +61,7 @@ class LoginController extends Controller
     {
         try {
             $fetch = Project::all()->where('id', Auth::user()->id)->sortByDesc('created_at');
-            $research = Project::all()->where('id', Auth::user()->id)->sortByDesc('created_at')->where('template', 'research_extension')->unique('project_title');
+            $research = Project::all()->where('id', Auth::user()->id)->sortByDesc('created_at')->where('template', 'research_project')->unique('project_title');
             $igp = Project::all()->where('id', Auth::user()->id)->sortByDesc('created_at')->where('template', 'igp')->unique('project_title');
             $extension = Project::all()->where('id', Auth::user()->id)->sortByDesc('created_at')->where('template', 'extension_project')->unique('project_title');
             $default = Project::all()->where('id', Auth::user()->id)->where('template', 'default')->unique('project_title');
@@ -123,7 +123,7 @@ class LoginController extends Controller
                 ->orderByDesc('projects.created_at')
                 ->where('projects.id', Auth::user()->id)
                 ->where('invitations.status', 1)
-                ->where('projects.template', 'research_extension')
+                ->where('projects.template', 'research_project')
                 ->orderBy('projects.created_at', 'desc')
                 ->get()
                 ->unique('projects.project_title');

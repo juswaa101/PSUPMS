@@ -1,3 +1,5 @@
+<!-- to do - last column cannot be drag by members -->
+<!-- project logs -->
 <template>
     <div>
         <!-- Sidebar -->
@@ -124,11 +126,6 @@
                                                             <hr class="dropdown-divider">
                                                         </li>
                                                     </div>
-                                                    <li><a class="dropdown-item" @click="openBoardColorModal()">Change
-                                                        Color</a></li>
-                                                    <li>
-                                                        <hr class="dropdown-divider">
-                                                    </li>
                                                     <li><a class="dropdown-item" @click="toggleFinishedProject(item.project_id)">Add to finished projects</a></li>
                                                 </ul>
                                             </div>
@@ -161,6 +158,11 @@
                                                 class="nav-link" data-bs-target="#offcanvasAddTask" data-bs-toggle="offcanvas"
                                                 role="tab" type="button" v-if="item.create_task_status !== 0 || is_head.is_project_head === 1">Create Task
                                         </button>
+                                        <button id="nav-profile-tab" aria-controls="nav-profile"
+                                                aria-selected="false"
+                                                class="nav-link" data-bs-target="#" data-bs-toggle="offcanvas"
+                                                role="tab" type="button">Project Logs
+                                        </button>
                                     </div>
                                 </nav>
                                 <br>
@@ -168,13 +170,14 @@
                                 <div class="container">
                                     <div class="row">
                                         <div class="col-md my-2" v-if="is_head.is_project_head === 1">
-                                            <label  data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddUsersModal">Add Members</label>
+                                            <label data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddUsersModal">Add Members</label>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="ms-3 bi bi-plus-circle-fill" viewBox="0 0 16 16" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddUsersModal">
                                                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
                                             </svg>
                                         </div>
                                         <div class="col-md my-2">
                                             <button class="btn btn-primary float-end" @click="toggleGanttChart = !toggleGanttChart">TOGGLE GANTT CHART</button>
+                                            <button class="btn btn-primary mx-2 float-end" @click="toggleOverdue = !toggleOverdue">TOGGLE OVERDUE</button>
                                         </div>
                                     </div>
                                 </div>
@@ -184,6 +187,29 @@
                                          class="tab-pane fade show active"
                                          role="tabpanel">
                                         <div id="chartDiv" style="max-width: 840px; min-width:330px; height: 440px;margin: 0px auto" v-show="toggleGanttChart"></div>
+                                        <div class="container-fluid" v-show="toggleOverdue">
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                    <tr style="background-color:#152238; color:white">
+                                                        <th scope="col" class="fw-normal">Task</th>
+                                                        <th scope="col" class="fw-normal">Due Date</th>
+                                                        <th scope="col" class="fw-normal">Status</th>
+                                                    </tr>
+                                                </thead>               
+                                                <tbody>
+                                                    <tr v-for="(task, index) in tasks" v-bind:key="task.id" 
+                                                        v-if="new Date().toJSON().slice(0,10).replace(/-/g,'-') >= task.task_due_date" style="background-color: #ECECEC">
+                                                        <th>
+                                                            {{ task.name }} 
+                                                        </th>
+                                                        <th>
+                                                            {{ task.task_due_date }}
+                                                        </th>
+                                                        <th class="text-danger fw-bold">OVERDUE</th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                         <div class="container-fluid" v-if="boards.length !== 0">
                                             <main class="flexbox py-4">
                                                 <div class="row">
@@ -204,6 +230,8 @@
                                                                                     <li><a class="dropdown-item" @click="editBoard(board)">Edit</a></li>
                                                                                     <div class="dropdown-divider"></div>
                                                                                     <li><a class="dropdown-item" @click="deleteBoard(board.id)">Delete</a></li>
+                                                                                    <div class="dropdown-divider"></div>
+                                                                                    <a class="dropdown-item" @click="openBoardColorModal(board.id)">Change Board Color</a>
                                                                                 </ul>
                                                                             </div>
                                                                         </div>
@@ -211,71 +239,178 @@
                                                             </div>
                                                         </div>
                                                         <div class="row" v-for="(value, key, index) in item" :key="item.id"
-                                                                    v-if="index < 1">
-                                                            <div class="col" v-if="item.create_subtask_status !== 0">
-                                                                <h5 class="display-5 fs-5 mt-3">Progress: {{ board.board_progress.total_task_done }} / {{ board.board_progress.total_task }}</h5>
-                                                                <div class="progress">
-                                                                    <div class="progress-bar bg-success text-light display-6 fs-6" 
-                                                                        :style="{ 'width' : (board.board_progress.total_task_done/board.board_done.total_task)*100 + '%' }" 
-                                                                        role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                                                    </div>
-                                                                </div>
+                                                            v-if="index < 1">
+                                                            <div class="col">
+                                                                <h5 class="display-5 fs-5 title-text"># of Task: {{ board.board_progress.total_task }}</h5>
                                                             </div>
                                                         </div>
                                                         <br>
                                                     </div>
                                                 </div>
-
                                                 <div class="row">
                                                     <div class="col" v-for="board in boards" v-bind:key="board.id">
-                                                        <Board :id="board.id" :style="('backgroundColor:'+currentBoardColor)">
+                                                        <Board :id="board.id" :style="('backgroundColor:'+board.color.board_color)">
                                                             <div v-for="task in tasks" v-bind:key-="task.id">
                                                                 <div v-if="board.id === task.board_id">
-                                                                    <Task :id="task.id" draggable="true">
-                                                                        <div class="card shadow-sm mt-2" :style="('backgroundColor:'+currentTaskColor)">
-                                                                            <div class="card-body">
-                                                                                <div class="col" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
-                                                                                    <h5 class="display-5 fs-5 title-text" v-if="item.create_subtask_status !== 0"
-                                                                                    :style="{ color: currentTaskColor == '#673AB7' || currentTaskColor == '#424242' || currentTaskColor == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }"
-                                                                                    >Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
-                                                                                    <div class="progress" v-if="item.create_subtask_status !== 0">
-                                                                                        <div class="progress-bar bg-success text-light display-6 fs-6" 
-                                                                                            :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
-                                                                                            role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                                    <div v-if="is_head.is_project_head === 1">
+                                                                        <Task :id="task.id" draggable="true">
+                                                                            <div class="card shadow-sm rounded-0 mt-2" :style="('backgroundColor:'+task.color.task_color)">
+                                                                                <div class="card-body">
+                                                                                    <div class="col" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
+                                                                                        <h5 class="display-5 fs-5 title-text" v-if="item.create_subtask_status !== 0"
+                                                                                        :style="{ color: task.color.task_color == '#673AB7' || task.color.task_color == '#424242' || task.color.task_color == '#E91E63' || task.color.task_color == '#F44336' ? 'white' : 'black'  }"
+                                                                                        >Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
+                                                                                        <div class="progress" v-if="item.create_subtask_status !== 0">
+                                                                                            <div class="progress-bar bg-success text-light display-6 fs-6" 
+                                                                                                :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
+                                                                                                role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                                <div class="dropdown text-end">
-                                                                                    <i class="bx bx-dots-horizontal-rounded bx-md" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                                                                                    :style="{ color: currentTaskColor == '#673AB7' || currentTaskColor == '#424242' || currentTaskColor == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }"
-                                                                                    ></i>
-                                                                                    <ul class="dropdown-menu" style="background-color:#E4E9F7;">
-                                                                                        <li><a @click="showModal(task)" class="dropdown-item">View</a></li>
-                                                                                        <div class="dropdown-divider"></div>
-                                                                                        <div v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
-                                                                                            <li v-if="is_head.is_project_head === 1"><a @click="assignUserTaskModal(task.id)" class="dropdown-item">Assign Members To Task</a></li>
-                                                                                            <div class="dropdown-divider" v-if="is_head.is_project_head === 1"></div>
-                                                                                            <li v-if="is_head.is_project_head === 1"><a @click="editTask(task)" class="dropdown-item">Edit</a></li>
-                                                                                            <div class="dropdown-divider" v-if="is_head.is_project_head === 1"></div>
-                                                                                            <li v-if="is_head.is_project_head === 1"><a @click="deleteTask(task.id)" class="dropdown-item">Delete</a></li>
-                                                                                            <div class="dropdown-divider" v-if="is_head.is_project_head === 1"></div>
-                                                                                        </div>
-                                                                                        <li><a class="dropdown-item" @click="openTaskColorModal()">Change Color</a></li>
-                                                                                    </ul>
-                                                                                </div>
-                                                                                <div class="card-title">
-                                                                                    <div class="container">
-                                                                                        <div class="row">
-                                                                                            <h5 :style="{ color: currentTaskColor == '#673AB7' || currentTaskColor == '#424242' || currentTaskColor == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }">{{ task.name.substring(0, 30) }}</h5>
+                                                                                    <div class="dropdown text-end">
+                                                                                        <i class="bx bx-dots-horizontal-rounded bx-md" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                                                                        :style="{ color: task.color.task_color == '#673AB7' || task.color.task_color == '#424242' || task.color.task_color == '#E91E63' || task.color.task_color == '#F44336' ? 'white' : 'black'  }"
+                                                                                        ></i>
+                                                                                        <ul class="dropdown-menu" style="background-color:#E4E9F7;">
+                                                                                            <li><a @click="showModal(task)" class="dropdown-item">View</a></li>
+                                                                                            <div class="dropdown-divider"></div>
+                                                                                            <div v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
+                                                                                                <li v-if="is_head.is_project_head === 1"><a @click="assignUserTaskModal(task.id)" class="dropdown-item">Assign Members To Task</a></li>
+                                                                                                <div class="dropdown-divider" v-if="is_head.is_project_head === 1"></div>
+                                                                                                <li v-if="is_head.is_project_head === 1"><a @click="editTask(task)" class="dropdown-item">Edit</a></li>
+                                                                                                <div class="dropdown-divider" v-if="is_head.is_project_head === 1"></div>
+                                                                                                <li v-if="is_head.is_project_head === 1"><a @click="deleteTask(task.id)" class="dropdown-item">Delete</a></li>
+                                                                                                <!-- <div class="dropdown-divider" v-if="is_head.is_project_head === 1"></div> -->
+                                                                                            </div>
+                                                                                            <!-- <li><a class="dropdown-item" @click="openTaskColorModal(task.id)">Change Color</a></li> -->
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                    <div class="card-title">
+                                                                                        <div class="container">
+                                                                                            <div class="row">
+                                                                                                <h5 :style="{ color: currentTaskColor == '#673AB7' || currentTaskColor == '#424242' || currentTaskColor == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }">{{ task.name.substring(0, 30) }}</h5>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
+                                                                                    <p class="ps-4" :style="{ color: currentTaskColor == '#673AB7' || currentTaskColor == '#424242' || currentTaskColor == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }">
+                                                                                        {{ task.description.substring(0, 50) + "..." }}
+                                                                                    </p>
+                                                                                    <i
+                                                                                        v-if="new Date().toJSON().slice(0,10).replace(/-/g,'-') >= task.task_due_date"
+                                                                                        class='bx bx-alarm-exclamation text-danger float-end bx-sm' 
+                                                                                        rel="tooltip" title="Task is already overdue"></i>
                                                                                 </div>
-                                                                                <p class="ps-4" :style="{ color: currentTaskColor == '#673AB7' || currentTaskColor == '#424242' || currentTaskColor == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }">
-                                                                                    {{ task.description.substring(0, 50) + "..." }}
-                                                                                </p>
+                                                                            </div>
+                                                                        </Task>
+                                                                    </div>
+                                                                    <div v-else>
+                                                                        <div v-if="task.uid === logged.id || task.uid === 1 || task.uid === project_head.id">
+                                                                            <Task :id="task.id" draggable="true">
+                                                                                <div class="card shadow-sm rounded-0 mt-2" :style="('backgroundColor:'+currentTaskColor)">
+                                                                                    <div class="card-body">
+                                                                                        <div class="col" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
+                                                                                            <h5 class="display-5 fs-5 title-text" v-if="item.create_subtask_status !== 0"
+                                                                                            :style="{ color: currentTaskColor == '#673AB7' || currentTaskColor == '#424242' || currentTaskColor == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }"
+                                                                                            >Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
+                                                                                            <div class="progress" v-if="item.create_subtask_status !== 0">
+                                                                                                <div class="progress-bar bg-success text-light display-6 fs-6" 
+                                                                                                    :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
+                                                                                                    role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="dropdown text-end">
+                                                                                            <i class="bx bx-dots-horizontal-rounded bx-md" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                                                                            :style="{ color: currentTaskColor == '#673AB7' || currentTaskColor == '#424242' || currentTaskColor == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }"
+                                                                                            ></i>
+                                                                                            <ul class="dropdown-menu" style="background-color:#E4E9F7;">
+                                                                                                <li><a @click="showModal(task)" class="dropdown-item">View</a></li>
+                                                                                                <div class="dropdown-divider"></div>
+                                                                                                <div v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
+                                                                                                    <li v-if="is_head.is_project_head === 1"><a @click="assignUserTaskModal(task.id)" class="dropdown-item">Assign Members To Task</a></li>
+                                                                                                    <div class="dropdown-divider" v-if="is_head.is_project_head === 1"></div>
+                                                                                                    <li v-if="is_head.is_project_head === 1"><a @click="editTask(task)" class="dropdown-item">Edit</a></li>
+                                                                                                    <div class="dropdown-divider" v-if="is_head.is_project_head === 1"></div>
+                                                                                                    <li v-if="is_head.is_project_head === 1"><a @click="deleteTask(task.id)" class="dropdown-item">Delete</a></li>
+                                                                                                    <!-- <div class="dropdown-divider" v-if="is_head.is_project_head === 1"></div> -->
+                                                                                                </div>
+                                                                                                <!-- <li><a class="dropdown-item" @click="openTaskColorModal(task.id)">Change Color</a></li> -->
+                                                                                            </ul>
+                                                                                        </div>
+                                                                                        <div class="card-title">
+                                                                                            <div class="container">
+                                                                                                <div class="row">
+                                                                                                    <h5 :style="{ color: task.color.task_color == '#673AB7' || task.color.task_color == '#424242' || task.color.task_color == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }">{{ task.name.substring(0, 30) }}</h5>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <p class="ps-4" :style="{ color: task.color.task_color == '#673AB7' || task.color.task_color == '#424242' || task.color.task_color == '#E91E63' || task.color.task_color == '#F44336' ? 'white' : 'black'  }">
+                                                                                            {{ task.description.substring(0, 50) + "..." }}
+                                                                                        </p>
+                                                                                        <i
+                                                                                            v-if="new Date().toJSON().slice(0,10).replace(/-/g,'-') >= task.task_due_date"
+                                                                                            class='bx bx-alarm-exclamation text-danger float-end bx-sm' 
+                                                                                            rel="tooltip" title="Task is already overdue"></i>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </Task>
+                                                                        </div>
+                                                                        <div v-else>
+                                                                            <div v-for="(task_member, value) in task.task_members">
+                                                                                <div v-if="(logged.id === task_member.uid)">
+                                                                                    <Task :id="task.id" draggable="true">
+                                                                                        <div class="card shadow-sm rounded-0 mt-2" :style="('backgroundColor:'+task.color.task_color)">
+                                                                                            <div class="card-body">
+                                                                                                <div class="col" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
+                                                                                                    <h5 class="display-5 fs-5 title-text" v-if="item.create_subtask_status !== 0"
+                                                                                                    :style="{ color: task.color.task_color == '#673AB7' || task.color.task_color == '#424242' || task.color.task_color == '#E91E63' || task.color.task_color == '#F44336' ? 'white' : 'black'  }"
+                                                                                                    >Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
+                                                                                                    <div class="progress" v-if="item.create_subtask_status !== 0">
+                                                                                                        <div class="progress-bar bg-success text-light display-6 fs-6" 
+                                                                                                            :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
+                                                                                                            role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="dropdown text-end">
+                                                                                                    <i class="bx bx-dots-horizontal-rounded bx-md" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                                                                                    :style="{ color: task.color.task_color == '#673AB7' || task.color.task_color == '#424242' || task.color.task_color == '#E91E63' || task.color.task_color == '#F44336' ? 'white' : 'black'  }"
+                                                                                                    ></i>
+                                                                                                    <ul class="dropdown-menu" style="background-color:#E4E9F7;">
+                                                                                                        <li><a @click="showModal(task)" class="dropdown-item">View</a></li>
+                                                                                                        <div class="dropdown-divider"></div>
+                                                                                                        <div v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
+                                                                                                            <li v-if="is_head.is_project_head === 1"><a @click="assignUserTaskModal(task.id)" class="dropdown-item">Assign Members To Task</a></li>
+                                                                                                            <div class="dropdown-divider" v-if="is_head.is_project_head === 1"></div>
+                                                                                                            <li v-if="is_head.is_project_head === 1"><a @click="editTask(task)" class="dropdown-item">Edit</a></li>
+                                                                                                            <div class="dropdown-divider" v-if="is_head.is_project_head === 1"></div>
+                                                                                                            <li v-if="is_head.is_project_head === 1"><a @click="deleteTask(task.id)" class="dropdown-item">Delete</a></li>
+                                                                                                            <!-- <div class="dropdown-divider" v-if="is_head.is_project_head === 1"></div> -->
+                                                                                                        </div>
+                                                                                                        <!-- <li><a class="dropdown-item" @click="openTaskColorModal(task.id)">Change Color</a></li> -->
+                                                                                                    </ul>
+                                                                                                </div>
+                                                                                                <div class="card-title">
+                                                                                                    <div class="container">
+                                                                                                        <div class="row">
+                                                                                                            <h5 :style="{ color: task.color.task_color == '#673AB7' || task.color.task_color == '#424242' || task.color.task_color == '#E91E63' || task.color.task_color == '#F44336' ? 'white' : 'black'  }">{{ task.name.substring(0, 30) }}</h5>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <p class="ps-4" :style="{ color: task.color.task_color == '#673AB7' || task.color.task_color == '#424242' || task.color.task_color == '#E91E63' || task.color.task_color == '#F44336' ? 'white' : 'black'  }">
+                                                                                                    {{ task.description.substring(0, 50) + "..." }}
+                                                                                                </p>
+                                                                                                <i
+                                                                                                    v-if="new Date().toJSON().slice(0,10).replace(/-/g,'-') >= task.task_due_date"
+                                                                                                    class='bx bx-alarm-exclamation text-danger float-end bx-sm' 
+                                                                                                    rel="tooltip" title="Task is already overdue"></i>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </Task>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                    </Task>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </Board>
@@ -305,25 +440,54 @@
                                                                         <th scope="col" class="fw-normal" v-if="item.create_subtask_status !== 0">Progress</th>
                                                                         <th scope="col" class="fw-normal">Due Date</th>
                                                                     </tr>
-                                                                    <tr v-for="task in tasks" v-bind:key="task.id" v-if="board.id === task.board_id" style="background-color: #ECECEC">
-                                                                        <th scope="col" class="fw-normal">{{ task.name }}</th>
-                                                                        <th scope="col" class="fw-normal" v-if="item.create_subtask_status !== 0">
-                                                                            <div class="row">
-                                                                                <div class="col-md-3 justify-content-center">
-                                                                                    <p class="text-dark fw-bold">{{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</p>
-                                                                                </div>
-                                                                                <div class="col-md-9 justify-content-center">
-                                                                                    <div class="progress">
-                                                                                        <div class="progress-bar bg-success text-light display-6 fs-6" 
-                                                                                        :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
-                                                                                        role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                                    <tr v-for="(task, index) in tasks" v-bind:key="task.id" v-if="board.id === task.board_id" style="background-color: #ECECEC">
+                                                                        <th>
+                                                                            <div class="accordion" id="accordionExample">
+                                                                                <div class="accordion-item">
+                                                                                    <h2 class="accordion-header" id="headingOne">
+                                                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#drop'+index" aria-expanded="true" aria-controls="collapseOne">
+                                                                                        {{ task.name }}
+                                                                                    </button>
+                                                                                    </h2>
+                                                                                    <div :id="'drop' + index" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                                                                        <div class="accordion-body">
+                                                                                            <div class="col-md-12" v-if="task.subtasks.length !== 0">
+                                                                                                <table class="table table-bordered table-striped">
+                                                                                                    <thead>
+                                                                                                        <tr style="background-color:#152238; color:white">
+                                                                                                            <th scope="col" class="fw-normal">Subtask</th>
+                                                                                                            <th scope="col" class="fw-normal">Status</th>
+                                                                                                        </tr>
+                                                                                                    </thead>
+                                                                                                    <tbody>
+                                                                                                        <tr v-for="subtask in sortStatus(task.subtasks)">
+                                                                                                            <th>
+                                                                                                                {{ subtask.subtask_name }} 
+                                                                                                            </th>
+                                                                                                            <th>
+                                                                                                                <p :class="subtask.bid === 0 ? 'text-dark' : subtask.bid === 1 ? 'text-secondary' : subtask.bid === 2 ? 'text-success' : 'text-danger'">
+                                                                                                                    {{ 
+                                                                                                                        subtask.bid === 0 ? "To do" : 
+                                                                                                                        subtask.bid === 1 ? "In Progress" : 
+                                                                                                                        subtask.bid === 2 ? "Done" : 
+                                                                                                                        "No status yet" 
+                                                                                                                    }}
+                                                                                                                </p> 
+                                                                                                            </th>
+                                                                                                        </tr>
+                                                                                                    </tbody>
+                                                                                                </table>
+                                                                                            </div>
+                                                                                            <div v-else>
+                                                                                                <p class="text-danger fw-bold">No Subtask Assigned Yet</p>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                         </th>
-                                                                        <th scope="col" class="fw-normal" v-if="task.task_due_date">{{ task.task_due_date }}</th>
-                                                                        <th scope="col" class="fw-normal" v-else><p class="text text-danger">No Due Date Yet</p></th>
+                                                                        <th>{{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</th>
+                                                                        <th>{{ task.task_due_date }}</th>
                                                                     </tr>
                                                                     </thead>
                                                                 </table>
@@ -475,10 +639,10 @@
                                 <div class="form-group">
                                     <div class="form-group mt-2">
                                         <label for="task-name">
-                                            <span class="h5">Board Name</span>
+                                            <span class="h5">Column Name</span>
                                         </label>
                                         <select class="form-select mb-3" aria-label=".form-select-lg example" v-model="task.board_id" @change="validationTaskError.board_id ? validationTaskError.board_id = null : null" required>
-                                            <option value disabled>Select a Board</option>
+                                            <option value disabled>Select a Column</option>
                                             <option
                                                 v-for="board in boards"
                                                 v-bind:key="board.id"
@@ -553,7 +717,7 @@
              class="offcanvas offcanvas-end" data-bs-scroll="true"
              tabindex="-1">
             <div class="offcanvas-header text-white" style="background-color: #00305F;">
-                <h4 id="offcanvasWithBothOptionsLabel" class="offcanvas-title">View Project</h4>
+                <h4 id="offcanvasWithBothOptionsLabel" class="offcanvas-title">View Project Details</h4>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
             </div>
@@ -588,7 +752,8 @@
                             <p>Project Members:</p>
                             <div v-if="staff.length != 0">
                                 <div :key="key" :value="value" v-for="(value, key, index) in staff">
-                                    <li class="mx-3">{{ value.name }}</li>
+                                    <li class="mx-3" v-if="value.status === 0">{{ value.name }} - INVITED</li>
+                                    <li class="mx-3" v-else>{{ value.name }}</li>
                                 </div>
                             </div>
                             <div v-else>
@@ -692,14 +857,14 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
             </div>
-            <div class="offcanvas-body" style="background-color: #E4E9F7;">
+            <div class="offcanvas-body" style="background-color: #242424;">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-4 mt-2" v-for="color in colors" :key="color">
                             <div class="color">
                                 <div :style="'backgroundColor:' + color" @click="changeBoardColor(color)"
                                      style="padding: 10px;">
-                                    <p style="color: black; text-align: center">{{ color }}</p>
+                                    <p style="color: black; text-align: center"></p>
                                 </div>
                             </div>
                         </div>
@@ -722,7 +887,7 @@
                             <div class="color">
                                 <div :style="'backgroundColor:' + color" @click="changeTaskColor(color)"
                                      style="padding: 10px;">
-                                    <p style="color: black; text-align: center">{{ color }}</p>
+                                    <p style="color: black; text-align: center"></p>
                                 </div>
                             </div>
                         </div>
@@ -1150,10 +1315,14 @@ export default {
     props: [
         'item', 'users', 'fetch', 'staff', 'head', 'logged',
         'user_assigned', 'user_head', 'is_head', 'notification',
-        'projects', 'invitation', 'kanban_task', 'kanban_board_task'
+        'projects', 'invitation', 'kanban_task', 'kanban_board_task',
+        'project_head'
     ],
     data() {
         return {
+            tid: '',
+            bid: '',
+            toggleOverdue: false,
             toggleGanttChart: false,
             toggleUpload: false,
             toggleEditSubtask: false,
@@ -1244,9 +1413,8 @@ export default {
             currentTaskColor: "#FFFFFF",
             currentBoardColor: "#FFFFFF",
             colors: [
-                "#F44336", "#E91E63", "#673AB7", "#2196F3",
-                "#4CAF50", "#8BC34A", "#FFC107", "#424242",
-                "#FFFFFF"
+                "#d4afb9", "#d1cfe2", "#9cadce", "#7ec4cf",
+                "#daeaf6", "#97c1a9", "#ffffff"
             ],
             isSidebar: true,
         };
@@ -1258,10 +1426,6 @@ export default {
         this.fetchTasks();
 
         this.appendMembers();
-
-        this.getBoardColor();
-
-        this.getTaskColor();
 
         this.formMembers.members = this.$currentUserArray;
 
@@ -1561,6 +1725,11 @@ export default {
                 .catch((error) => {
                     this.validationTaskMemberError = error.response.data;
                 });
+        },
+        sortStatus(subtask = []) {
+            return subtask.slice().sort(function(a, b){
+                return (a.bid > b.bid) ? 1 : -1;
+            });
         },
 
         // subtask data handling
@@ -1917,27 +2086,17 @@ export default {
             this.fetchFiles();
             $('#offcanvasViewTask').offcanvas('show');
         },
-        openBoardColorModal() {
+        openBoardColorModal(board_id) {
+            this.bid = board_id;
             $('#offcanvasBoardChangeColor').offcanvas('show');
         },
-        openTaskColorModal() {
+        openTaskColorModal(task_id) {
+            this.tid = task_id;
             $('#offcanvasTaskChangeColor').offcanvas('show');
         },
-        getBoardColor: function() {
-            axios.get('/head/board-color/' + this.$project_id)
-                .then((response) => {
-                    this.currentBoardColor = response.data.board_color;
-                });
-        },
-        getTaskColor: function() {
-            axios.get('/head/task-color/' + this.$project_id)
-                .then((response) => {
-                    this.currentTaskColor = response.data.task_color;
-                });
-        },
         changeBoardColor: function (color) {
-            this.currentBoardColor = color
-            axios.put('/head/board-color/update/' + this.$project_id, 
+            this.currentBoardColor = color;
+            axios.put('/head/board-color/update/' + this.bid, 
                 { 
                     'board_color' : this.currentBoardColor
                 }
@@ -1948,7 +2107,7 @@ export default {
                         'Board color has been changed!',
                         'success'
                     )
-                    this.getBoardColor();
+                    this.fetchBoards();
                 })
                 .catch(() => {
                     Swal.fire(
@@ -1959,8 +2118,8 @@ export default {
                 });
         },
         changeTaskColor: function (color) {
-            this.currentTaskColor = color
-            axios.put('/head/task-color/update/' + this.$project_id,
+            this.currentTaskColor = color;
+            axios.put('/head/task-color/update/' + this.tid,
                 { 
                     'task_color' : this.currentTaskColor
                 }
@@ -1971,7 +2130,7 @@ export default {
                         'Task color has been changed!',
                         'success'
                     )
-                    this.getTaskColor();
+                    this.fetchTasks();
                 })
                 .catch(() => {
                     Swal.fire(
@@ -2140,7 +2299,7 @@ export default {
                 color + 
                 '>'
             ); 
-        } 
-    }
+        }
+    },
 };
 </script>

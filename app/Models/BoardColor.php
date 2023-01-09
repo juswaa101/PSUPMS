@@ -9,6 +9,6 @@ class BoardColor extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id', 'board_color', 'project_id'
+        'user_id', 'board_color', 'board_id'
     ];
 }

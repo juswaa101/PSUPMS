@@ -100,9 +100,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'isAdmin']], functio
     Route::get('/check-conflict', [ProjectController::class, 'getAllDueDate']);
     Route::get('/finish-project/{id}', [ProjectController::class, 'toggleFinishedProject']);
     Route::get('/unfinish-project/{id}', [ProjectController::class, 'toggleUnfinishedProject']);
-    Route::get('/board-color/{id}', [BoardColorController::class, 'getBoardColor']);
     Route::put('/board-color/update/{id}', [BoardColorController::class, 'updateBoardColor']);
-    Route::get('/task-color/{id}', [TaskColorController::class, 'getTaskColor']);
     Route::put('/task-color/update/{id}', [TaskColorController::class, 'updateTaskColor']);
     Route::get('/check-if-invited', [KanbanController::class, 'isInvited']);
 });
@@ -163,9 +161,7 @@ Route::group(['prefix' => 'head', 'middleware' => ['auth', 'isUser']], function 
     Route::get('/check-conflict', [ProjectController::class, 'getAllDueDate']);
     Route::get('/finish-project/{id}', [ProjectController::class, 'toggleFinishedProject']);
     Route::get('/unfinish-project/{id}', [ProjectController::class, 'toggleUnfinishedProject']);
-    Route::get('/board-color/{id}', [BoardColorController::class, 'getBoardColor']);
     Route::put('/board-color/update/{id}', [BoardColorController::class, 'updateBoardColor']);
-    Route::get('/task-color/{id}', [TaskColorController::class, 'getTaskColor']);
     Route::put('/task-color/update/{id}', [TaskColorController::class, 'updateTaskColor']);
     Route::get('/check-if-invited', [KanbanController::class, 'isInvited']);
 });

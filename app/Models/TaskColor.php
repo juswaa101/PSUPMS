@@ -10,6 +10,6 @@ class TaskColor extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id', 'task_color', 'project_id'
+        'user_id', 'task_color', 'task_id'
     ];
 }
