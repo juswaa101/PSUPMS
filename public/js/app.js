@@ -8008,7 +8008,7 @@ var render = function render() {
     })], 2), _vm._v(" "), _c("br")]);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
-  }, _vm._l(_vm.boards, function (board) {
+  }, _vm._l(_vm.boards, function (board, board_index) {
     return _c("div", {
       key: board.id,
       staticClass: "col"
@@ -8019,13 +8019,11 @@ var render = function render() {
       }
     }, _vm._l(_vm.tasks, function (task) {
       return _c("div", {
-        attrs: {
-          "key-": task.id
-        }
+        key: task.id
       }, [board.id === task.board_id ? _c("div", [_c("Task", {
         attrs: {
           id: task.id,
-          draggable: "true"
+          draggable: board_index === _vm.boards.length - 1 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm rounded-0 mt-2",
@@ -9260,7 +9258,7 @@ var render = function render() {
       }, [index === subtask.board_id ? _c("div", [_c("Subtask", {
         attrs: {
           id: subtask.id,
-          draggable: "true"
+          draggable: index === _vm.subtask_board_name.length - 1 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm mt-2"
@@ -9300,7 +9298,21 @@ var render = function render() {
         staticClass: "card-title"
       }, [_c("h3", {
         staticClass: "lead font-weight-light text-primary"
-      }, [_vm._v(_vm._s(subtask.subtask_name))])]), _vm._v(" "), _c("p", [_vm._v("\n                                                                        " + _vm._s((_subtask$subtask_desc = subtask.subtask_description) === null || _subtask$subtask_desc === void 0 ? void 0 : _subtask$subtask_desc.toString().substring(0, 30)) + "\n                                                                    ")])])])])], 1) : _vm._e()]);
+      }, [_vm._v(_vm._s(subtask.subtask_name))])]), _vm._v(" "), _c("p", [_vm._v("\n                                                                        " + _vm._s((_subtask$subtask_desc = subtask.subtask_description) === null || _subtask$subtask_desc === void 0 ? void 0 : _subtask$subtask_desc.toString().substring(0, 30)) + "\n                                                                    ")])]), _vm._v(" "), _c("div", {
+        staticClass: "card-footer"
+      }, [_c("div", {
+        staticClass: "row"
+      }, [_c("button", {
+        staticClass: "btn btn-success",
+        attrs: {
+          type: "button"
+        }
+      }, [_vm._v("\n                                                                                APPROVE\n                                                                            ")]), _vm._v(" "), _c("button", {
+        staticClass: "btn btn-danger",
+        attrs: {
+          type: "button"
+        }
+      }, [_vm._v("\n                                                                                DISAPPROVE\n                                                                            ")])])])])])], 1) : _vm._e()]);
     }), 0)], 1);
   }), 0)])])]), _vm._v(" "), _c("div", {
     directives: [{
@@ -10892,7 +10904,7 @@ var render = function render() {
     staticClass: "flexbox py-4"
   }, [_c("div", {
     staticClass: "row"
-  }, _vm._l(_vm.boards, function (board) {
+  }, _vm._l(_vm.boards, function (board, board_index) {
     return _c("div", {
       key: board.id,
       staticClass: "col text-uppercase"
@@ -10957,28 +10969,32 @@ var render = function render() {
         staticClass: "col"
       }, [_c("h5", {
         staticClass: "display-5 fs-5 title-text"
-      }, [_vm._v("# of Task: " + _vm._s(board.board_progress.total_task))])])]) : _vm._e();
+      }, [_vm._v("# of Task: " + _vm._s(board.board_progress.total_task))])]), _vm._v(" "), _c("div", [board_index === _vm.boards.length - 1 && _vm.boards.length > 1 && _vm.is_head.is_project_head === 0 ? _c("p", {
+        staticClass: "text-danger"
+      }, [_vm._v("* Project Leader is only allowed to drop here")]) : _vm._e()])]) : _vm._e();
     }), _vm._v(" "), _c("br")], 2);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
-  }, _vm._l(_vm.boards, function (board) {
+  }, _vm._l(_vm.boards, function (board, board_index) {
     return _c("div", {
       key: board.id,
       staticClass: "col"
+    }, [_c("div", {
+      "class": [board_index === _vm.boards.length - 1 && _vm.boards.length > 1 && _vm.is_head.is_project_head === 0 ? "overlay-board" : ""]
     }, [_c("Board", {
-      style: "backgroundColor:" + board.color.board_color,
+      style: {
+        background: board.color.board_color
+      },
       attrs: {
         id: board.id
       }
-    }, _vm._l(_vm.tasks, function (task) {
+    }, _vm._l(_vm.tasks, function (task, task_index) {
       return _c("div", {
-        attrs: {
-          "key-": task.id
-        }
+        key: task.id
       }, [board.id === task.board_id ? _c("div", [_vm.is_head.is_project_head === 1 ? _c("div", [_c("Task", {
         attrs: {
           id: task.id,
-          draggable: "true"
+          draggable: board_index === _vm.boards.length - 1 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm rounded-0 mt-2",
@@ -11032,12 +11048,12 @@ var render = function render() {
             return _vm.showModal(task);
           }
         }
-      }, [_vm._v("View")])]), _vm._v(" "), _c("div", {
-        staticClass: "dropdown-divider"
-      }), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+      }, [_vm._v("View")])]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
         return index < 1 ? _c("div", {
           key: _vm.item.id
-        }, [_vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
+        }, [_vm.is_head.is_project_head === 1 ? _c("div", {
+          staticClass: "dropdown-divider"
+        }) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
           staticClass: "dropdown-item",
           on: {
             click: function click($event) {
@@ -11078,23 +11094,23 @@ var render = function render() {
         style: {
           color: _vm.currentTaskColor == "#673AB7" || _vm.currentTaskColor == "#424242" || _vm.currentTaskColor == "#E91E63" || _vm.currentTaskColor == "#F44336" ? "white" : "black"
         }
-      }, [_vm._v("\n                                                                                    " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
+      }, [_vm._v("\n                                                                                        " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                    ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
         staticClass: "bx bx-alarm-exclamation text-danger float-end bx-sm",
         attrs: {
           rel: "tooltip",
           title: "Task is already overdue"
         }
-      }) : _vm._e()], 2)])])], 1) : _c("div", [task.uid === _vm.logged.id || task.uid === 1 || task.uid === _vm.project_head.id ? _c("div", [_c("Task", {
+      }) : _vm._e()], 2)])])], 1) : _c("div", [_vm._v("\n                                                                        " + _vm._s(task.uid) + "\n                                                                        "), task.uid === _vm.logged.id ? _c("div", [_c("Task", {
         attrs: {
           id: task.id,
-          draggable: "true"
+          draggable: board_index === _vm.boards.length - 1 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm rounded-0 mt-2",
         style: "backgroundColor:" + _vm.currentTaskColor
       }, [_c("div", {
         staticClass: "card-body"
-      }, [_vm._l(_vm.item, function (value, key, index) {
+      }, [_vm._v("\n                                                                                        " + _vm._s(_vm.index) + "\n                                                                                        "), _vm._l(_vm.item, function (value, key, index) {
         return index < 1 ? _c("div", {
           key: _vm.item.id,
           staticClass: "col"
@@ -11141,12 +11157,12 @@ var render = function render() {
             return _vm.showModal(task);
           }
         }
-      }, [_vm._v("View")])]), _vm._v(" "), _c("div", {
-        staticClass: "dropdown-divider"
-      }), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+      }, [_vm._v("View")])]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
         return index < 1 ? _c("div", {
           key: _vm.item.id
-        }, [_vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
+        }, [_vm.is_head.is_project_head === 1 ? _c("div", {
+          staticClass: "dropdown-divider"
+        }) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
           staticClass: "dropdown-item",
           on: {
             click: function click($event) {
@@ -11187,7 +11203,7 @@ var render = function render() {
         style: {
           color: task.color.task_color == "#673AB7" || task.color.task_color == "#424242" || task.color.task_color == "#E91E63" || task.color.task_color == "#F44336" ? "white" : "black"
         }
-      }, [_vm._v("\n                                                                                        " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                    ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
+      }, [_vm._v("\n                                                                                            " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                        ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
         staticClass: "bx bx-alarm-exclamation text-danger float-end bx-sm",
         attrs: {
           rel: "tooltip",
@@ -11197,7 +11213,7 @@ var render = function render() {
         return _c("div", [_vm.logged.id === task_member.uid ? _c("div", [_c("Task", {
           attrs: {
             id: task.id,
-            draggable: "true"
+            draggable: board_index === _vm.boards.length - 1 ? "false" : "true"
           }
         }, [_c("div", {
           staticClass: "card shadow-sm rounded-0 mt-2",
@@ -11251,12 +11267,12 @@ var render = function render() {
               return _vm.showModal(task);
             }
           }
-        }, [_vm._v("View")])]), _vm._v(" "), _c("div", {
-          staticClass: "dropdown-divider"
-        }), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+        }, [_vm._v("View")])]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
           return index < 1 ? _c("div", {
             key: _vm.item.id
-          }, [_vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
+          }, [_vm.is_head.is_project_head === 1 ? _c("div", {
+            staticClass: "dropdown-divider"
+          }) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
             staticClass: "dropdown-item",
             on: {
               click: function click($event) {
@@ -11297,7 +11313,7 @@ var render = function render() {
           style: {
             color: task.color.task_color == "#673AB7" || task.color.task_color == "#424242" || task.color.task_color == "#E91E63" || task.color.task_color == "#F44336" ? "white" : "black"
           }
-        }, [_vm._v("\n                                                                                                " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                            ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
+        }, [_vm._v("\n                                                                                                    " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                                ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
           staticClass: "bx bx-alarm-exclamation text-danger float-end bx-sm",
           attrs: {
             rel: "tooltip",
@@ -11305,7 +11321,7 @@ var render = function render() {
           }
         }) : _vm._e()], 2)])])], 1) : _vm._e()]);
       }), 0)])]) : _vm._e()]);
-    }), 0)], 1);
+    }), 0)], 1)]);
   }), 0)])]) : _c("div", [_vm._m(10)])]), _vm._v(" "), _c("div", {
     staticClass: "tab-pane fade",
     attrs: {
@@ -11373,7 +11389,7 @@ var render = function render() {
           attrs: {
             id: "headingOne"
           }
-        }, [_c("button", {
+        }, [task.name.length !== 0 ? _c("button", {
           staticClass: "accordion-button",
           attrs: {
             type: "button",
@@ -11382,7 +11398,7 @@ var render = function render() {
             "aria-expanded": "true",
             "aria-controls": "collapseOne"
           }
-        }, [_vm._v("\n                                                                                    " + _vm._s(task.name) + "\n                                                                                ")])]), _vm._v(" "), _c("div", {
+        }, [_vm._v("\n                                                                                    " + _vm._s(task.name) + "\n                                                                                ")]) : _vm._e()]), _vm._v(" "), _c("div", {
           staticClass: "accordion-collapse collapse",
           attrs: {
             id: "drop" + index,
@@ -11401,7 +11417,14 @@ var render = function render() {
           }, [_vm._v("\n                                                                                                                " + _vm._s(subtask.bid === 0 ? "To do" : subtask.bid === 1 ? "In Progress" : subtask.bid === 2 ? "Done" : "No status yet") + "\n                                                                                                            ")])])]);
         }), 0)])]) : _c("div", [_c("p", {
           staticClass: "text-danger fw-bold"
-        }, [_vm._v("No Subtask Assigned Yet")])])])])])])]), _vm._v(" "), _c("th", [_vm._v(_vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _c("th", [_vm._v(_vm._s(task.task_due_date))])]) : _vm._e();
+        }, [_vm._v("No Subtask Assigned Yet")])])])])])])]), _vm._v(" "), task.subtasks.length !== 0 ? _c("th", [_vm._v(_vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", [_vm._v(_vm._s(task.task_due_date))]) : _c("th", {
+          staticClass: "fw-normal",
+          attrs: {
+            scope: "col"
+          }
+        }, [_c("p", {
+          staticClass: "text text-danger"
+        }, [_vm._v("No Due Date Yet")])])]) : _vm._e();
       })], 2)])]) : _vm._e();
     })], 2)])]);
   }), 0), _vm._v(" "), _c("input", {
@@ -12403,12 +12426,14 @@ var render = function render() {
     staticClass: "flexbox py-2"
   }, [_c("div", {
     staticClass: "row"
-  }, _vm._l(_vm.subtask_board_name, function (subtask) {
+  }, _vm._l(_vm.subtask_board_name, function (subtask, index) {
     return _c("div", {
       staticClass: "col-4 text-uppercase"
     }, [_c("div", {
       staticClass: "col-4 text-uppercase"
-    }, [_vm._v(_vm._s(subtask.name))])]);
+    }, [_vm._v(_vm._s(subtask.name))]), _vm._v(" "), index === _vm.subtask_board_name.length - 1 && _vm.subtask_board_name.length > 1 && _vm.is_head.is_project_head === 0 ? _c("p", {
+      staticClass: "text-danger mt-2"
+    }, [_vm._v("* Project Leader is only allowed to drop here")]) : _vm._e()]);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
   }, _vm._l(_vm.subtask_board_name, function (item, index) {
@@ -12422,7 +12447,9 @@ var render = function render() {
       domProps: {
         value: _vm.show.id
       }
-    }), _vm._v(" "), _c("SubtaskHeadBoard", {
+    }), _vm._v(" "), _c("div", {
+      "class": [index === _vm.subtask_board_name.length - 1 && _vm.is_head.is_project_head === 0 ? "overlay-board" : ""]
+    }, [_c("SubtaskHeadBoard", {
       attrs: {
         id: index
       }
@@ -12433,7 +12460,7 @@ var render = function render() {
       }, [index === subtask.board_id ? _c("div", [_c("SubtaskHeadTask", {
         attrs: {
           id: subtask.id,
-          draggable: "true"
+          draggable: index === _vm.subtask_board_name.length - 1 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm mt-2"
@@ -12473,8 +12500,22 @@ var render = function render() {
         staticClass: "card-title"
       }, [_c("h3", {
         staticClass: "lead font-weight-light text-primary"
-      }, [_vm._v(_vm._s(subtask.subtask_name))])]), _vm._v(" "), _c("p", [_vm._v("\n                                                                        " + _vm._s((_subtask$subtask_desc = subtask.subtask_description) === null || _subtask$subtask_desc === void 0 ? void 0 : _subtask$subtask_desc.toString().substring(0, 30)) + "\n                                                                    ")])])])])], 1) : _vm._e()]);
-    }), 0)], 1);
+      }, [_vm._v(_vm._s(subtask.subtask_name))])]), _vm._v(" "), _c("p", [_vm._v("\n                                                                            " + _vm._s((_subtask$subtask_desc = subtask.subtask_description) === null || _subtask$subtask_desc === void 0 ? void 0 : _subtask$subtask_desc.toString().substring(0, 30)) + "\n                                                                        ")])]), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("div", {
+        staticClass: "card-footer"
+      }, [_c("div", {
+        staticClass: "row"
+      }, [_vm.is_head.is_project_head === 1 ? _c("button", {
+        staticClass: "btn btn-success",
+        attrs: {
+          type: "button"
+        }
+      }, [_vm._v("\n                                                                                APPROVE\n                                                                            ")]) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("button", {
+        staticClass: "btn btn-danger",
+        attrs: {
+          type: "button"
+        }
+      }, [_vm._v("\n                                                                                DISAPPROVE\n                                                                            ")]) : _vm._e()])]) : _vm._e()])])], 1) : _vm._e()]);
+    }), 0)], 1)]);
   }), 0)])])]), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",

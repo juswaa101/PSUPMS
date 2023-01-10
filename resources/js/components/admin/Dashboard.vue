@@ -251,11 +251,11 @@
                                                 </div>
 
                                                 <div class="row">
-                                                    <div class="col" v-for="board in boards" v-bind:key="board.id">
+                                                    <div class="col" v-for="(board, board_index) in boards" v-bind:key="board.id">
                                                         <Board :id="board.id" :style="('backgroundColor:'+board.color.board_color)">
-                                                            <div v-for="task in tasks" v-bind:key-="task.id">
+                                                            <div v-for="task in tasks" v-bind:key="task.id">
                                                                 <div v-if="board.id === task.board_id">
-                                                                    <Task :id="task.id" draggable="true">
+                                                                    <Task :id="task.id" :draggable="board_index === boards.length-1 ? 'false' : 'true'">
                                                                         <div class="card shadow-sm rounded-0 mt-2" :style="('backgroundColor:'+task.color.task_color)">
                                                                             <div class="card-body" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
                                                                                 <h5 class="display-5 fs-5" v-if="item.create_subtask_status !== 0">Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
@@ -875,7 +875,7 @@
                                                 <SubtaskBoard :id="index">
                                                     <div v-for="subtask in subtasks" v-bind:key="subtask.id">
                                                         <div v-if="index === subtask.board_id">
-                                                            <Subtask :id="subtask.id" draggable="true">
+                                                            <Subtask :id="subtask.id" :draggable="index === subtask_board_name.length-1 ? 'false' : 'true'">
                                                                 <div class="card shadow-sm mt-2">
                                                                     <div class="card-body">
                                                                         <div class="dropdown text-end">
@@ -893,6 +893,17 @@
                                                                             {{ subtask.subtask_description?.toString().substring(0, 30) }}
                                                                         </p>
                                                                     </div>
+                                                                    <!-- to do pa, implement approve and disapprove -->
+                                                                    <div class="card-footer">
+                                                                            <div class="row">
+                                                                                <button type="button" class="btn btn-success">
+                                                                                    APPROVE
+                                                                                </button>
+                                                                                <button type="button" class="btn btn-danger">
+                                                                                    DISAPPROVE
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
                                                                 </div>
                                                             </Subtask>
                                                         </div>

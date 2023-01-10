@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('board_id');
             $table->string('subtask_name');
             $table->longText('subtask_description');
+            $table->boolean('is_approved')->default(0);
             $table->timestamps();
         });
     }

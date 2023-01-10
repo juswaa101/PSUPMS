@@ -192,6 +192,7 @@ class SubtaskController extends Controller
 
                     if ($subtask->save()) {
                         $totalSubtaskDone = Subtask::where('task_id', $task_id)->where('board_id', 2)
+                            ->where('is_approved', 1)
                             ->get()->count();
                         TaskProgress::where('task_id', $task_id)
                             ->update(['total_subtask_done' => $totalSubtaskDone]);
@@ -236,6 +237,7 @@ class SubtaskController extends Controller
 
                     if ($subtask->save()) {
                         $totalSubtaskDone = Subtask::where('task_id', $task_id)->where('board_id', 2)
+                            ->where('is_approved', 1)
                             ->get()->count();
                         TaskProgress::where('task_id', $task_id)
                             ->update(['total_subtask_done' => $totalSubtaskDone]);
@@ -269,8 +271,11 @@ class SubtaskController extends Controller
                 }
             }
         } catch (Exception $e) {
-            dd($e);
             abort_if($e, 500);
         }
+    }
+
+    public function subtaskApproval(Request $request, $id) {
+        dd($id);
     }
 }

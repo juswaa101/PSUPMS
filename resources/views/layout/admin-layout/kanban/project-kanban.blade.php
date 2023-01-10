@@ -447,10 +447,20 @@
             cursor: move;
             margin-top: 12px;
         }
+
+        .overlay-subtask-board {
+            background-color: black;
+            filter: brightness(50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
     </style>
 </head>
 
-<body >
+<body>
     <div id="app">
         <main class="py-4">
             @yield('content')
@@ -579,7 +589,8 @@
         let currentId = is_invited[0];
         currentId.sort();
         currentId.forEach(el => {
-            $('#selectMembers').children('option[value="' + el + '"]').append(` - INVITED`).prop('disabled', true);
+            $('#selectMembers').children('option[value="' + el + '"]').append(` - INVITED`).prop(
+                'disabled', true);
         });
         loadDoc()
     });
@@ -589,7 +600,7 @@
         http.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 let countNotification = document.getElementById("countNotification");
-                countNotification.innerHTML = 
+                countNotification.innerHTML =
                     parseInt(this.responseText) > 99 ? "99+" : parseInt(this.responseText) == 0 ?
                     countNotification.style.display = "none" :
                     countNotification.innerHTML = this.responseText;

@@ -44,7 +44,6 @@ class KanbanController extends Controller
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('projects.is_project_head', '=', 0)
                 ->where('invitations.status', 1)
-                ->orWhere('invitations.status', 0)
                 ->whereNull('users.deleted_at')
                 ->select(['*', 'users.id as user_id'])
                 ->get();
@@ -157,7 +156,6 @@ class KanbanController extends Controller
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('projects.is_project_head', '=', 0)
                 ->where('invitations.status', 1)
-                ->orWhere('invitations.status', 0)
                 ->whereNull('users.deleted_at')
                 ->select(['*', 'users.id as user_id'])
                 ->get();

@@ -205,7 +205,7 @@ class TaskController extends Controller
                 $old_board_id = $task->board_id;
 
                 // Update Task
-                $task->user_id = $user_id;
+                // $task->user_id = $user_id;
                 $task->board_id = $request->input('board_id');
                 $task->name = $request->input('name');
                 $task->description = $request->input('description');
