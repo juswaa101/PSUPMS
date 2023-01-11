@@ -5512,7 +5512,7 @@ Vue.prototype.$boardFinal2 = [];
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'notification', 'projects', 'kanban_task', 'kanban_board_task'],
+  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'notification', 'projects', 'kanban_task', 'kanban_board_task', 'logs'],
   data: function data() {
     return {
       tid: '',
@@ -6021,9 +6021,24 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         _this13.fetchTasks();
       });
     },
+    approvedOrDisapproved: function approvedOrDisapproved(id) {
+      var _this14 = this;
+      axios.put('/admin/subtask/is-approved/' + id).then(function () {
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+          title: 'Subtask Status',
+          text: "Subtask status updated",
+          icon: 'success'
+        });
+        _this14.fetchTasks();
+        _this14.fetchBoards();
+        _this14.fetchSubtask();
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    },
     // comment data handling
     addOrUpdateComment: function addOrUpdateComment() {
-      var _this14 = this;
+      var _this15 = this;
       if (this.formComment.is_edit === false) {
         this.formComment.comment = $('#commentArea').val();
         axios.post('/admin/comment/store', {
@@ -6031,7 +6046,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           task_id: this.show.id
         }).then(function () {
           $('#commentArea').data("emojioneArea").setText('');
-          _this14.fetchComment();
+          _this15.fetchComment();
           document.getElementById('comment_scroll').scrollIntoView();
         })["catch"](function (error) {
           console.log(error.response.data);
@@ -6042,25 +6057,25 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           comment: this.formComment.comment,
           task_id: this.show.id
         }).then(function () {
-          _this14.formComment.is_edit = false;
-          _this14.formComment.comment = $('#commentArea').data("emojioneArea").setText('');
-          _this14.fetchComment();
+          _this15.formComment.is_edit = false;
+          _this15.formComment.comment = $('#commentArea').data("emojioneArea").setText('');
+          _this15.fetchComment();
         })["catch"](function (error) {
           console.log(error.response.data);
         });
       }
     },
     fetchComment: function fetchComment() {
-      var _this15 = this;
+      var _this16 = this;
       axios.get('/admin/comment/' + this.show.id).then(function (response) {
-        _this15.comments = response.data;
+        _this16.comments = response.data;
       });
     },
     deleteComment: function deleteComment(id) {
-      var _this16 = this;
+      var _this17 = this;
       axios["delete"]('/admin/comment/delete/' + id).then(function () {
-        _this16.formComment.comment = $('#commentArea').data('emojioneArea').setText('');
-        _this16.fetchComment();
+        _this17.formComment.comment = $('#commentArea').data('emojioneArea').setText('');
+        _this17.fetchComment();
       })["catch"](function (error) {
         console.log(error);
       });
@@ -6072,9 +6087,9 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     // project file upload data handling
     fetchFiles: function fetchFiles() {
-      var _this17 = this;
+      var _this18 = this;
       axios.get('/admin/file/uploads/' + this.show.id).then(function (response) {
-        _this17.attachment = response.data;
+        _this18.attachment = response.data;
       });
     },
     downloadFile: function downloadFile(file) {
@@ -6092,7 +6107,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       });
     },
     removeFile: function removeFile(id, file) {
-      var _this18 = this;
+      var _this19 = this;
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -6105,7 +6120,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         if (result.isConfirmed) {
           axios["delete"]('/admin/file/destroy/' + id + '/' + file).then(function (response) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('File deleted', 'File has been deleted', 'success');
-            _this18.fetchFiles();
+            _this19.fetchFiles();
           })["catch"](function (error) {
             console.log(error);
           });
@@ -6142,7 +6157,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       vn.formEdit.project_title = item.project_title, vn.formEdit.project_description = item.project_description, vn.formEdit.project_start_date = item.project_start_date, vn.formEdit.project_end_date = item.project_end_date, this.selectedId = item.project_id;
     },
     updateProject: function updateProject() {
-      var _this19 = this;
+      var _this20 = this;
       axios.put('/admin/project/update/' + this.$project_id, this.formEdit).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project Updated!', 'Your project has been updated.', 'success').then(function (confirm) {
           if (confirm.isConfirmed) {
@@ -6150,17 +6165,17 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }
         });
       })["catch"](function (error) {
-        _this19.validationUpdateProjectError = error.response.data.errors;
+        _this20.validationUpdateProjectError = error.response.data.errors;
       });
     },
     appendMembers: function appendMembers() {
-      var _this20 = this;
+      var _this21 = this;
       this.staff.forEach(function (person) {
-        _this20.$currentUserArray.push(person.user_id);
+        _this21.$currentUserArray.push(person.user_id);
       });
     },
     updateMembers: function updateMembers() {
-      var _this21 = this;
+      var _this22 = this;
       this.formMembers.members = $('#selectMembers').val();
       try {
         axios.put('/admin/update-members/' + this.$project_id, this.formMembers).then(function () {
@@ -6170,30 +6185,30 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
             }
           });
         })["catch"](function (error) {
-          _this21.validationMemberError = error.response.data;
+          _this22.validationMemberError = error.response.data;
         });
       } catch (e) {
         console.log(e);
       }
     },
     fetchKanbanTask: function fetchKanbanTask() {
-      var _this22 = this;
+      var _this23 = this;
       this.$props.kanban_task.forEach(function (element) {
         var startDate = new Date(element.task_start_date);
         var endDate = new Date(element.task_due_date);
         var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
         var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
-        _this22.$taskColumn.push({
+        _this23.$taskColumn.push({
           'name': element.name,
           'y': [startDateFormatted, endDateFormatted]
         });
       });
     },
     fetchKanbanBoard: function fetchKanbanBoard() {
-      var _this23 = this;
+      var _this24 = this;
       var filter = [];
       this.$props.kanban_board_task.forEach(function (element) {
-        filter = _this23.$props.kanban_task.filter(function (e) {
+        filter = _this24.$props.kanban_task.filter(function (e) {
           return element.id == e.board_id;
         }).map(function (e) {
           var startDate = new Date(e.task_start_date);
@@ -6208,17 +6223,17 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           });
         });
         var mapBoard = [];
-        _this23.$boardColumn.push(element.name);
+        _this24.$boardColumn.push(element.name);
         filter.filter(function (value, index, self) {
           return self.findIndex(function (v) {
             return v.board_name === value.board_name;
           }) === index;
         }).forEach(function (el) {
           el.points.forEach(function (ele) {
-            mapBoard = _this23.$boardColumn.filter(function (x) {
+            mapBoard = _this24.$boardColumn.filter(function (x) {
               return x == element.name;
             }).map(function (elem) {
-              _this23.$boardFinal.push({
+              _this24.$boardFinal.push({
                 name: el.board_name
               });
             });
@@ -6230,17 +6245,17 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }) === index;
         }).forEach(function (el) {
           el.points.forEach(function (ele) {
-            _this23.$boardFinal.filter(function (x) {
+            _this24.$boardFinal.filter(function (x) {
               return x.name == element.name && x.name == ele.name;
             }).map(function (mp) {
-              _this23.$boardFinal1.push(_objectSpread(_objectSpread({}, mp), {}, {
+              _this24.$boardFinal1.push(_objectSpread(_objectSpread({}, mp), {}, {
                 points: []
               }));
             });
           });
         });
         filter.forEach(function (b) {
-          _this23.$boardFinal1.filter(function (x) {
+          _this24.$boardFinal1.filter(function (x) {
             return x.name == b.board_name;
           }).forEach(function (item) {
             var startDate = new Date(b.task_start_date);
@@ -6279,25 +6294,25 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       $('#offcanvasTaskChangeColor').offcanvas('show');
     },
     changeBoardColor: function changeBoardColor(color) {
-      var _this24 = this;
+      var _this25 = this;
       this.currentBoardColor = color;
       axios.put('/admin/board-color/update/' + this.bid, {
         'board_color': this.currentBoardColor
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color updated!', 'Board color has been changed!', 'success');
-        _this24.fetchBoards();
+        _this25.fetchBoards();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color not updated!', 'Something went wrong!', 'error');
       });
     },
     changeTaskColor: function changeTaskColor(color) {
-      var _this25 = this;
+      var _this26 = this;
       this.currentTaskColor = color;
       axios.put('/admin/task-color/update/' + this.tid, {
         'task_color': this.currentTaskColor
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color updated!', 'Task color has been changed!', 'success');
-        _this25.fetchTasks();
+        _this26.fetchTasks();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color not updated!', 'Something went wrong!', 'error');
       });
@@ -6313,7 +6328,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     }
   },
   mounted: function mounted() {
-    var _this26 = this;
+    var _this27 = this;
     var inputElement = document.querySelector('input[id="upload_file"]');
     var pond = FilePond.create(inputElement, {
       labelFileTypeNotAllowed: 'File type not allowed ',
@@ -6336,10 +6351,10 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           },
           withCredentials: false,
           onload: function onload(response) {
-            _this26.fetchFiles();
+            _this27.fetchFiles();
           },
           ondata: function ondata(formData) {
-            formData.append('task_id', _this26.show.id);
+            formData.append('task_id', _this27.show.id);
             return formData;
           }
         }
@@ -6666,7 +6681,7 @@ Vue.prototype.$boardFinal1 = [];
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'is_head', 'notification', 'projects', 'invitation', 'kanban_task', 'kanban_board_task', 'project_head'],
+  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'is_head', 'notification', 'projects', 'invitation', 'kanban_task', 'kanban_board_task', 'project_head', 'logs'],
   data: function data() {
     return {
       tid: '',
@@ -7170,9 +7185,24 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         _this13.fetchTasks();
       });
     },
+    approvedOrDisapproved: function approvedOrDisapproved(id) {
+      var _this14 = this;
+      axios.put('/head/subtask/is-approved/' + id).then(function () {
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+          title: 'Subtask Status',
+          text: "Subtask status updated",
+          icon: 'success'
+        });
+        _this14.fetchTasks();
+        _this14.fetchBoards();
+        _this14.fetchSubtask();
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    },
     // comment data handling
     addOrUpdateComment: function addOrUpdateComment() {
-      var _this14 = this;
+      var _this15 = this;
       if (this.formComment.is_edit === false) {
         this.formComment.comment = $('#commentArea').val();
         axios.post('/head/comment/store', {
@@ -7180,7 +7210,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           task_id: this.show.id
         }).then(function () {
           $('#commentArea').data("emojioneArea").setText('');
-          _this14.fetchComment();
+          _this15.fetchComment();
           document.getElementById('comment_scroll').scrollIntoView();
         })["catch"](function (error) {
           console.log(error.response.data);
@@ -7191,25 +7221,25 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           comment: this.formComment.comment,
           task_id: this.show.id
         }).then(function () {
-          _this14.formComment.is_edit = false;
-          _this14.formComment.comment = $('#commentArea').data("emojioneArea").setText('');
-          _this14.fetchComment();
+          _this15.formComment.is_edit = false;
+          _this15.formComment.comment = $('#commentArea').data("emojioneArea").setText('');
+          _this15.fetchComment();
         })["catch"](function (error) {
           console.log(error.response.data);
         });
       }
     },
     fetchComment: function fetchComment() {
-      var _this15 = this;
+      var _this16 = this;
       axios.get('/head/comment/' + this.show.id).then(function (response) {
-        _this15.comments = response.data;
+        _this16.comments = response.data;
       });
     },
     deleteComment: function deleteComment(id) {
-      var _this16 = this;
+      var _this17 = this;
       axios["delete"]('/head/comment/delete/' + id).then(function () {
-        _this16.formComment.comment = $('#commentArea').data('emojioneArea').setText('');
-        _this16.fetchComment();
+        _this17.formComment.comment = $('#commentArea').data('emojioneArea').setText('');
+        _this17.fetchComment();
       })["catch"](function (error) {
         console.log(error);
       });
@@ -7221,9 +7251,9 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     // project file upload data handling
     fetchFiles: function fetchFiles() {
-      var _this17 = this;
+      var _this18 = this;
       axios.get('/head/file/uploads/' + this.show.id).then(function (response) {
-        _this17.attachment = response.data;
+        _this18.attachment = response.data;
       });
     },
     downloadFile: function downloadFile(file) {
@@ -7241,7 +7271,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       });
     },
     removeFile: function removeFile(id, file) {
-      var _this18 = this;
+      var _this19 = this;
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -7254,7 +7284,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         if (result.isConfirmed) {
           axios["delete"]('/head/file/destroy/' + id + '/' + file).then(function (response) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('File deleted', 'File has been deleted', 'success');
-            _this18.fetchFiles();
+            _this19.fetchFiles();
           })["catch"](function (error) {
             console.log(error);
           });
@@ -7263,7 +7293,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     },
     // project data handling
     deleteProject: function deleteProject(title) {
-      var _this19 = this;
+      var _this20 = this;
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -7278,7 +7308,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           axios["delete"]('/head/project/delete/' + title).then(function () {
             if (result.isConfirmed) {
               sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Deleted!', 'Your project has been deleted.', 'success');
-              window.location.href = "/head/dashboard/" + _this19.logged.uuid;
+              window.location.href = "/head/dashboard/" + _this20.logged.uuid;
             }
           })["catch"](function () {
             sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire("Failed!", "There was something wrong!", "warning");
@@ -7292,7 +7322,7 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       vn.formEdit.project_title = item.project_title, vn.formEdit.project_description = item.project_description, vn.formEdit.project_start_date = item.project_start_date, vn.formEdit.project_end_date = item.project_end_date, this.selectedId = item.project_id;
     },
     updateProject: function updateProject() {
-      var _this20 = this;
+      var _this21 = this;
       axios.put('/head/project/update/' + this.$project_id, this.formEdit).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project Updated!', 'Your project has been updated.', 'success').then(function (confirm) {
           if (confirm.isConfirmed) {
@@ -7300,17 +7330,17 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }
         });
       })["catch"](function (error) {
-        _this20.validationUpdateProjectError = error.response.data.errors;
+        _this21.validationUpdateProjectError = error.response.data.errors;
       });
     },
     appendMembers: function appendMembers() {
-      var _this21 = this;
+      var _this22 = this;
       this.staff.forEach(function (person) {
-        _this21.$currentUserArray.push(person.user_id);
+        _this22.$currentUserArray.push(person.user_id);
       });
     },
     updateMembers: function updateMembers() {
-      var _this22 = this;
+      var _this23 = this;
       this.formMembers.members = $('#selectMembers').val();
       axios.put('/head/update-members/' + this.$project_id, this.formMembers).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project member updated!', 'Members in the project is updated', 'success').then(function (confirm) {
@@ -7319,27 +7349,27 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }
         });
       })["catch"](function (error) {
-        _this22.validationMemberError = error.response.data;
+        _this23.validationMemberError = error.response.data;
       });
     },
     fetchKanbanTask: function fetchKanbanTask() {
-      var _this23 = this;
+      var _this24 = this;
       this.$props.kanban_task.forEach(function (element) {
         var startDate = new Date(element.task_start_date);
         var endDate = new Date(element.task_due_date);
         var startDateFormatted = startDate.getMonth() + 1 + "/" + startDate.getDate() + "/" + startDate.getFullYear();
         var endDateFormatted = endDate.getMonth() + 1 + "/" + endDate.getDate() + "/" + endDate.getFullYear();
-        _this23.$taskColumn.push({
+        _this24.$taskColumn.push({
           'name': element.name,
           'y': [startDateFormatted, endDateFormatted]
         });
       });
     },
     fetchKanbanBoard: function fetchKanbanBoard() {
-      var _this24 = this;
+      var _this25 = this;
       var filter = [];
       this.$props.kanban_board_task.forEach(function (element) {
-        filter = _this24.$props.kanban_task.filter(function (e) {
+        filter = _this25.$props.kanban_task.filter(function (e) {
           return element.id == e.board_id;
         }).map(function (e) {
           var startDate = new Date(e.task_start_date);
@@ -7354,17 +7384,17 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           });
         });
         var mapBoard = [];
-        _this24.$boardColumn.push(element.name);
+        _this25.$boardColumn.push(element.name);
         filter.filter(function (value, index, self) {
           return self.findIndex(function (v) {
             return v.board_name === value.board_name;
           }) === index;
         }).forEach(function (el) {
           el.points.forEach(function (ele) {
-            mapBoard = _this24.$boardColumn.filter(function (x) {
+            mapBoard = _this25.$boardColumn.filter(function (x) {
               return x == element.name;
             }).map(function (elem) {
-              _this24.$boardFinal.push({
+              _this25.$boardFinal.push({
                 name: el.board_name
               });
             });
@@ -7376,17 +7406,17 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           }) === index;
         }).forEach(function (el) {
           el.points.forEach(function (ele) {
-            _this24.$boardFinal.filter(function (x) {
+            _this25.$boardFinal.filter(function (x) {
               return x.name == element.name && x.name == ele.name;
             }).map(function (mp) {
-              _this24.$boardFinal1.push(_objectSpread(_objectSpread({}, mp), {}, {
+              _this25.$boardFinal1.push(_objectSpread(_objectSpread({}, mp), {}, {
                 points: []
               }));
             });
           });
         });
         filter.forEach(function (b) {
-          _this24.$boardFinal1.filter(function (x) {
+          _this25.$boardFinal1.filter(function (x) {
             return x.name == b.board_name;
           }).forEach(function (item) {
             var startDate = new Date(b.task_start_date);
@@ -7425,42 +7455,42 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
       $('#offcanvasTaskChangeColor').offcanvas('show');
     },
     changeBoardColor: function changeBoardColor(color) {
-      var _this25 = this;
+      var _this26 = this;
       this.currentBoardColor = color;
       axios.put('/head/board-color/update/' + this.bid, {
         'board_color': this.currentBoardColor
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color updated!', 'Board color has been changed!', 'success');
-        _this25.fetchBoards();
+        _this26.fetchBoards();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Board color not updated!', 'Something went wrong!', 'error');
       });
     },
     changeTaskColor: function changeTaskColor(color) {
-      var _this26 = this;
+      var _this27 = this;
       this.currentTaskColor = color;
       axios.put('/head/task-color/update/' + this.tid, {
         'task_color': this.currentTaskColor
       }).then(function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color updated!', 'Task color has been changed!', 'success');
-        _this26.fetchTasks();
+        _this27.fetchTasks();
       })["catch"](function () {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Task color not updated!', 'Something went wrong!', 'error');
       });
     },
     toggleFinishedProject: function toggleFinishedProject(id) {
-      var _this27 = this;
+      var _this28 = this;
       axios.get('/head/finish-project/' + id).then(function (response) {
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire('Project Finished!', 'Your project is set to finished.', 'success').then(function (confirm) {
           if (confirm.isConfirmed) {
-            window.location.href = "/head/dashboard/" + _this27.logged.id;
+            window.location.href = "/head/dashboard/" + _this28.logged.id;
           }
         });
       });
     }
   },
   mounted: function mounted() {
-    var _this28 = this;
+    var _this29 = this;
     var inputElement = document.querySelector('input[id="upload_file"]');
     var pond = FilePond.create(inputElement, {
       labelFileTypeNotAllowed: 'File type not allowed ',
@@ -7483,10 +7513,10 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
           },
           withCredentials: false,
           onload: function onload(response) {
-            _this28.fetchFiles();
+            _this29.fetchFiles();
           },
           ondata: function ondata(formData) {
-            formData.append('task_id', _this28.show.id);
+            formData.append('task_id', _this29.show.id);
             return formData;
           }
         }
@@ -8008,7 +8038,7 @@ var render = function render() {
     })], 2), _vm._v(" "), _c("br")]);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
-  }, _vm._l(_vm.boards, function (board) {
+  }, _vm._l(_vm.boards, function (board, board_index) {
     return _c("div", {
       key: board.id,
       staticClass: "col"
@@ -8019,13 +8049,11 @@ var render = function render() {
       }
     }, _vm._l(_vm.tasks, function (task) {
       return _c("div", {
-        attrs: {
-          "key-": task.id
-        }
+        key: task.id
       }, [board.id === task.board_id ? _c("div", [_c("Task", {
         attrs: {
           id: task.id,
-          draggable: "true"
+          draggable: board_index === _vm.boards.length - 1 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm rounded-0 mt-2",
@@ -8211,7 +8239,7 @@ var render = function render() {
             "aria-expanded": "true",
             "aria-controls": "collapseOne"
           }
-        }, [_vm._v("\n                                                                                            " + _vm._s(task.name) + "\n                                                                                        ")])]), _vm._v(" "), _c("div", {
+        }, [_vm._v("\n                                                                                            " + _vm._s(task.name) + "\n                                                                                        ")])]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
           staticClass: "accordion-collapse collapse",
           attrs: {
             id: "drop" + index,
@@ -8230,7 +8258,11 @@ var render = function render() {
           }, [_vm._v("\n                                                                                                                        " + _vm._s(subtask.bid === 0 ? "To do" : subtask.bid === 1 ? "In Progress" : subtask.bid === 2 ? "Done" : "No status yet") + "\n                                                                                                                    ")])])]);
         }), 0)])]) : _c("div", [_c("p", {
           staticClass: "text-danger fw-bold"
-        }, [_vm._v("No Subtask Assigned Yet")])])])])])])]), _vm._v(" "), _c("th", [_vm._v(_vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _c("th", [_vm._v(_vm._s(task.task_due_date))])]) : _vm._e();
+        }, [_vm._v("No Subtask Assigned Yet")])])])]) : _c("div", [_c("th", {
+          attrs: {
+            scope: "col"
+          }
+        }, [_vm._v(_vm._s(task.name))])])])])]), _vm._v(" "), _c("th", [_vm._v(_vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _c("th", [_vm._v(_vm._s(task.task_due_date))])]) : _vm._e();
       })], 2)])]) : _vm._e();
     })], 2)])]);
   }), 0), _vm._v(" "), _c("input", {
@@ -8388,6 +8420,35 @@ var render = function render() {
   }, [_c("h4", {
     staticClass: "text-center"
   }, [_vm._v("No Notifications Yet")])])])]), _vm._v(" "), _c("div", {
+    staticClass: "offcanvas offcanvas-end w-50",
+    attrs: {
+      id: "offcanvasLogs",
+      "aria-labelledby": "offcanvasWithBothOptionsLabel",
+      "data-bs-scroll": "true",
+      tabindex: "-1"
+    }
+  }, [_vm._m(21), _vm._v(" "), _c("div", {
+    staticClass: "offcanvas-body",
+    staticStyle: {
+      "background-color": "#E4E9F7"
+    }
+  }, [_vm.logs.length !== 0 ? _c("div", _vm._l(_vm.logs, function (log) {
+    return _c("div", [_c("div", {
+      staticClass: "card notification-card notification-invitation mb-2 mt-2"
+    }, [_c("div", {
+      staticClass: "card-body"
+    }, [_c("table", [_c("tr", [_c("td", [_c("div", {
+      staticClass: "card-title fw-bold"
+    }, [_vm._v(_vm._s(log.name) + " - " + _vm._s(log.is_project_head === 0 ? "Project Member" : "Project Head"))]), _vm._v(" "), _c("div", {
+      staticClass: "card-title"
+    }, [_vm._v(_vm._s(log.username) + " " + _vm._s(log.message))]), _vm._v(" "), _c("div", {
+      staticClass: "text-muted"
+    }, [_vm._v(_vm._s(log.report_date))])])])])])])]);
+  }), 0) : _c("div", {
+    staticClass: "container p-3"
+  }, [_c("h4", {
+    staticClass: "text-center"
+  }, [_vm._v("No Logs Yet")])])])]), _vm._v(" "), _c("div", {
     staticClass: "offcanvas offcanvas-end",
     attrs: {
       id: "offcanvasAddTask",
@@ -8395,7 +8456,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(21), _vm._v(" "), _c("div", {
+  }, [_vm._m(22), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8417,7 +8478,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(22), _vm._v(" "), _c("select", {
+  }, [_vm._m(23), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8458,7 +8519,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.board_id[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(23), _vm._v(" "), _c("input", {
+  }, [_vm._m(24), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8487,7 +8548,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.name[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(24), _vm._v(" "), _c("textarea", {
+  }, [_vm._m(25), _vm._v(" "), _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8515,7 +8576,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.description[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(25), _vm._v(" "), _c("select", {
+  }, [_vm._m(26), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8568,7 +8629,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(26), _vm._v(" "), _c("div", {
+  }, [_vm._m(27), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8637,7 +8698,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(27), _vm._v(" "), _c("div", {
+  }, [_vm._m(28), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8694,7 +8755,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(28), _vm._v(" "), _c("div", {
+  }, [_vm._m(29), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8775,7 +8836,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(29), _vm._v(" "), _c("div", {
+  }, [_vm._m(30), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8951,7 +9012,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(30), _vm._v(" "), _c("div", {
+  }, [_vm._m(31), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#242424"
@@ -8990,7 +9051,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(31), _vm._v(" "), _c("div", {
+  }, [_vm._m(32), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9260,7 +9321,7 @@ var render = function render() {
       }, [index === subtask.board_id ? _c("div", [_c("Subtask", {
         attrs: {
           id: subtask.id,
-          draggable: "true"
+          draggable: index === _vm.subtask_board_name.length - 1 && subtask.is_approved === 1 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm mt-2"
@@ -9300,7 +9361,25 @@ var render = function render() {
         staticClass: "card-title"
       }, [_c("h3", {
         staticClass: "lead font-weight-light text-primary"
-      }, [_vm._v(_vm._s(subtask.subtask_name))])]), _vm._v(" "), _c("p", [_vm._v("\n                                                                        " + _vm._s((_subtask$subtask_desc = subtask.subtask_description) === null || _subtask$subtask_desc === void 0 ? void 0 : _subtask$subtask_desc.toString().substring(0, 30)) + "\n                                                                    ")])])])])], 1) : _vm._e()]);
+      }, [_vm._v(_vm._s(subtask.subtask_name))])]), _vm._v(" "), _c("p", [_vm._v("\n                                                                        " + _vm._s((_subtask$subtask_desc = subtask.subtask_description) === null || _subtask$subtask_desc === void 0 ? void 0 : _subtask$subtask_desc.toString().substring(0, 30)) + "\n                                                                    ")]), _vm._v(" "), subtask.is_approved === 1 ? _c("small", {
+        staticClass: "text text-success"
+      }, [_vm._v("*Subtask approved!")]) : _vm._e(), _vm._v(" "), subtask.board_id === 2 && subtask.is_approved !== 1 ? _c("small", {
+        staticClass: "text text-danger"
+      }, [_vm._v("*Subtask not yet approved")]) : _vm._e()]), _vm._v(" "), subtask.board_id === 2 ? _c("div", {
+        staticClass: "card-footer"
+      }, [_c("div", {
+        staticClass: "row"
+      }, [subtask.board_id === 2 ? _c("button", {
+        "class": subtask.is_approved === 1 ? "btn btn-danger" : "btn btn-success",
+        attrs: {
+          type: "button"
+        },
+        on: {
+          click: function click($event) {
+            return _vm.approvedOrDisapproved(subtask.id);
+          }
+        }
+      }, [_vm._v("\n                                                                            " + _vm._s(subtask.is_approved === 1 ? "DISAPPROVED" : "APPROVED") + "\n                                                                        ")]) : _vm._e()])]) : _vm._e()])])], 1) : _vm._e()]);
     }), 0)], 1);
   }), 0)])])]), _vm._v(" "), _c("div", {
     directives: [{
@@ -9340,7 +9419,7 @@ var render = function render() {
       staticClass: "col-md-12"
     }, [_c("div", {
       staticClass: "row"
-    }, [_vm._m(32, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(33, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-9"
     }, [_c("p", {
       staticClass: "text-muted"
@@ -9432,7 +9511,7 @@ var render = function render() {
           return _vm.editComment(comment);
         }
       }
-    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(33, true), _vm._v(" "), _c("li", [_c("a", {
+    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(34, true), _vm._v(" "), _c("li", [_c("a", {
       staticClass: "dropdown-item",
       on: {
         click: function click($event) {
@@ -9493,7 +9572,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(34), _vm._v(" "), _c("div", {
+  }, [_vm._m(35), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9684,7 +9763,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(35), _vm._v(" "), _c("div", {
+  }, [_vm._m(36), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9699,7 +9778,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("table", {
     staticClass: "table table-primary table-bordered"
-  }, [_vm._m(36), _vm._v(" "), _c("tbody", {
+  }, [_vm._m(37), _vm._v(" "), _c("tbody", {
     attrs: {
       id: "board_list"
     }
@@ -9766,7 +9845,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(37), _vm._v(" "), _c("div", {
+  }, [_vm._m(38), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -10053,7 +10132,7 @@ var staticRenderFns = [function () {
       id: "nav-profile-tab",
       "aria-controls": "nav-profile",
       "aria-selected": "false",
-      "data-bs-target": "#",
+      "data-bs-target": "#offcanvasLogs",
       "data-bs-toggle": "offcanvas",
       role: "tab",
       type: "button"
@@ -10179,6 +10258,27 @@ var staticRenderFns = [function () {
       id: "offcanvasWithBothOptionsLabel"
     }
   }, [_vm._v("Notifications")]), _vm._v(" "), _c("button", {
+    staticClass: "btn-close btn-close-white",
+    attrs: {
+      type: "button",
+      "data-bs-dismiss": "offcanvas",
+      "aria-label": "Close"
+    }
+  })]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "offcanvas-header text-white",
+    staticStyle: {
+      "background-color": "#00305F"
+    }
+  }, [_c("h4", {
+    staticClass: "offcanvas-title",
+    attrs: {
+      id: "offcanvasWithBothOptionsLabel"
+    }
+  }, [_vm._v("Logs")]), _vm._v(" "), _c("button", {
     staticClass: "btn-close btn-close-white",
     attrs: {
       type: "button",
@@ -10791,7 +10891,7 @@ var render = function render() {
         id: "nav-profile-tab",
         "aria-controls": "nav-profile",
         "aria-selected": "false",
-        "data-bs-target": "#",
+        "data-bs-target": "#offcanvasLogs",
         "data-bs-toggle": "offcanvas",
         role: "tab",
         type: "button"
@@ -10892,7 +10992,7 @@ var render = function render() {
     staticClass: "flexbox py-4"
   }, [_c("div", {
     staticClass: "row"
-  }, _vm._l(_vm.boards, function (board) {
+  }, _vm._l(_vm.boards, function (board, board_index) {
     return _c("div", {
       key: board.id,
       staticClass: "col text-uppercase"
@@ -10957,28 +11057,32 @@ var render = function render() {
         staticClass: "col"
       }, [_c("h5", {
         staticClass: "display-5 fs-5 title-text"
-      }, [_vm._v("# of Task: " + _vm._s(board.board_progress.total_task))])])]) : _vm._e();
+      }, [_vm._v("# of Task: " + _vm._s(board.board_progress.total_task))])]), _vm._v(" "), _c("div", [board_index === _vm.boards.length - 1 && _vm.boards.length > 1 && _vm.is_head.is_project_head === 0 ? _c("p", {
+        staticClass: "text-danger"
+      }, [_vm._v("* Project Leader is only allowed to drop here")]) : _vm._e()])]) : _vm._e();
     }), _vm._v(" "), _c("br")], 2);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
-  }, _vm._l(_vm.boards, function (board) {
+  }, _vm._l(_vm.boards, function (board, board_index) {
     return _c("div", {
       key: board.id,
       staticClass: "col"
+    }, [_c("div", {
+      "class": [board_index === _vm.boards.length - 1 && _vm.boards.length > 1 && _vm.is_head.is_project_head === 0 ? "overlay-board" : ""]
     }, [_c("Board", {
-      style: "backgroundColor:" + board.color.board_color,
+      style: {
+        background: board.color.board_color
+      },
       attrs: {
         id: board.id
       }
-    }, _vm._l(_vm.tasks, function (task) {
+    }, _vm._l(_vm.tasks, function (task, task_index) {
       return _c("div", {
-        attrs: {
-          "key-": task.id
-        }
+        key: task.id
       }, [board.id === task.board_id ? _c("div", [_vm.is_head.is_project_head === 1 ? _c("div", [_c("Task", {
         attrs: {
           id: task.id,
-          draggable: "true"
+          draggable: board_index === _vm.boards.length - 1 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm rounded-0 mt-2",
@@ -11032,12 +11136,12 @@ var render = function render() {
             return _vm.showModal(task);
           }
         }
-      }, [_vm._v("View")])]), _vm._v(" "), _c("div", {
-        staticClass: "dropdown-divider"
-      }), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+      }, [_vm._v("View")])]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
         return index < 1 ? _c("div", {
           key: _vm.item.id
-        }, [_vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
+        }, [_vm.is_head.is_project_head === 1 ? _c("div", {
+          staticClass: "dropdown-divider"
+        }) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
           staticClass: "dropdown-item",
           on: {
             click: function click($event) {
@@ -11078,23 +11182,23 @@ var render = function render() {
         style: {
           color: _vm.currentTaskColor == "#673AB7" || _vm.currentTaskColor == "#424242" || _vm.currentTaskColor == "#E91E63" || _vm.currentTaskColor == "#F44336" ? "white" : "black"
         }
-      }, [_vm._v("\n                                                                                    " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
+      }, [_vm._v("\n                                                                                        " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                    ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
         staticClass: "bx bx-alarm-exclamation text-danger float-end bx-sm",
         attrs: {
           rel: "tooltip",
           title: "Task is already overdue"
         }
-      }) : _vm._e()], 2)])])], 1) : _c("div", [task.uid === _vm.logged.id || task.uid === 1 || task.uid === _vm.project_head.id ? _c("div", [_c("Task", {
+      }) : _vm._e()], 2)])])], 1) : _c("div", [_vm._v("\n                                                                        " + _vm._s(task.uid) + "\n                                                                        "), task.uid === _vm.logged.id ? _c("div", [_c("Task", {
         attrs: {
           id: task.id,
-          draggable: "true"
+          draggable: board_index === _vm.boards.length - 1 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm rounded-0 mt-2",
         style: "backgroundColor:" + _vm.currentTaskColor
       }, [_c("div", {
         staticClass: "card-body"
-      }, [_vm._l(_vm.item, function (value, key, index) {
+      }, [_vm._v("\n                                                                                        " + _vm._s(_vm.index) + "\n                                                                                        "), _vm._l(_vm.item, function (value, key, index) {
         return index < 1 ? _c("div", {
           key: _vm.item.id,
           staticClass: "col"
@@ -11141,12 +11245,12 @@ var render = function render() {
             return _vm.showModal(task);
           }
         }
-      }, [_vm._v("View")])]), _vm._v(" "), _c("div", {
-        staticClass: "dropdown-divider"
-      }), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+      }, [_vm._v("View")])]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
         return index < 1 ? _c("div", {
           key: _vm.item.id
-        }, [_vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
+        }, [_vm.is_head.is_project_head === 1 ? _c("div", {
+          staticClass: "dropdown-divider"
+        }) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
           staticClass: "dropdown-item",
           on: {
             click: function click($event) {
@@ -11187,7 +11291,7 @@ var render = function render() {
         style: {
           color: task.color.task_color == "#673AB7" || task.color.task_color == "#424242" || task.color.task_color == "#E91E63" || task.color.task_color == "#F44336" ? "white" : "black"
         }
-      }, [_vm._v("\n                                                                                        " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                    ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
+      }, [_vm._v("\n                                                                                            " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                        ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
         staticClass: "bx bx-alarm-exclamation text-danger float-end bx-sm",
         attrs: {
           rel: "tooltip",
@@ -11197,7 +11301,7 @@ var render = function render() {
         return _c("div", [_vm.logged.id === task_member.uid ? _c("div", [_c("Task", {
           attrs: {
             id: task.id,
-            draggable: "true"
+            draggable: board_index === _vm.boards.length - 1 ? "false" : "true"
           }
         }, [_c("div", {
           staticClass: "card shadow-sm rounded-0 mt-2",
@@ -11251,12 +11355,12 @@ var render = function render() {
               return _vm.showModal(task);
             }
           }
-        }, [_vm._v("View")])]), _vm._v(" "), _c("div", {
-          staticClass: "dropdown-divider"
-        }), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
+        }, [_vm._v("View")])]), _vm._v(" "), _vm._l(_vm.item, function (value, key, index) {
           return index < 1 ? _c("div", {
             key: _vm.item.id
-          }, [_vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
+          }, [_vm.is_head.is_project_head === 1 ? _c("div", {
+            staticClass: "dropdown-divider"
+          }) : _vm._e(), _vm._v(" "), _vm.is_head.is_project_head === 1 ? _c("li", [_c("a", {
             staticClass: "dropdown-item",
             on: {
               click: function click($event) {
@@ -11297,7 +11401,7 @@ var render = function render() {
           style: {
             color: task.color.task_color == "#673AB7" || task.color.task_color == "#424242" || task.color.task_color == "#E91E63" || task.color.task_color == "#F44336" ? "white" : "black"
           }
-        }, [_vm._v("\n                                                                                                " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                            ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
+        }, [_vm._v("\n                                                                                                    " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                                ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
           staticClass: "bx bx-alarm-exclamation text-danger float-end bx-sm",
           attrs: {
             rel: "tooltip",
@@ -11305,7 +11409,7 @@ var render = function render() {
           }
         }) : _vm._e()], 2)])])], 1) : _vm._e()]);
       }), 0)])]) : _vm._e()]);
-    }), 0)], 1);
+    }), 0)], 1)]);
   }), 0)])]) : _c("div", [_vm._m(10)])]), _vm._v(" "), _c("div", {
     staticClass: "tab-pane fade",
     attrs: {
@@ -11373,7 +11477,7 @@ var render = function render() {
           attrs: {
             id: "headingOne"
           }
-        }, [_c("button", {
+        }, [task.name.length !== 0 ? _c("button", {
           staticClass: "accordion-button",
           attrs: {
             type: "button",
@@ -11382,7 +11486,7 @@ var render = function render() {
             "aria-expanded": "true",
             "aria-controls": "collapseOne"
           }
-        }, [_vm._v("\n                                                                                    " + _vm._s(task.name) + "\n                                                                                ")])]), _vm._v(" "), _c("div", {
+        }, [_vm._v("\n                                                                                    " + _vm._s(task.name) + "\n                                                                                ")]) : _vm._e()]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
           staticClass: "accordion-collapse collapse",
           attrs: {
             id: "drop" + index,
@@ -11401,7 +11505,18 @@ var render = function render() {
           }, [_vm._v("\n                                                                                                                " + _vm._s(subtask.bid === 0 ? "To do" : subtask.bid === 1 ? "In Progress" : subtask.bid === 2 ? "Done" : "No status yet") + "\n                                                                                                            ")])])]);
         }), 0)])]) : _c("div", [_c("p", {
           staticClass: "text-danger fw-bold"
-        }, [_vm._v("No Subtask Assigned Yet")])])])])])])]), _vm._v(" "), _c("th", [_vm._v(_vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _c("th", [_vm._v(_vm._s(task.task_due_date))])]) : _vm._e();
+        }, [_vm._v("No Subtask Assigned Yet")])])])]) : _c("div", [_c("th", {
+          attrs: {
+            scope: "col"
+          }
+        }, [_vm._v(_vm._s(task.name))])])])])]), _vm._v(" "), task.subtasks.length !== 0 ? _c("th", [_vm._v(_vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", [_vm._v(_vm._s(task.task_due_date))]) : _c("th", {
+          staticClass: "fw-normal",
+          attrs: {
+            scope: "col"
+          }
+        }, [_c("p", {
+          staticClass: "text text-danger"
+        }, [_vm._v("No Due Date Yet")])])]) : _vm._e();
       })], 2)])]) : _vm._e();
     })], 2)])]);
   }), 0), _vm._v(" "), _c("input", {
@@ -11561,6 +11676,35 @@ var render = function render() {
   }, [_c("h4", {
     staticClass: "text-center"
   }, [_vm._v("No Notifications Yet")])])])]), _vm._v(" "), _c("div", {
+    staticClass: "offcanvas offcanvas-end w-50",
+    attrs: {
+      id: "offcanvasLogs",
+      "aria-labelledby": "offcanvasWithBothOptionsLabel",
+      "data-bs-scroll": "true",
+      tabindex: "-1"
+    }
+  }, [_vm._m(18), _vm._v(" "), _c("div", {
+    staticClass: "offcanvas-body",
+    staticStyle: {
+      "background-color": "#E4E9F7"
+    }
+  }, [_vm.logs.length !== 0 ? _c("div", _vm._l(_vm.logs, function (log) {
+    return _c("div", [_c("div", {
+      staticClass: "card notification-card notification-invitation mb-2 mt-2"
+    }, [_c("div", {
+      staticClass: "card-body"
+    }, [_c("table", [_c("tr", [_c("td", [_c("div", {
+      staticClass: "card-title fw-bold"
+    }, [_vm._v(_vm._s(log.name) + " - " + _vm._s(log.is_project_head === 0 ? "Project Member" : "Project Head"))]), _vm._v(" "), _c("div", {
+      staticClass: "card-title"
+    }, [_vm._v(_vm._s(log.username) + " " + _vm._s(log.message))]), _vm._v(" "), _c("div", {
+      staticClass: "text-muted"
+    }, [_vm._v(_vm._s(log.report_date))])])])])])])]);
+  }), 0) : _c("div", {
+    staticClass: "container p-3"
+  }, [_c("h4", {
+    staticClass: "text-center"
+  }, [_vm._v("No Logs Yet")])])])]), _vm._v(" "), _c("div", {
     staticClass: "offcanvas offcanvas-end",
     attrs: {
       id: "offcanvasAddTask",
@@ -11568,7 +11712,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(18), _vm._v(" "), _c("div", {
+  }, [_vm._m(19), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11590,7 +11734,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(19), _vm._v(" "), _c("select", {
+  }, [_vm._m(20), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11631,7 +11775,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.board_id[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(20), _vm._v(" "), _c("input", {
+  }, [_vm._m(21), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11660,7 +11804,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.name[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(21), _vm._v(" "), _c("textarea", {
+  }, [_vm._m(22), _vm._v(" "), _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11688,7 +11832,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.description[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(22), _vm._v(" "), _c("select", {
+  }, [_vm._m(23), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11741,7 +11885,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(23), _vm._v(" "), _c("div", {
+  }, [_vm._m(24), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11810,7 +11954,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(24), _vm._v(" "), _c("div", {
+  }, [_vm._m(25), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11867,7 +12011,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(25), _vm._v(" "), _c("div", {
+  }, [_vm._m(26), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11948,7 +12092,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(26), _vm._v(" "), _c("div", {
+  }, [_vm._m(27), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12124,7 +12268,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(27), _vm._v(" "), _c("div", {
+  }, [_vm._m(28), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#242424"
@@ -12163,7 +12307,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(28), _vm._v(" "), _c("div", {
+  }, [_vm._m(29), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12403,12 +12547,14 @@ var render = function render() {
     staticClass: "flexbox py-2"
   }, [_c("div", {
     staticClass: "row"
-  }, _vm._l(_vm.subtask_board_name, function (subtask) {
+  }, _vm._l(_vm.subtask_board_name, function (subtask, index) {
     return _c("div", {
       staticClass: "col-4 text-uppercase"
     }, [_c("div", {
       staticClass: "col-4 text-uppercase"
-    }, [_vm._v(_vm._s(subtask.name))])]);
+    }, [_vm._v(_vm._s(subtask.name))]), _vm._v(" "), index === _vm.subtask_board_name.length - 1 && _vm.subtask_board_name.length > 1 && _vm.is_head.is_project_head === 0 ? _c("p", {
+      staticClass: "text-danger mt-2"
+    }, [_vm._v("* Project Leader is only allowed to drop here")]) : _vm._e()]);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
   }, _vm._l(_vm.subtask_board_name, function (item, index) {
@@ -12422,7 +12568,9 @@ var render = function render() {
       domProps: {
         value: _vm.show.id
       }
-    }), _vm._v(" "), _c("SubtaskHeadBoard", {
+    }), _vm._v(" "), _c("div", {
+      "class": [index === _vm.subtask_board_name.length - 1 && _vm.is_head.is_project_head === 0 ? "overlay-board" : ""]
+    }, [_c("SubtaskHeadBoard", {
       attrs: {
         id: index
       }
@@ -12433,7 +12581,7 @@ var render = function render() {
       }, [index === subtask.board_id ? _c("div", [_c("SubtaskHeadTask", {
         attrs: {
           id: subtask.id,
-          draggable: "true"
+          draggable: index === _vm.subtask_board_name.length - 1 && subtask.is_approved === 1 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm mt-2"
@@ -12473,8 +12621,26 @@ var render = function render() {
         staticClass: "card-title"
       }, [_c("h3", {
         staticClass: "lead font-weight-light text-primary"
-      }, [_vm._v(_vm._s(subtask.subtask_name))])]), _vm._v(" "), _c("p", [_vm._v("\n                                                                        " + _vm._s((_subtask$subtask_desc = subtask.subtask_description) === null || _subtask$subtask_desc === void 0 ? void 0 : _subtask$subtask_desc.toString().substring(0, 30)) + "\n                                                                    ")])])])])], 1) : _vm._e()]);
-    }), 0)], 1);
+      }, [_vm._v(_vm._s(subtask.subtask_name))])]), _vm._v(" "), _c("p", [_vm._v("\n                                                                            " + _vm._s((_subtask$subtask_desc = subtask.subtask_description) === null || _subtask$subtask_desc === void 0 ? void 0 : _subtask$subtask_desc.toString().substring(0, 30)) + "\n                                                                        ")]), _vm._v(" "), subtask.is_approved === 1 ? _c("small", {
+        staticClass: "text text-success"
+      }, [_vm._v("*Subtask approved!")]) : _vm._e(), _vm._v(" "), subtask.board_id === 2 && subtask.is_approved !== 1 ? _c("small", {
+        staticClass: "text text-danger"
+      }, [_vm._v("*Subtask not yet approved")]) : _vm._e()]), _vm._v(" "), _vm.is_head.is_project_head === 1 && subtask.board_id === 2 ? _c("div", {
+        staticClass: "card-footer"
+      }, [_c("div", {
+        staticClass: "row"
+      }, [subtask.board_id === 2 ? _c("button", {
+        "class": subtask.is_approved === 1 ? "btn btn-danger" : "btn btn-success",
+        attrs: {
+          type: "button"
+        },
+        on: {
+          click: function click($event) {
+            return _vm.approvedOrDisapproved(subtask.id);
+          }
+        }
+      }, [_vm._v("\n                                                                                " + _vm._s(subtask.is_approved === 1 ? "DISAPPROVED" : "APPROVED") + "\n                                                                            ")]) : _vm._e()])]) : _vm._e()])])], 1) : _vm._e()]);
+    }), 0)], 1)]);
   }), 0)])])]), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
@@ -12513,7 +12679,7 @@ var render = function render() {
       staticClass: "col-md-12"
     }, [_c("div", {
       staticClass: "row"
-    }, [_vm._m(29, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(30, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-9"
     }, [_c("p", {
       staticClass: "text-muted"
@@ -12605,7 +12771,7 @@ var render = function render() {
           return _vm.editComment(comment);
         }
       }
-    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(30, true), _vm._v(" "), _c("li", [_c("a", {
+    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(31, true), _vm._v(" "), _c("li", [_c("a", {
       staticClass: "dropdown-item",
       on: {
         click: function click($event) {
@@ -12666,7 +12832,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(31), _vm._v(" "), _c("div", {
+  }, [_vm._m(32), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12857,7 +13023,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(32), _vm._v(" "), _c("div", {
+  }, [_vm._m(33), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12872,7 +13038,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("table", {
     staticClass: "table table-primary table-bordered"
-  }, [_vm._m(33), _vm._v(" "), _c("tbody", {
+  }, [_vm._m(34), _vm._v(" "), _c("tbody", {
     attrs: {
       id: "board_list"
     }
@@ -12939,7 +13105,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(34), _vm._v(" "), _c("div", {
+  }, [_vm._m(35), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -13013,7 +13179,7 @@ var render = function render() {
       id: "offcanvasInvitation",
       "aria-labelledby": "offcanvasWithBothOptionsLabel"
     }
-  }, [_vm._m(35), _vm._v(" "), _c("div", {
+  }, [_vm._m(36), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -13335,6 +13501,27 @@ var staticRenderFns = [function () {
       id: "offcanvasWithBothOptionsLabel"
     }
   }, [_vm._v("Notifications")]), _vm._v(" "), _c("button", {
+    staticClass: "btn-close btn-close-white",
+    attrs: {
+      type: "button",
+      "data-bs-dismiss": "offcanvas",
+      "aria-label": "Close"
+    }
+  })]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "offcanvas-header text-white",
+    staticStyle: {
+      "background-color": "#00305F"
+    }
+  }, [_c("h4", {
+    staticClass: "offcanvas-title",
+    attrs: {
+      id: "offcanvasWithBothOptionsLabel"
+    }
+  }, [_vm._v("Logs")]), _vm._v(" "), _c("button", {
     staticClass: "btn-close btn-close-white",
     attrs: {
       type: "button",

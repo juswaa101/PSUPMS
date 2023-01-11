@@ -165,7 +165,7 @@
                                         </button>
                                         <button id="nav-profile-tab" aria-controls="nav-profile"
                                                 aria-selected="false"
-                                                class="nav-link" data-bs-target="#" data-bs-toggle="offcanvas"
+                                                class="nav-link" data-bs-target="#offcanvasLogs" data-bs-toggle="offcanvas"
                                                 role="tab" type="button">Project Logs
                                         </button>
                                     </div>
@@ -251,11 +251,11 @@
                                                 </div>
 
                                                 <div class="row">
-                                                    <div class="col" v-for="board in boards" v-bind:key="board.id">
+                                                    <div class="col" v-for="(board, board_index) in boards" v-bind:key="board.id">
                                                         <Board :id="board.id" :style="('backgroundColor:'+board.color.board_color)">
-                                                            <div v-for="task in tasks" v-bind:key-="task.id">
+                                                            <div v-for="task in tasks" v-bind:key="task.id">
                                                                 <div v-if="board.id === task.board_id">
-                                                                    <Task :id="task.id" draggable="true">
+                                                                    <Task :id="task.id" :draggable="board_index === boards.length-1 ? 'false' : 'true'">
                                                                         <div class="card shadow-sm rounded-0 mt-2" :style="('backgroundColor:'+task.color.task_color)">
                                                                             <div class="card-body" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
                                                                                 <h5 class="display-5 fs-5" v-if="item.create_subtask_status !== 0">Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
@@ -337,7 +337,7 @@
                                                                                                 {{ task.name }}
                                                                                             </button>
                                                                                             </h2>
-                                                                                            <div :id="'drop' + index" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                                                                            <div v-if="item.create_subtask_status !== 0" :id="'drop' + index" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                                                                                 <div class="accordion-body">
                                                                                                     <div class="col-md-12" v-if="task.subtasks.length !== 0">
                                                                                                         <table class="table table-bordered table-striped">
@@ -370,6 +370,9 @@
                                                                                                         <p class="text-danger fw-bold">No Subtask Assigned Yet</p>
                                                                                                     </div>
                                                                                                 </div>
+                                                                                            </div>
+                                                                                            <div v-else>
+                                                                                                <th scope="col">{{ task.name }}</th>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -508,6 +511,37 @@
                 </div>
                 <div class="container p-3" v-else>
                     <h4 class="text-center">No Notifications Yet</h4>
+                </div>
+            </div>
+        </div>
+        <div id="offcanvasLogs" aria-labelledby="offcanvasWithBothOptionsLabel"
+             class="offcanvas offcanvas-end w-50" data-bs-scroll="true"
+             tabindex="-1">
+            <div class="offcanvas-header text-white" style="background-color: #00305F;">
+                <h4 id="offcanvasWithBothOptionsLabel" class="offcanvas-title">Logs</h4>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body" style="background-color: #E4E9F7;">
+                <div v-if="logs.length !== 0">
+                    <div v-for="log in logs">
+                        <div class="card notification-card notification-invitation mb-2 mt-2">
+                            <div class="card-body">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class="card-title fw-bold">{{ log.name }} - {{ log.is_project_head === 0 ? 'Project Member' : 'Project Head' }}</div>
+                                            <div class="card-title">{{ log.username }} {{ log.message }}</div>
+                                            <div class="text-muted">{{ log.report_date }}</div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container p-3" v-else>
+                    <h4 class="text-center">No Logs Yet</h4>
                 </div>
             </div>
         </div>
@@ -875,7 +909,7 @@
                                                 <SubtaskBoard :id="index">
                                                     <div v-for="subtask in subtasks" v-bind:key="subtask.id">
                                                         <div v-if="index === subtask.board_id">
-                                                            <Subtask :id="subtask.id" draggable="true">
+                                                            <Subtask :id="subtask.id" :draggable="index === subtask_board_name.length-1 && subtask.is_approved === 1 ? 'false' : 'true'">
                                                                 <div class="card shadow-sm mt-2">
                                                                     <div class="card-body">
                                                                         <div class="dropdown text-end">
@@ -892,6 +926,18 @@
                                                                         <p>
                                                                             {{ subtask.subtask_description?.toString().substring(0, 30) }}
                                                                         </p>
+                                                                        <small v-if="subtask.is_approved === 1" class="text text-success">*Subtask approved!</small>
+                                                                        <small v-if="subtask.board_id === 2 && subtask.is_approved !== 1" class="text text-danger">*Subtask not yet approved</small>
+                                                                    </div>
+                                                                    <!-- to do pa, implement approve and disapprove -->
+                                                                    <div class="card-footer" v-if="subtask.board_id === 2">
+                                                                        <div class="row">
+                                                                            <button type="button" :class="subtask.is_approved === 1 ? 'btn btn-danger' : 'btn btn-success'" @click="approvedOrDisapproved(subtask.id)"
+                                                                                v-if="subtask.board_id === 2"
+                                                                            >
+                                                                                {{ subtask.is_approved === 1 ? "DISAPPROVED" : "APPROVED" }}
+                                                                            </button>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </Subtask>
@@ -1153,7 +1199,7 @@ export default {
     props: [
         'item', 'users', 'fetch', 'staff', 'head', 'logged',
         'user_assigned', 'user_head', 'notification', 'projects',
-        'kanban_task', 'kanban_board_task'
+        'kanban_task', 'kanban_board_task','logs'
     ],
     data() {
         return {
@@ -1674,6 +1720,22 @@ export default {
                 this.fetchTasks();
             });
         },
+        approvedOrDisapproved: function(id) {
+            axios.put('/admin/subtask/is-approved/' + id)
+                .then(() => {
+                    Swal.fire({
+                        title: 'Subtask Status',
+                        text: "Subtask status updated",
+                        icon: 'success',
+                    });
+                    this.fetchTasks();
+                    this.fetchBoards();
+                    this.fetchSubtask();
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
 
         // comment data handling
         addOrUpdateComment: function () {
@@ -1915,7 +1977,7 @@ export default {
                 });    
             });
         },
-
+        
 
         showModal(tasks) {
             this.clearAssignedUser();

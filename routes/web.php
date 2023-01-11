@@ -69,6 +69,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'isAdmin']], functio
         Route::post('/create', [SubtaskController::class, 'store']);
         Route::delete('/delete/{id}', [SubtaskController::class, 'destroy']);
         Route::put('/update/{id}/{task_id}/{user_id}', [SubtaskController::class, 'update']);
+        Route::put('/is-approved/{id}', [SubtaskController::class, 'subtaskApproval']);
     });
 
     // Comment routes
@@ -131,6 +132,7 @@ Route::group(['prefix' => 'head', 'middleware' => ['auth', 'isUser']], function 
         Route::post('/create', [SubtaskController::class, 'store']);
         Route::delete('/delete/{id}', [SubtaskController::class, 'destroy']);
         Route::put('/update/{id}/{task_id}/{user_id}', [SubtaskController::class, 'update']);
+        Route::put('/is-approved/{id}', [SubtaskController::class, 'subtaskApproval']);
     });
 
     // Comment routes

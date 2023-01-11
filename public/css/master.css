@@ -16,7 +16,8 @@ html {
 
 .flexbox .board {
     width: 100%;
-    background-color: white; /* #d6d8d9 */
+    background-color: white;
+    /* #d6d8d9 */
     border: 1px solid #c6c8ca;
     border-radius: 0px;
     overflow-y: auto;
@@ -30,4 +31,14 @@ html {
     cursor: pointer;
     margin: 10px;
     font-size: 16px;
+}
+
+.overlay-board{
+    background-color:black;
+    filter: brightness(50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: not-allowed;
+    pointer-events: none;
 }

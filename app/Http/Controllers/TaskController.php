@@ -203,9 +203,10 @@ class TaskController extends Controller
                     ->findOrFail($request->task_id);
 
                 $old_board_id = $task->board_id;
+                $oldBoardName = Board::firstWhere('id', $old_board_id);
 
                 // Update Task
-                $task->user_id = $user_id;
+                // $task->user_id = $user_id;
                 $task->board_id = $request->input('board_id');
                 $task->name = $request->input('name');
                 $task->description = $request->input('description');
@@ -217,6 +218,7 @@ class TaskController extends Controller
 
                 if ($task->save()) {
                     if ($old_board_id != $task->board_id) {
+                        $newBoardName = Board::firstWhere('id', $task->board_id);
                         $totalSubtask = Subtask::where('task_id', $task->id)->get()->count();
                         $totalSubtaskDone = Subtask::where('task_id', $task->id)
                             ->where('board_id', 2)
@@ -245,16 +247,30 @@ class TaskController extends Controller
                             'total_task' => $totalOldTask,
                             'total_task_done' => $totalOldTaskDone
                         ]);
+
+                        Report::create(['user_id' => $user_id, 'project_id' => request()->segment(4), 'message' => ' moved from ' . $oldBoardName->name . ' to ' . $newBoardName->name. ' in ' . $project->project_title]);
+                        // Notify all users in the project that a task is updated
+                        foreach ($findProject as $notify) {
+                            $user = User::withTrashed()->where('id', $notify->id)->first();
+                            if (Auth::id() != $user->id) {
+                                Notification::create([
+                                    'user_id' => $user->id,
+                                    'notification_message' =>  $userName->name . ' moved from ' . $oldBoardName->name . ' to ' . $newBoardName->name . ' in ' . $project->project_title,
+                                ]);
+                            }
+                        }
                     }
-                    Report::create(['user_id' => $user_id, 'project_id' => request()->segment(4), 'message' => ' updated the task in ' . $project->project_title]);
-                    // Notify all users in the project that a task is updated
-                    foreach ($findProject as $notify) {
-                        $user = User::withTrashed()->where('id', $notify->id)->first();
-                        if (Auth::id() != $user->id) {
-                            Notification::create([
-                                'user_id' => $user->id,
-                                'notification_message' =>  $userName->name . ' updated the task in ' . $project->project_title,
-                            ]);
+                    else {
+                        Report::create(['user_id' => $user_id, 'project_id' => request()->segment(4), 'message' => ' updated the task details in ' . $project->project_title]);
+                        // Notify all users in the project that a task is updated
+                        foreach ($findProject as $notify) {
+                            $user = User::withTrashed()->where('id', $notify->id)->first();
+                            if (Auth::id() != $user->id) {
+                                Notification::create([
+                                    'user_id' => $user->id,
+                                    'notification_message' =>  $userName->name . ' updated the task details in ' . $project->project_title,
+                                ]);
+                            }
                         }
                     }
                     //  if saved then return task as a resource

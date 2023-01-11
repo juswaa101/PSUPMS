@@ -20,6 +20,7 @@ class SubtaskResource extends JsonResource
             'board_id' => $this->board_id,
             'subtask_name' => $this->subtask_name,
             'subtask_description' => $this->subtask_description,
+            'is_approved' => $this->is_approved
         ];
     }
 }

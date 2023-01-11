@@ -44,7 +44,6 @@ class KanbanController extends Controller
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('projects.is_project_head', '=', 0)
                 ->where('invitations.status', 1)
-                ->orWhere('invitations.status', 0)
                 ->whereNull('users.deleted_at')
                 ->select(['*', 'users.id as user_id'])
                 ->get();
@@ -56,7 +55,6 @@ class KanbanController extends Controller
                 ->whereNull('users.deleted_at')
                 ->where('projects.is_project_head', '=', 1)
                 ->first(['users.id as user_id', 'projects.*', 'users.*']);
-
 
             $userAssignedProject = DB::table('projects')
                 ->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
@@ -101,6 +99,15 @@ class KanbanController extends Controller
             foreach ($findProject as $item) {
                 $project_id[] = $item->project_id;
             }
+            $logs = DB::table('reports')
+                ->join('users', 'reports.user_id', '=', 'users.id')
+                ->join('projects', 'reports.project_id', '=', 'projects.project_id')
+                ->whereIn('reports.project_id', $project_id)
+                ->select(['reports.id as report_id', 'reports.created_at as report_date', 'reports.message', 'reports.project_id', 'users.*', 'projects.*'])
+                ->orderByDesc('reports.created_at')
+                ->orderBy('users.name')
+                ->get();
+                
             $kanbanTask = Task::join('boards', 'boards.id', '=', 'tasks.board_id')
                 ->whereIn('tasks.project_id', $project_id)
                 ->select('boards.*', 'tasks.*', 'boards.name as board_name', 'tasks.name as task_name')
@@ -118,7 +125,8 @@ class KanbanController extends Controller
                 ->with(compact('head'))
                 ->with(compact('kanbanTask'))
                 ->with(compact('kanbanBoardAndTask'))
-                ->with('fetchLimitProject', $fetchLimitProject);
+                ->with('fetchLimitProject', $fetchLimitProject)
+                ->with('logs', $logs);
         } catch (ModelNotFoundException $e) {
             abort(404);
         } catch (Exception $e) {
@@ -157,7 +165,6 @@ class KanbanController extends Controller
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('projects.is_project_head', '=', 0)
                 ->where('invitations.status', 1)
-                ->orWhere('invitations.status', 0)
                 ->whereNull('users.deleted_at')
                 ->select(['*', 'users.id as user_id'])
                 ->get();
@@ -276,6 +283,15 @@ class KanbanController extends Controller
             foreach ($findProject as $item) {
                 $project_id[] = $item->project_id;
             }
+            $logs = DB::table('reports')
+                ->join('users', 'reports.user_id', '=', 'users.id')
+                ->join('projects', 'reports.project_id', '=', 'projects.project_id')
+                ->whereIn('reports.project_id', $project_id)
+                ->select(['reports.id as report_id', 'reports.created_at as report_date', 'reports.message', 'reports.project_id', 'users.*', 'projects.*'])
+                ->orderByDesc('reports.created_at')
+                ->orderBy('users.name')
+                ->get();
+
             $kanbanTask = Task::join('boards', 'boards.id', '=', 'tasks.board_id')
                 ->whereIn('tasks.project_id', $project_id)
                 ->select('boards.*', 'tasks.*', 'boards.name as board_name', 'tasks.name as task_name')
@@ -300,10 +316,12 @@ class KanbanController extends Controller
                 ->with(compact('kanbanTask'))
                 ->with(compact('kanbanBoardAndTask'))
                 ->with(compact('getProjectHead'))
-                ->with('fetchLimitProject', $fetchLimitProject);
+                ->with('fetchLimitProject', $fetchLimitProject)
+                ->with('logs', $logs);
         } catch (ModelNotFoundException $e) {
             abort(404);
         } catch (Exception $e) {
+            // dd($e);
             abort_if($e, 500);
         }
     }
