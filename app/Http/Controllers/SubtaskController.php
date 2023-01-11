@@ -344,7 +344,6 @@ class SubtaskController extends Controller
         }
     }
 
-<<<<<<< HEAD
     public function subtaskApproval($id) {
         try{
             $subtask = Subtask::findOrFail($id);
@@ -389,9 +388,5 @@ class SubtaskController extends Controller
         catch (Exception $e) {
             abort(500);
         }
-=======
-    public function subtaskApproval(Request $request, $id) {
-        dd($id);
->>>>>>> 856d201add30a345c0511eb2d99e0f7c788be599
     }
 }

@@ -1034,11 +1034,7 @@
                                                     <SubtaskHeadBoard :id="index">
                                                         <div v-for="subtask in subtasks" v-bind:key="subtask.id">
                                                             <div v-if="index === subtask.board_id">
-<<<<<<< HEAD
                                                                 <SubtaskHeadTask :id="subtask.id" :draggable="index === subtask_board_name.length-1 && subtask.is_approved === 1 ? 'false' : 'true'">
-=======
-                                                                <SubtaskHeadTask :id="subtask.id" :draggable="index === subtask_board_name.length-1 ? 'false' : 'true'">
->>>>>>> 856d201add30a345c0511eb2d99e0f7c788be599
                                                                     <div class="card shadow-sm mt-2">
                                                                         <div class="card-body">
                                                                             <div class="dropdown text-end">
@@ -1055,7 +1051,6 @@
                                                                             <p>
                                                                                 {{ subtask.subtask_description?.toString().substring(0, 30) }}
                                                                             </p>
-<<<<<<< HEAD
 
                                                                             <small v-if="subtask.is_approved === 1" class="text text-success">*Subtask approved!</small>
                                                                             <small v-if="subtask.board_id === 2 && subtask.is_approved !== 1" class="text text-danger">*Subtask not yet approved</small>
@@ -1067,17 +1062,6 @@
                                                                                     v-if="subtask.board_id === 2"
                                                                                 >
                                                                                     {{ subtask.is_approved === 1 ? "DISAPPROVED" : "APPROVED" }}
-=======
-                                                                        </div>
-                                                                        <!-- to do pa, implement approve and disapprove -->
-                                                                        <div class="card-footer" v-if="is_head.is_project_head === 1">
-                                                                            <div class="row">
-                                                                                <button type="button" class="btn btn-success" v-if="is_head.is_project_head === 1">
-                                                                                    APPROVE
-                                                                                </button>
-                                                                                <button type="button" class="btn btn-danger" v-if="is_head.is_project_head === 1">
-                                                                                    DISAPPROVE
->>>>>>> 856d201add30a345c0511eb2d99e0f7c788be599
                                                                                 </button>
                                                                             </div>
                                                                         </div>
