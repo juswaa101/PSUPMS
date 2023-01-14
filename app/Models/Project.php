@@ -12,16 +12,27 @@ class Project extends Model
     use HasFactory, SoftDeletes;
     protected $primaryKey = 'project_id';
     protected $fillable = [
+        'program_title',
         'project_title',
+        'activity_name',
+        'study_title',
+        'duration',
         'project_description',
         'project_start_date',
         'project_end_date',
+        'location',
+        'service_type',
+        'participant_no',
+        'training_no',
+        'responsible_person/department',
         'id',
         'is_project_head',
         'create_task_status',
         'create_subtask_status',
         'is_finished',
-        'template'
+        'template',
+        'budget_month',
+        'total_budget_released'
     ];
 
     protected  static  function  boot()

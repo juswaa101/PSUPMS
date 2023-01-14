@@ -442,14 +442,14 @@
                     <div class="icon-link">
                         <a href="/admin/project">
                             <i class='bx bx-collection'></i>
-                            <span class="link_name">Projects</span>
+                            <span class="link_name">Create Project</span>
                         </a>
                         <i class='bx bxs-chevron-down arrow'></i>
                     </div>
 
                     <!-- hover -->
                     <ul class="sub-menu">
-                        <li><a class="link_name" href="/admin/project/">Projects</a></li>
+                        <li><a class="link_name" href="/admin/project/">Create Project</a></li>
                         @if ($fetchLimitProject != null)
                             @foreach ($fetchLimitProject as $item)
                                 <li><a href="/admin/project/{{ $item->uuid }}">{{ $item->project_title }}</a></li>

@@ -18,7 +18,7 @@
                         :user_assigned="{{ $userAssignedProject }}" :user_head="{{ $user_head }}"
                         :notification="{{ $notification }}" :projects="{{ $projects }}"
                         :kanban_task="{{ $kanbanTask }}" :kanban_board_task="{{ $kanbanBoardAndTask }}"
-                        :logs="{{ $logs }}"    
+                        :logs="{{ $logs }}" :staff_inv="{{ $staffInvitation }}"    
                     ></dashboard>
                 @endif
             </div>

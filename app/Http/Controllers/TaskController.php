@@ -222,6 +222,7 @@ class TaskController extends Controller
                         $totalSubtask = Subtask::where('task_id', $task->id)->get()->count();
                         $totalSubtaskDone = Subtask::where('task_id', $task->id)
                             ->where('board_id', 2)
+                            ->where('is_approved', 1)
                             ->get()->count();
                         TaskProgress::where('task_id', $task->id)->where('board_id', $old_board_id)
                             ->update(['board_id' => $task->board_id,'total_subtask' => $totalSubtask, 'total_subtask_done' => $totalSubtaskDone]);

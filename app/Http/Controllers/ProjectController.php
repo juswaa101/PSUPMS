@@ -197,7 +197,18 @@ class ProjectController extends Controller
                 'project_end_date' => 'required|after:project_start_date',
                 'head' => 'required',
                 'staff' => 'required',
-                'template' => 'required'
+                'template' => 'required',
+                'activity_name' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required|regex:/^[\s\w-]*$/',    
+                'study_title' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,extension_project|required|regex:/^[\s\w-]*$/',
+                'duration' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,extension_project|required|regex:/^[\s\w-]*$/',
+                'program_title' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required|regex:/^[\s\w-]*$/',
+                'location' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required',
+                'service_type' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required',
+                'participant_no' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required|integer|regex:/^[\s\w-]*$/',
+                'training_no' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required|integer|regex:/^[\s\w-]*$/',
+                'responsible_person/department' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required|regex:/^[\s\w-]*$/',
+                'budget_month' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,extension_project|required|integer|regex:/^[\s\w-]*$/',
+                'total_budget_released' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,extension_project|required|integer|regex:/^[\s\w-]*$/'
             ]);
 
             $staff = $request->input('staff');
@@ -217,7 +228,18 @@ class ProjectController extends Controller
                     'is_project_head' => 1,
                     'create_task_status' => $checkToggleTask,
                     'create_subtask_status' => $checkToggleSubtask,
-                    'template' => $request->input('template')
+                    'template' => $request->input('template'),
+                    'activity_name' => $request->activity_name,    
+                    'study_title' => $request->study_title,
+                    'duration' => $request->duration,
+                    'program_title' => $request->program_title,
+                    'location' => $request->location,
+                    'service_type' => $request->service_type,
+                    'participant_no' => $request->participant_no,
+                    'training_no' => $request->training_no,
+                    'responsible_person/department' => $request->input('responsible_person/department'),
+                    'budget_month' => $request->budget_month,
+                    'total_budget_released' => $request->total_budget_released
                 ]);
                 Report::create(['user_id' => Auth::user()->id, 'project_id' => $project->project_id, 'message' => ' has created the project: ' . $request->input('title') . ' as a project head']);
 
@@ -231,7 +253,18 @@ class ProjectController extends Controller
                         'is_project_head' => 0,
                         'create_task_status' => $checkToggleTask,
                         'create_subtask_status' => $checkToggleSubtask,
-                        'template' => $request->input('template')
+                        'template' => $request->input('template'),
+                        'activity_name' => $request->activity_name,    
+                        'study_title' => $request->study_title,
+                        'duration' => $request->duration,
+                        'program_title' => $request->program_title,
+                        'location' => $request->location,
+                        'service_type' => $request->service_type,
+                        'participant_no' => $request->participant_no,
+                        'training_no' => $request->training_no,
+                        'responsible_person/department' => $request->input('responsible_person/department'),
+                        'budget_month' => $request->budget_month,
+                        'total_budget_released' => $request->total_budget_released
                     ]);
 
                     $id = $project->project_id;
@@ -261,7 +294,18 @@ class ProjectController extends Controller
                         'is_project_head' => 1,
                         'create_task_status' => $checkToggleTask,
                         'create_subtask_status' => $checkToggleSubtask,
-                        'template' => $request->input('template')
+                        'template' => $request->input('template'),
+                        'activity_name' => $request->activity_name,    
+                        'study_title' => $request->study_title,
+                        'duration' => $request->duration,
+                        'program_title' => $request->program_title,
+                        'location' => $request->location,
+                        'service_type' => $request->service_type,
+                        'participant_no' => $request->participant_no,
+                        'training_no' => $request->training_no,
+                        'responsible_person/department' => $request->input('responsible_person/department'),
+                        'budget_month' => $request->budget_month,
+                        'total_budget_released' => $request->total_budget_released
                     ]);
 
                     $id = $project->project_id;
@@ -332,7 +376,19 @@ class ProjectController extends Controller
                 'project_start_date' => 'required',
                 'project_end_date' => 'required|after:project_start_date',
                 'staff' => 'required',
-                'template' => 'required'
+                'template' => 'required',
+                'activity_name' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required|regex:/^[\s\w-]*$/',    
+                'study_title' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,extension_project|required|regex:/^[\s\w-]*$/',
+                'duration' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,extension_project|required|regex:/^[\s\w-]*$/',
+                'program_title' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required|regex:/^[\s\w-]*$/',
+                'location' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required',
+                'service_type' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required',
+                'participant_no' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required|integer|regex:/^[\s\w-]*$/',
+                'training_no' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required|integer|regex:/^[\s\w-]*$/',
+                'responsible_person/department' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,research_project|required|regex:/^[\s\w-]*$/',
+                'budget_month' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,extension_project|required|integer|regex:/^[\s\w-]*$/',
+                'total_budget_released' => 'exclude_if:template,default|exclude_if:template,igp|exclude_if:template,extension_project|required|integer|regex:/^[\s\w-]*$/'
+
             ]);
 
             $staff = $request->input('staff');
@@ -351,7 +407,18 @@ class ProjectController extends Controller
                     'is_project_head' => 1,
                     'create_task_status' => $checkToggleTask,
                     'create_subtask_status' => $checkToggleSubtask,
-                    'template' => $request->input('template')
+                    'template' => $request->input('template'),
+                    'activity_name' => $request->activity_name,    
+                    'study_title' => $request->study_title,
+                    'duration' => $request->duration,
+                    'program_title' => $request->program_title,
+                    'location' => $request->location,
+                    'service_type' => $request->service_type,
+                    'participant_no' => $request->participant_no,
+                    'training_no' => $request->training_no,
+                    'responsible_person/department' => $request->input('responsible_person/department'),
+                    'budget_month' => $request->budget_month,
+                    'total_budget_released' => $request->total_budget_released
                 ]);
 
                 $project = Project::create([
@@ -363,7 +430,18 @@ class ProjectController extends Controller
                     'is_project_head' => 1,
                     'create_task_status' => $checkToggleTask,
                     'create_subtask_status' => $checkToggleSubtask,
-                    'template' => $request->input('template')
+                    'template' => $request->input('template'),
+                    'activity_name' => $request->activity_name,    
+                    'study_title' => $request->study_title,
+                    'duration' => $request->duration,
+                    'program_title' => $request->program_title,
+                    'location' => $request->location,
+                    'service_type' => $request->service_type,
+                    'participant_no' => $request->participant_no,
+                    'training_no' => $request->training_no,
+                    'responsible_person/department' => $request->input('responsible_person/department'),
+                    'budget_month' => $request->budget_month,
+                    'total_budget_released' => $request->total_budget_released
                 ]);
 
                 Invitation::create([
@@ -389,7 +467,18 @@ class ProjectController extends Controller
                         'is_project_head' => 0,
                         'create_task_status' => $checkToggleTask,
                         'create_subtask_status' => $checkToggleSubtask,
-                        'template' => $request->input('template')
+                        'template' => $request->input('template'),
+                        'activity_name' => $request->activity_name,    
+                        'study_title' => $request->study_title,
+                        'duration' => $request->duration,
+                        'program_title' => $request->program_title,
+                        'location' => $request->location,
+                        'service_type' => $request->service_type,
+                        'participant_no' => $request->participant_no,
+                        'training_no' => $request->training_no,
+                        'responsible_person/department' => $request->input('responsible_person/department'),
+                        'budget_month' => $request->budget_month,
+                        'total_budget_released' => $request->total_budget_released
                     ]);
 
                     $id = $project->project_id;

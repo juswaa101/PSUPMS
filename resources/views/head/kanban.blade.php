@@ -19,7 +19,7 @@
                     :is_head="{{ $isProjectHead }}" :notification="{{ $notification }}"
                     :projects="{{ $projects }}" :invitation="{{ $invitation }}"
                     :kanban_task="{{ $kanbanTask }}" :kanban_board_task="{{ $kanbanBoardAndTask }}"
-                    :project_head="{{ $getProjectHead }}" :logs="{{ $logs }}"></heads>
+                    :project_head="{{ $getProjectHead }}" :logs="{{ $logs }}" :staff_inv="{{ $staffInvitation }}"></heads>
                 @endif
             </div>
         </div>

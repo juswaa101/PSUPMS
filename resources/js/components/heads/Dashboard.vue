@@ -29,13 +29,13 @@
                     <div class="icon-link">
                         <a href="/head/project/store">
                             <i class='bx bx-collection'></i>
-                            <span class="link_name">Projects</span>
+                            <span class="link_name">Create Project</span>
                         </a><i class='bx bxs-chevron-down arrow'></i>
                     </div>
 
                     <!-- hover -->
                     <ul class="sub-menu">
-                        <li><a class="link_name" href="/head/project/store">Projects</a></li>
+                        <li><a class="link_name" href="/head/project/store">Create Project</a></li>
 
                         <div v-if="projects !== null">
                             <div v-for="item in projects">
@@ -250,8 +250,7 @@
                                                         <br>
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    
+                                                <div class="row"> 
                                                     <!-- :style="[
                                                     ((board_index === boards.length-1 && boards.length > 1) && 
                                                         is_head.is_project_head === 0 ) 
@@ -264,14 +263,14 @@
                                                                 <div v-for="(task, task_index) in tasks" v-bind:key="task.id">
                                                                     <div v-if="board.id === task.board_id">
                                                                         <div v-if="is_head.is_project_head === 1">
-                                                                            <Task :id="task.id" :draggable="board_index === boards.length-1 ? 'false' : 'true'">
+                                                                            <Task :id="task.id" :draggable="board_index === boards.length-1 && (task.total_subtask_done.total_subtask_done === task.total_subtask.total_subtask && task.total_subtask.total_subtask !== 0) ? 'false' : 'true'">
                                                                                 <div class="card shadow-sm rounded-0 mt-2" :style="('backgroundColor:'+task.color.task_color)">
                                                                                     <div class="card-body">
                                                                                         <div class="col" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
-                                                                                            <h5 class="display-5 fs-5 title-text" v-if="item.create_subtask_status !== 0"
+                                                                                            <h5 class="display-5 fs-5 title-text"
                                                                                             :style="{ color: task.color.task_color == '#673AB7' || task.color.task_color == '#424242' || task.color.task_color == '#E91E63' || task.color.task_color == '#F44336' ? 'white' : 'black'  }"
                                                                                             >Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
-                                                                                            <div class="progress" v-if="item.create_subtask_status !== 0">
+                                                                                            <div class="progress">
                                                                                                 <div class="progress-bar bg-success text-light display-6 fs-6" 
                                                                                                     :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
                                                                                                     role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
@@ -307,7 +306,7 @@
                                                                                             {{ task.description.substring(0, 50) + "..." }}
                                                                                         </p>
                                                                                         <i
-                                                                                            v-if="new Date().toJSON().slice(0,10).replace(/-/g,'-') >= task.task_due_date"
+                                                                                            v-if="new Date().toJSON().slice(0,10).replace(/-/g,'-') >= task.task_due_date && board_index !== boards.length-1"
                                                                                             class='bx bx-alarm-exclamation text-danger float-end bx-sm' 
                                                                                             rel="tooltip" title="Task is already overdue"></i>
                                                                                     </div>
@@ -315,17 +314,16 @@
                                                                             </Task>
                                                                         </div>
                                                                         <div v-else>
-                                                                            {{ task.uid }}
                                                                             <div v-if="task.uid === logged.id">
-                                                                                <Task :id="task.id" :draggable="board_index === boards.length-1 ? 'false' : 'true'">
+                                                                                <Task :id="task.id" :draggable="board_index === boards.length-1 && (task.total_subtask_done.total_subtask_done === task.total_subtask.total_subtask && task.total_subtask.total_subtask !== 0) ? 'false' : 'true'">
                                                                                     <div class="card shadow-sm rounded-0 mt-2" :style="('backgroundColor:'+currentTaskColor)">
                                                                                         <div class="card-body">
                                                                                             {{ index }}
                                                                                             <div class="col" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
-                                                                                                <h5 class="display-5 fs-5 title-text" v-if="item.create_subtask_status !== 0"
+                                                                                                <h5 class="display-5 fs-5 title-text"
                                                                                                 :style="{ color: currentTaskColor == '#673AB7' || currentTaskColor == '#424242' || currentTaskColor == '#E91E63' || currentTaskColor == '#F44336' ? 'white' : 'black'  }"
                                                                                                 >Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
-                                                                                                <div class="progress" v-if="item.create_subtask_status !== 0">
+                                                                                                <div class="progress">
                                                                                                     <div class="progress-bar bg-success text-light display-6 fs-6" 
                                                                                                         :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
                                                                                                         role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
@@ -361,7 +359,7 @@
                                                                                                 {{ task.description.substring(0, 50) + "..." }}
                                                                                             </p>
                                                                                             <i
-                                                                                                v-if="new Date().toJSON().slice(0,10).replace(/-/g,'-') >= task.task_due_date"
+                                                                                                v-if="new Date().toJSON().slice(0,10).replace(/-/g,'-') >= task.task_due_date && board_index !== boards.length-1"
                                                                                                 class='bx bx-alarm-exclamation text-danger float-end bx-sm' 
                                                                                                 rel="tooltip" title="Task is already overdue"></i>
                                                                                         </div>
@@ -371,14 +369,14 @@
                                                                             <div v-else>
                                                                                 <div v-for="(task_member, value) in task.task_members">
                                                                                     <div v-if="(logged.id === task_member.uid)">
-                                                                                        <Task :id="task.id" :draggable="board_index === boards.length-1 ? 'false' : 'true'">
+                                                                                        <Task :id="task.id" :draggable="board_index === boards.length-1 && (task.total_subtask_done.total_subtask_done === task.total_subtask.total_subtask && task.total_subtask.total_subtask !== 0) ? 'false' : 'true'">
                                                                                             <div class="card shadow-sm rounded-0 mt-2" :style="('backgroundColor:'+task.color.task_color)">
                                                                                                 <div class="card-body">
                                                                                                     <div class="col" v-for="(value, key, index) in item" :key="item.id" v-if="index < 1">
-                                                                                                        <h5 class="display-5 fs-5 title-text" v-if="item.create_subtask_status !== 0"
+                                                                                                        <h5 class="display-5 fs-5 title-text"
                                                                                                         :style="{ color: task.color.task_color == '#673AB7' || task.color.task_color == '#424242' || task.color.task_color == '#E91E63' || task.color.task_color == '#F44336' ? 'white' : 'black'  }"
                                                                                                         >Task Progress: {{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</h5>
-                                                                                                        <div class="progress" v-if="item.create_subtask_status !== 0">
+                                                                                                        <div class="progress">
                                                                                                             <div class="progress-bar bg-success text-light display-6 fs-6" 
                                                                                                                 :style="{ 'width' : (task.total_subtask_done.total_subtask_done/task.total_subtask.total_subtask)*100 + '%' }" 
                                                                                                                 role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
@@ -414,7 +412,7 @@
                                                                                                         {{ task.description.substring(0, 50) + "..." }}
                                                                                                     </p>
                                                                                                     <i
-                                                                                                        v-if="new Date().toJSON().slice(0,10).replace(/-/g,'-') >= task.task_due_date"
+                                                                                                        v-if="new Date().toJSON().slice(0,10).replace(/-/g,'-') >= task.task_due_date && board_index !== boards.length-1"
                                                                                                         class='bx bx-alarm-exclamation text-danger float-end bx-sm' 
                                                                                                         rel="tooltip" title="Task is already overdue"></i>
                                                                                                 </div>
@@ -451,7 +449,7 @@
                                                                     <thead>
                                                                     <tr style="background-color:#152238; color:white">
                                                                         <th scope="col" class="fw-normal">Task</th>
-                                                                        <th scope="col" class="fw-normal" v-if="item.create_subtask_status !== 0">Progress</th>
+                                                                        <th scope="col" class="fw-normal">Progress</th>
                                                                         <th scope="col" class="fw-normal">Due Date</th>
                                                                     </tr>
                                                                     <tr v-for="(task, index) in tasks" v-bind:key="task.id" v-if="board.id === task.board_id" style="background-color: #ECECEC">
@@ -464,7 +462,7 @@
                                                                                         {{ task.name }}
                                                                                     </button>
                                                                                     </h2>
-                                                                                    <div v-if="item.create_subtask_status !== 0" :id="'drop' + index" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                                                                    <div :id="'drop' + index" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                                                                         <div class="accordion-body">
                                                                                             <div class="col-md-12" v-if="task.subtasks.length !== 0">
                                                                                                 <table class="table table-bordered table-striped">
@@ -498,13 +496,10 @@
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div v-else>
-                                                                                        <th scope="col">{{ task.name }}</th>
-                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </th>
-                                                                        <th v-if="task.subtasks.length !== 0">{{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</th>
+                                                                        <th>{{ task.total_subtask_done.total_subtask_done }} / {{ task.total_subtask.total_subtask }}</th>
                                                                         <th v-if="task.task_due_date">{{ task.task_due_date }}</th>
                                                                         <th scope="col" class="fw-normal" v-else><p class="text text-danger">No Due Date Yet</p></th>
                                                                     </tr>
@@ -790,6 +785,43 @@
                                 <p>Project Due Date: {{ value.project_end_date }}</p>
                             </div>
                         </div>
+                        <div v-if="value.template === 'research_project'" class="row">
+                            <div class="col-md-12">
+                                <p>Study Title: {{ value.study_title }}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <p>Duration: {{ value.duration }}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <p>Budget for the month: {{ value.budget_month }}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <p>Total Budget Released: {{ value.total_budget_released }}</p>
+                            </div>
+                        </div>
+                        <div v-if="value.template === 'extension_project'" class="row">
+                            <div class="col-md-12">
+                                <p>Program Title: {{ value.program_title }}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <p>Name of Activity: {{ value.activity_name }}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <p>Location: {{ value.location }}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <p>Type of Services Rendered: {{ value.service_type }}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <p># of Participants: {{ value.participant_no }}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <p># of Training/Consultation Hours: {{ value.training_no }}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <p>Responsible Person/Department: {{ value["responsible_person/department"] }}</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -800,8 +832,8 @@
                         </div>
                         <div class="col-md-12 mt-3">
                             <p>Project Members:</p>
-                            <div v-if="staff.length != 0">
-                                <div :key="key" :value="value" v-for="(value, key, index) in staff">
+                            <div v-if="staff_inv.length != 0">
+                                <div :key="key" :value="value" v-for="(value, key, index) in staff_inv">
                                     <li class="mx-3" v-if="value.status === 0">{{ value.name }} - INVITED</li>
                                     <li class="mx-3" v-else>{{ value.name }}</li>
                                 </div>
@@ -892,6 +924,116 @@
                                    :min="item.project_end_date"
                                    @change="validationUpdateProjectError.project_end_date ? validationUpdateProjectError.project_end_date = null : null" required>
                             <span class="text text-danger" v-if="validationUpdateProjectError.project_end_date">{{ validationUpdateProjectError.project_end_date[0] }}</span>
+                        </div>
+                    </div>
+                    <div class="row" v-if="formEdit.template === 'research_project'">
+                        <div class="col-md-12 mt-2">
+                            <label class="form-label" for="">Study Title:</label>
+                            <input type="text" name="study_title" id="study_title"
+                                   class="form-control" v-model="formEdit.study_title" 
+                                   @change="validationUpdateProjectError.study_title ? validationUpdateProjectError.study_title = null : null"
+                                   required       
+                            >
+                            <span class="text text-danger" v-if="validationUpdateProjectError.study_title">{{ validationUpdateProjectError.study_title[0] }}</span>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label class="form-label" for="description">Duration:</label>
+                            <input type="text" name="duration" id="duration"
+                                   class="form-control" v-model="formEdit.duration"
+                                   @change="validationUpdateProjectError.duration ? validationUpdateProjectError.duration = null : null"
+                                   required       
+                            >
+                            <span class="text text-danger" v-if="validationUpdateProjectError.duration">{{ validationUpdateProjectError.duration[0] }}</span>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label class="form-label" for="">Budget for the Month:</label>
+                            <input type="text" name="budget_month" id="budget_month"
+                                   class="form-control" v-model="formEdit.budget_month" 
+                                   @change="validationUpdateProjectError.budget_month ? validationUpdateProjectError.budget_month = null : null"
+                                   required       
+                            >
+                            <span class="text text-danger" v-if="validationUpdateProjectError.budget_month">{{ validationUpdateProjectError.budget_month[0] }}</span>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label class="form-label" for="description">Total Budget Released:</label>
+                            <input type="text" name="total_budget_released" id="total_budget_released"
+                                   class="form-control" v-model="formEdit.total_budget_released"
+                                   @change="validationUpdateProjectError.total_budget_released ? validationUpdateProjectError.total_budget_released = null : null"
+                                   required       
+                            >
+                            <span class="text text-danger" v-if="validationUpdateProjectError.total_budget_released">{{ validationUpdateProjectError.total_budget_released[0] }}</span>
+                        </div>
+                    </div>
+                    <div class="row" v-if="formEdit.template === 'extension_project'">
+                        <div class="col-md-12 mt-2">
+                            <label class="form-label" for="">Program Title:</label>
+                            <input type="text" name="program_title" id="program_title"
+                                   class="form-control" v-model="formEdit.program_title" 
+                                   @change="validationUpdateProjectError.program_title ? validationUpdateProjectError.program_title = null : null"
+                                   required       
+                            >
+                            <span class="text text-danger" v-if="validationUpdateProjectError.program_title">{{ validationUpdateProjectError.program_title[0] }}</span>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label class="form-label" for="description">Name of Activity:</label>
+                            <input type="text" name="activity_name" id="activity_name"
+                                   class="form-control" v-model="formEdit.activity_name"
+                                   @change="validationUpdateProjectError.activity_name ? validationUpdateProjectError.activity_name = null : null"
+                                   required       
+                            >
+                            <span class="text text-danger" v-if="validationUpdateProjectError.activity_name">{{ validationUpdateProjectError.activity_name[0] }}</span>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label class="form-label" for="">Location:</label>
+                            <select v-model="formEdit.location"
+                                   class="form-select"
+                                   @change="validationUpdateProjectError.location ? validationUpdateProjectError.location = null : null"
+                                   required       
+                            >
+                                <option value="local">Local</option>
+                                <option value="national">National</option>
+                                <option value="international">International</option>
+                            </select>
+                            <span class="text text-danger" v-if="validationUpdateProjectError.location">{{ validationUpdateProjectError.location[0] }}</span>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label class="form-label" for="">Type of Service Rendered:</label>
+                            <select v-model="formEdit.service_type"
+                                   class="form-select"
+                                   @change="validationUpdateProjectError.service_type ? validationUpdateProjectError.service_type = null : null"
+                                   required       
+                            >
+                                <option value="training">Training</option>
+                                <option value="consultation">Consultation</option>
+                            </select>
+                            <span class="text text-danger" v-if="validationUpdateProjectError.service_type">{{ validationUpdateProjectError.service_type[0] }}</span>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label class="form-label" for="description"># of Training/Consultancy Hours:</label>
+                            <input type="text" name="training_no" id="training_no"
+                                   class="form-control" v-model="formEdit.training_no"
+                                   @change="validationUpdateProjectError.training_no ? validationUpdateProjectError.training_no = null : null"
+                                   required       
+                            >
+                            <span class="text text-danger" v-if="validationUpdateProjectError.training_no">{{ validationUpdateProjectError.training_no[0] }}</span>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label class="form-label" for="description"># of Participants:</label>
+                            <input type="text" name="participant_no" id="participant_no"
+                                   class="form-control" v-model="formEdit.participant_no"
+                                   @change="validationUpdateProjectError.participant_no ? validationUpdateProjectError.participant_no = null : null"
+                                   required       
+                            >
+                            <span class="text text-danger" v-if="validationUpdateProjectError.participant_no">{{ validationUpdateProjectError.participant_no[0] }}</span>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label class="form-label" for="description">Responsible Person/Department:</label>
+                            <input type="text" name="responsible_person" id="responsible_person"
+                                   class="form-control" v-model="formEdit['responsible_person/department']"
+                                   @change="validationUpdateProjectError['responsible_person/department'] ? validationUpdateProjectError['responsible_person/department'] = null : null"
+                                   required       
+                            >
+                            <span class="text text-danger" v-if="validationUpdateProjectError['responsible_person/department']">{{ validationUpdateProjectError['responsible_person/department'][0] }}</span>
                         </div>
                     </div>
                     <button class="btn btn-warning mt-2 float-end" @click="updateProject()">YES</button>
@@ -985,7 +1127,7 @@
                         <div class="row">
                             <div class="col-md-6" v-for="(value, key, index) in item" :key="item.id"
                                 v-if="index < 1">
-                                <h3 v-if="item.create_subtask_status !== 0">Subtask:</h3>
+                                <h3>Subtask:</h3>
                             </div>
                             <div class="col-md-6">
                                 <button class="btn btn-secondary float-end" title="Toggle File Upload" style="margin-left:10px;" 
@@ -994,12 +1136,10 @@
                                 <i class="bi bi-paperclip"></i></button>
                                 <div class="fs-1 m-0" v-for="(value, key, index) in item" :key="item.id"
                                      v-if="index < 1">
-                                    <div v-if="item.create_subtask_status !== 0">
-                                        <button class="btn btn-success float-end" title="Toggle Subtask Board" @click="toggleSubtaskBoard = !toggleSubtaskBoard"><i class="bi bi-kanban"></i></button>
-                                    </div>
+                                    <button class="btn btn-success float-end" title="Toggle Subtask Board" @click="toggleSubtaskBoard = !toggleSubtaskBoard"><i class="bi bi-kanban"></i></button>
                                 </div>
                             </div>
-                            <div class="col-md-12" v-show="toggleSubtaskBoard">
+                            <div class="col-md-12" v-show="toggleSubtaskBoard" v-if="item.create_subtask_status !== 0 || is_head.is_project_head === 1">
                                 <div class="col-md-12 mt-2">
                                     <label class="form-label" for="Subtask Name">Subtask Name:</label>
                                     <input type="text" class="form-control" placeholder="Subtask Name" v-model="formSubtask.subtask_name" required
@@ -1037,7 +1177,7 @@
                                                                 <SubtaskHeadTask :id="subtask.id" :draggable="index === subtask_board_name.length-1 && subtask.is_approved === 1 ? 'false' : 'true'">
                                                                     <div class="card shadow-sm mt-2">
                                                                         <div class="card-body">
-                                                                            <div class="dropdown text-end">
+                                                                            <div class="dropdown text-end"  v-if="item.create_subtask_status === 1 || is_head.is_project_head === 1">
                                                                                 <i class="bx bx-dots-horizontal-rounded bx-md" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                                                                 <ul class="dropdown-menu" style="background-color:#E4E9F7;">
                                                                                     <li><a @click="editSubtask(subtask)" class="dropdown-item">Edit</a></li>
@@ -1056,7 +1196,7 @@
                                                                             <small v-if="subtask.board_id === 2 && subtask.is_approved !== 1" class="text text-danger">*Subtask not yet approved</small>
                                                                         </div>
                                                                         <!-- to do pa, implement approve and disapprove -->
-                                                                        <div class="card-footer" v-if="is_head.is_project_head === 1 && subtask.board_id === 2">
+                                                                        <div class="card-footer" v-if="subtask.board_id === 2">
                                                                             <div class="row">
                                                                                 <button type="button" :class="subtask.is_approved === 1 ? 'btn btn-danger' : 'btn btn-success'" @click="approvedOrDisapproved(subtask.id)"
                                                                                     v-if="subtask.board_id === 2"
@@ -1383,7 +1523,7 @@ export default {
         'item', 'users', 'fetch', 'staff', 'head', 'logged',
         'user_assigned', 'user_head', 'is_head', 'notification',
         'projects', 'invitation', 'kanban_task', 'kanban_board_task',
-        'project_head', 'logs'
+        'project_head', 'logs', 'staff_inv'
     ],
     data() {
         return {
@@ -1429,6 +1569,18 @@ export default {
                 project_description: null,
                 project_start_date: null,
                 project_end_date: null,
+                program_title: null,
+                activity_name: null,
+                study_title: null,
+                duration: null,
+                location: null,
+                service_type: null,
+                participant_no: null,
+                training_no: null,
+                "responsible_person/department": null,
+                budget_month: null,
+                total_budget_released:null,
+                template: null
             },
             formComment: {
                 id: '',
@@ -2054,10 +2206,22 @@ export default {
             const vn = this;
             $('#offcanvasEditProjectModal').offcanvas('show');
             vn.formEdit.project_title = item.project_title,
-                vn.formEdit.project_description = item.project_description,
-                vn.formEdit.project_start_date = item.project_start_date,
-                vn.formEdit.project_end_date = item.project_end_date,
-                this.selectedId = item.project_id;
+            vn.formEdit.project_description = item.project_description,
+            vn.formEdit.project_start_date = item.project_start_date,
+            vn.formEdit.project_end_date = item.project_end_date,
+            vn.formEdit.program_title = item.program_title,
+            vn.formEdit.activity_name = item.activity_name,
+            vn.formEdit.study_title = item.study_title,
+            vn.formEdit.duration = item.duration,
+            vn.formEdit.location = item.location,
+            vn.formEdit.service_type = item.service_type,
+            vn.formEdit.participant_no = item.participant_no,
+            vn.formEdit.training_no = item.training_no,
+            vn.formEdit['responsible_person/department'] = item["responsible_person/department"],
+            vn.formEdit.budget_month = item.budget_month,
+            vn.formEdit.total_budget_released = item.total_budget_released
+            vn.formEdit.template = item.template
+            this.selectedId = item.project_id;
         },
         updateProject() {
             axios.put('/head/project/update/' + this.$project_id, this.formEdit)

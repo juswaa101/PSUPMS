@@ -415,13 +415,13 @@
                 <div class="icon-link">
                     <a href="/head/project/store">
                         <i class='bx bx-collection'></i>
-                        <span class="link_name">Projects</span>
+                        <span class="link_name">Create Project</span>
                     </a><i class='bx bxs-chevron-down arrow'></i>
                 </div>
 
                 <!-- hover -->
                 <ul class="sub-menu">
-                    <li><a class="link_name" href="/head/project/store">Projects</a></li>
+                    <li><a class="link_name" href="/head/project/store">Create Project</a></li>
                     @if ($project != null)
                         @foreach ($project as $item)
                             <li><a href="/head/project/{{ $item->uuid }}">{{ $item->project_title }}</a></li>
@@ -485,7 +485,7 @@
                         @csrf
                         <div class="card">
                             <div class="card-header p-4 text-white card-h">
-                                <p class="fs-1 m-0">Create Project</p>
+                                <p class="fs-1 m-0" id=labelCreateProject>Create Project</p>
                             </div>
                             <div class="card-body p-4">
                                 @if (Session::has('fail'))
@@ -518,6 +518,116 @@
                                     @error('description')
                                         <div class="text text-danger mt-2">{{ $message }}</div>
                                     @enderror
+                                </div>
+
+                                {{-- Research Project Template --}}
+                                <div class="row g-2 mt-4 d-none" id="researchTemplate">
+                                    <div class="form-floating col-md-6">
+                                        <input type="text" name="study_title" id="study_title" class="form-control"
+                                            placeholder="Study Title" value="{{ old('study_title') }}" required
+                                        >
+                                        <label for="floatingInput">Study Title</label>
+                                        @error('study_title')
+                                            <div class="text text-danger mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-floating col-md-6">
+                                        <input type="text" name="duration" id="duration" class="form-control"
+                                            placeholder="Duration" value="{{ old('duration') }}" required
+                                        >
+                                        <label for="floatingInput">Duration</label>
+                                        @error('duration')
+                                            <div class="text text-danger mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-floating col-md-6 mt-4">
+                                        <input type="text" name="budget_month" id="budget_month" class="form-control"
+                                            placeholder="Budget for the month" value="{{ old('budget_month') }}" required
+                                        >
+                                        <label for="floatingInput">Budget for the Month</label>
+                                        @error('budget_month')
+                                            <div class="text text-danger mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-floating col-md-6 mt-4">
+                                        <input type="text" name="total_budget_released" id="total_budget_released" class="form-control"
+                                            placeholder="Total Budget Release" value="{{ old('total_budget_released') }}" required
+                                        >
+                                        <label for="floatingInput">Total Budget Release</label>
+                                        @error('total_budget_released')
+                                            <div class="text text-danger mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                {{-- Extension Project Template --}}
+                                <div class="row g-2 mt-4 d-none" id="extensionTemplate">
+                                    <div class="form-floating col-md-6">
+                                        <input type="text" name="program_title" id="program_title" class="form-control"
+                                            placeholder="Program Title" value="{{ old('program_title') }}" required
+                                        >
+                                        <label for="floatingInput">Program Title</label>
+                                        @error('program_title')
+                                            <div class="text text-danger mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-floating col-md-6">
+                                        <input type="text" name="activity_name" id="activity_name" class="form-control"
+                                            placeholder="Name of Activity" value="{{ old('activity_name') }}" required
+                                        >
+                                        <label for="floatingInput">Name of Activity</label>
+                                        @error('activity_name')
+                                            <div class="text text-danger mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-floating col-md-6 mt-4">
+                                        <select class="form-select" required name="location" value="{{ old('location') }}">
+                                            <option value="local">Local</option>
+                                            <option value="national">National</option>
+                                            <option value="international">International</option>
+                                        </select>
+                                        <label for="floatingInput">Location</label>
+                                        @error('location')
+                                            <div class="text text-danger mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-floating col-md-6 mt-4">
+                                        <select class="form-select" required name="service_type" value="{{ old('service_type') }}">
+                                            <option value="training">Training</option>
+                                            <option value="consultation">Consultation</option>
+                                        </select>
+                                        <label for="floatingInput">Type of Service Rendered</label>
+                                        @error('service_type')
+                                            <div class="text text-danger mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-floating col-md-6 mt-4">
+                                        <input type="text" name="participant_no" id="participant_no" class="form-control"
+                                            placeholder="# of participant" value="{{ old('participant_no') }}"
+                                        >
+                                        <label for="floatingInput"># of Participant</label>
+                                        @error('participant_no')
+                                            <div class="text text-danger mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-floating col-md-6 mt-4">
+                                        <input type="text" name="training_no" id="training_no" class="form-control"
+                                            placeholder="# of participant" value="{{ old('training_no') }}"
+                                        >
+                                        <label for="floatingInput"># of Training/Consultancy Hours</label>
+                                        @error('training_no')
+                                            <div class="text text-danger mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-floating col-md-12 mt-4">
+                                        <input type="text" name="responsible_person/department" id="responsible_person/department" class="form-control"
+                                            placeholder="Responsible person/department" value="{{ old('responsible_person/department') }}"
+                                        >
+                                        <label for="floatingInput">Responsible person/department</label>
+                                        @error('training_no')
+                                            <div class="text text-danger mt-2">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
 
                                 <!-- Project Date -->
@@ -571,16 +681,16 @@
                                 </div>
 
                                 <!-- Project templates -->
-                                <div class="row mt-5">
+                                <div class="row">
                                     <div class="col-md-6">
-                                        <label for="template">Project template: </label>
-                                        <select class="form-select mt-2" name="template">
+                                        {{-- <label for="template">Project template: </label> --}}
+                                        {{-- <select class="form-select mt-2" name="template">
                                             <option value="default">Default</option>
                                             <option value="research_project">Research Project</option>
                                             <option value="igp">IGP</option>
                                             <option value="extension_project">Extension Project</option>
-                                            
-                                        </select>
+                                        </select> --}}
+                                        <input type="hidden" name="template" value="" id="template">
                                     </div>
                                 </div>
 
@@ -804,6 +914,69 @@
         </div>
     </div>
 
+    <div class="offcanvas offcanvas-end w-100" data-bs-scroll="true" tabindex="-1" id="offcanvasTemplate" aria-labelledby="offcanvasWithBothOptionsLabel" data-bs-backdrop="false">
+        <div class="offcanvas-header text-white" style="background-color: #00305F;">
+            <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Select a Project Template</h4>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" id="backDashboard"></button>
+        </div>
+        <div class="offcanvas-body" style="background-color: #E4E9F7;">
+            <div class="col-md-6 mx-auto">
+                <div class="row mt-5 pt-5">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body d-flex justify-content-center">
+                                <img src="{{ asset('assets/template/default.png') }}" height="100px" width="100px" class="img-responsive" alt="default">
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-secondary w-100" id="default">Default</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body d-flex justify-content-center">
+                                <img src="{{ asset('assets/template/research_extension.png') }}" height="100px" width="150px" class="img-responsive" alt="research_extension">
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-danger w-100" id="re">Research Project</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6 mt-2">
+                        <div class="card">
+                            <div class="card-body d-flex justify-content-center">
+                                <img src="{{ asset('assets/template/extension.png') }}" height="100px" width="100px" class="img-responsive" alt="extension_project">
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-primary w-100" id="ep">Extension Project</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mt-2">
+                            <div class="card-body d-flex justify-content-center">
+                                <img src="{{ asset('assets/template/igp.png') }}" height="100px" width="100px" class="img-responsive" alt="igp">
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-warning w-100" id="igp">IGP</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -816,6 +989,7 @@
             let today = new Date().toISOString().split('T')[0];
             document.getElementsByName('project_start_date')[0].setAttribute('min', today);
             document.getElementsByName('project_end_date')[0].setAttribute('min', today);
+            $('#offcanvasTemplate').offcanvas('show');
         }
 
         function loadNotification() {
@@ -886,7 +1060,7 @@
             }
 
             $('#backDashboard').on('click', () => {
-                window.location = "/head/dashboard/" + {{ Auth::user()->id }};
+                window.location = "/head/dashboard/{{ auth()->user()->uuid }}";
             })
 
             $('#due_date').change((e) => {
@@ -903,6 +1077,38 @@
                     }).then((result) => {});
                     e.preventDefault();
                 }
+            });
+
+            $('#default').on('click', () => {
+                $('#template').val('default');
+                $('#labelCreateProject').append(' - Default');
+                $('#offcanvasTemplate').offcanvas('hide');
+                $('#researchTemplate').html("");
+                $('#extensionTemplate').html("");
+            });
+
+            $('#re').on('click', () => {
+                $('#template').val('research_project');
+                $('#labelCreateProject').append(' - Research Project');
+                $('#offcanvasTemplate').offcanvas('hide');
+                $('#researchTemplate').removeClass('d-none');
+                $('#extensionTemplate').html("");
+            });
+
+            $('#ep').on('click', () => {
+                $('#template').val('extension_project');
+                $('#labelCreateProject').append(' - Extension Project');
+                $('#offcanvasTemplate').offcanvas('hide');
+                $('#researchTemplate').html("");
+                $('#extensionTemplate').removeClass('d-none');
+            });
+
+            $('#igp').on('click', () => {
+                $('#template').val('igp');
+                $('#labelCreateProject').append(' - IGP');
+                $('#researchTemplate').html("");
+                $('#extensionTemplate').html("");
+                $('#offcanvasTemplate').offcanvas('hide');
             });
 
             $('#members').select2({

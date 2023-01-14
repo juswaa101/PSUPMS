@@ -5512,7 +5512,7 @@ Vue.prototype.$boardFinal2 = [];
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'notification', 'projects', 'kanban_task', 'kanban_board_task', 'logs'],
+  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'notification', 'projects', 'kanban_task', 'kanban_board_task', 'logs', 'staff_inv'],
   data: function data() {
     return {
       tid: '',
@@ -5559,7 +5559,19 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         project_title: null,
         project_description: null,
         project_start_date: null,
-        project_end_date: null
+        project_end_date: null,
+        program_title: null,
+        activity_name: null,
+        study_title: null,
+        duration: null,
+        location: null,
+        service_type: null,
+        participant_no: null,
+        training_no: null,
+        "responsible_person/department": null,
+        budget_month: null,
+        total_budget_released: null,
+        template: null
       },
       formComment: {
         id: '',
@@ -6154,7 +6166,8 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     editProject: function editProject(item) {
       var vn = this;
       $('#offcanvasEditProjectModal').offcanvas('show');
-      vn.formEdit.project_title = item.project_title, vn.formEdit.project_description = item.project_description, vn.formEdit.project_start_date = item.project_start_date, vn.formEdit.project_end_date = item.project_end_date, this.selectedId = item.project_id;
+      vn.formEdit.project_title = item.project_title, vn.formEdit.project_description = item.project_description, vn.formEdit.project_start_date = item.project_start_date, vn.formEdit.project_end_date = item.project_end_date, vn.formEdit.program_title = item.program_title, vn.formEdit.activity_name = item.activity_name, vn.formEdit.study_title = item.study_title, vn.formEdit.duration = item.duration, vn.formEdit.location = item.location, vn.formEdit.service_type = item.service_type, vn.formEdit.participant_no = item.participant_no, vn.formEdit.training_no = item.training_no, vn.formEdit['responsible_person/department'] = item["responsible_person/department"], vn.formEdit.budget_month = item.budget_month, vn.formEdit.total_budget_released = item.total_budget_released;
+      vn.formEdit.template = item.template, this.selectedId = item.project_id;
     },
     updateProject: function updateProject() {
       var _this20 = this;
@@ -6681,7 +6694,7 @@ Vue.prototype.$boardFinal1 = [];
 Vue.prototype.$user_id = document.querySelector("meta[name='user-id']").getAttribute("content");
 Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").getAttribute("content");
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'is_head', 'notification', 'projects', 'invitation', 'kanban_task', 'kanban_board_task', 'project_head', 'logs'],
+  props: ['item', 'users', 'fetch', 'staff', 'head', 'logged', 'user_assigned', 'user_head', 'is_head', 'notification', 'projects', 'invitation', 'kanban_task', 'kanban_board_task', 'project_head', 'logs', 'staff_inv'],
   data: function data() {
     return {
       tid: '',
@@ -6728,7 +6741,19 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
         project_title: null,
         project_description: null,
         project_start_date: null,
-        project_end_date: null
+        project_end_date: null,
+        program_title: null,
+        activity_name: null,
+        study_title: null,
+        duration: null,
+        location: null,
+        service_type: null,
+        participant_no: null,
+        training_no: null,
+        "responsible_person/department": null,
+        budget_month: null,
+        total_budget_released: null,
+        template: null
       },
       formComment: {
         id: '',
@@ -7319,7 +7344,9 @@ Vue.prototype.$project_id = document.querySelector("meta[name='project_id']").ge
     editProject: function editProject(item) {
       var vn = this;
       $('#offcanvasEditProjectModal').offcanvas('show');
-      vn.formEdit.project_title = item.project_title, vn.formEdit.project_description = item.project_description, vn.formEdit.project_start_date = item.project_start_date, vn.formEdit.project_end_date = item.project_end_date, this.selectedId = item.project_id;
+      vn.formEdit.project_title = item.project_title, vn.formEdit.project_description = item.project_description, vn.formEdit.project_start_date = item.project_start_date, vn.formEdit.project_end_date = item.project_end_date, vn.formEdit.program_title = item.program_title, vn.formEdit.activity_name = item.activity_name, vn.formEdit.study_title = item.study_title, vn.formEdit.duration = item.duration, vn.formEdit.location = item.location, vn.formEdit.service_type = item.service_type, vn.formEdit.participant_no = item.participant_no, vn.formEdit.training_no = item.training_no, vn.formEdit['responsible_person/department'] = item["responsible_person/department"], vn.formEdit.budget_month = item.budget_month, vn.formEdit.total_budget_released = item.total_budget_released;
+      vn.formEdit.template = item.template;
+      this.selectedId = item.project_id;
     },
     updateProject: function updateProject() {
       var _this21 = this;
@@ -8053,7 +8080,7 @@ var render = function render() {
       }, [board.id === task.board_id ? _c("div", [_c("Task", {
         attrs: {
           id: task.id,
-          draggable: board_index === _vm.boards.length - 1 ? "false" : "true"
+          draggable: board_index === _vm.boards.length - 1 && task.total_subtask_done.total_subtask_done === task.total_subtask.total_subtask && task.total_subtask.total_subtask !== 0 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm rounded-0 mt-2",
@@ -8062,9 +8089,9 @@ var render = function render() {
         return index < 1 ? _c("div", {
           key: _vm.item.id,
           staticClass: "card-body"
-        }, [_vm.item.create_subtask_status !== 0 ? _c("h5", {
+        }, [_c("h5", {
           staticClass: "display-5 fs-5"
-        }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]) : _vm._e(), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
+        }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _c("div", {
           staticClass: "col"
         }, [_c("div", {
           staticClass: "progress"
@@ -8079,7 +8106,7 @@ var render = function render() {
             "aria-valuemin": "0",
             "aria-valuemax": "100"
           }
-        })])]) : _vm._e(), _vm._v(" "), _c("div", {
+        })])]), _vm._v(" "), _c("div", {
           staticClass: "dropdown text-end"
         }, [_c("i", {
           staticClass: "bx bx-dots-horizontal-rounded bx-md",
@@ -8154,7 +8181,7 @@ var render = function render() {
           style: {
             color: task.color.task_color == "#673AB7" || task.color.task_color == "#424242" || task.color.task_color == "#E91E63" || task.color.task_color == "#F44336" ? "white" : "black"
           }
-        }, [_vm._v("\n                                                                                " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                            ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
+        }, [_vm._v("\n                                                                                " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                            ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date && board_index !== _vm.boards.length - 1 ? _c("i", {
           staticClass: "bx bx-alarm-exclamation text-danger float-end bx-sm",
           attrs: {
             rel: "tooltip",
@@ -8192,27 +8219,7 @@ var render = function render() {
         staticClass: "container"
       }, [_c("table", {
         staticClass: "table table-bordered table-striped"
-      }, [_c("thead", [_c("tr", {
-        staticStyle: {
-          "background-color": "#152238",
-          color: "white"
-        }
-      }, [_c("th", {
-        staticClass: "fw-normal",
-        attrs: {
-          scope: "col"
-        }
-      }, [_vm._v("Task")]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("th", {
-        staticClass: "fw-normal",
-        attrs: {
-          scope: "col"
-        }
-      }, [_vm._v("Progress")]) : _vm._e(), _vm._v(" "), _c("th", {
-        staticClass: "fw-normal",
-        attrs: {
-          scope: "col"
-        }
-      }, [_vm._v("Due Date")])]), _vm._v(" "), _vm._l(_vm.tasks, function (task, index) {
+      }, [_c("thead", [_vm._m(14, true), _vm._v(" "), _vm._l(_vm.tasks, function (task, index) {
         return board.id === task.board_id ? _c("tr", {
           key: task.id,
           staticStyle: {
@@ -8239,7 +8246,7 @@ var render = function render() {
             "aria-expanded": "true",
             "aria-controls": "collapseOne"
           }
-        }, [_vm._v("\n                                                                                            " + _vm._s(task.name) + "\n                                                                                        ")])]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
+        }, [_vm._v("\n                                                                                            " + _vm._s(task.name) + "\n                                                                                        ")])]), _vm._v(" "), _c("div", {
           staticClass: "accordion-collapse collapse",
           attrs: {
             id: "drop" + index,
@@ -8252,17 +8259,20 @@ var render = function render() {
           staticClass: "col-md-12"
         }, [_c("table", {
           staticClass: "table table-bordered table-striped"
-        }, [_vm._m(14, true), _vm._v(" "), _c("tbody", _vm._l(_vm.sortStatus(task.subtasks), function (subtask) {
+        }, [_vm._m(15, true), _vm._v(" "), _c("tbody", _vm._l(_vm.sortStatus(task.subtasks), function (subtask) {
           return _c("tr", [_c("th", [_vm._v("\n                                                                                                                    " + _vm._s(subtask.subtask_name) + " \n                                                                                                                ")]), _vm._v(" "), _c("th", [_c("p", {
             "class": subtask.bid === 0 ? "text-dark" : subtask.bid === 1 ? "text-secondary" : subtask.bid === 2 ? "text-success" : "text-danger"
           }, [_vm._v("\n                                                                                                                        " + _vm._s(subtask.bid === 0 ? "To do" : subtask.bid === 1 ? "In Progress" : subtask.bid === 2 ? "Done" : "No status yet") + "\n                                                                                                                    ")])])]);
         }), 0)])]) : _c("div", [_c("p", {
           staticClass: "text-danger fw-bold"
-        }, [_vm._v("No Subtask Assigned Yet")])])])]) : _c("div", [_c("th", {
+        }, [_vm._v("No Subtask Assigned Yet")])])])])])])]), _vm._v(" "), _c("th", [_vm._v(_vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), task.task_due_date ? _c("th", [_vm._v(_vm._s(task.task_due_date))]) : _c("th", {
+          staticClass: "fw-normal",
           attrs: {
             scope: "col"
           }
-        }, [_vm._v(_vm._s(task.name))])])])])]), _vm._v(" "), _c("th", [_vm._v(_vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _c("th", [_vm._v(_vm._s(task.task_due_date))])]) : _vm._e();
+        }, [_c("p", {
+          staticClass: "text text-danger"
+        }, [_vm._v("No Due Date Yet")])])]) : _vm._e();
       })], 2)])]) : _vm._e();
     })], 2)])]);
   }), 0), _vm._v(" "), _c("input", {
@@ -8279,7 +8289,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(15), _vm._v(" "), _c("div", {
+  }, [_vm._m(16), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8303,7 +8313,7 @@ var render = function render() {
       height: "180",
       width: "180"
     }
-  }), _vm._v(" "), _vm._m(16), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm._m(17), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-3"
   }, [_c("p", [_c("b", {
     staticStyle: {
@@ -8314,19 +8324,19 @@ var render = function render() {
   }, _vm._l(_vm.logged, function (value, key, index) {
     return index < 1 ? _c("div", [_c("div", {
       staticClass: "row text-start mt-3"
-    }, [_vm._m(17, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(18, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-11"
     }, [_c("h6", {
       staticClass: "fw-bold"
     }, [_vm._v(_vm._s(_vm.logged.name))])])]), _vm._v(" "), _c("div", {
       staticClass: "row text-start mt-3"
-    }, [_vm._m(18, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(19, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-11"
     }, [_c("h6", {
       staticClass: "fw-bold"
     }, [_vm._v(_vm._s(_vm.logged.username))])])]), _vm._v(" "), _c("div", {
       staticClass: "row text-start mt-3"
-    }, [_vm._m(19, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(20, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-11"
     }, [_c("h6", {
       staticClass: "fw-bold"
@@ -8339,7 +8349,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(20), _vm._v(" "), _c("div", {
+  }, [_vm._m(21), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8427,7 +8437,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(21), _vm._v(" "), _c("div", {
+  }, [_vm._m(22), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8456,7 +8466,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(22), _vm._v(" "), _c("div", {
+  }, [_vm._m(23), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8478,7 +8488,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(23), _vm._v(" "), _c("select", {
+  }, [_vm._m(24), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8519,7 +8529,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.board_id[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(24), _vm._v(" "), _c("input", {
+  }, [_vm._m(25), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8548,7 +8558,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.name[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(25), _vm._v(" "), _c("textarea", {
+  }, [_vm._m(26), _vm._v(" "), _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8576,7 +8586,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.description[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(26), _vm._v(" "), _c("select", {
+  }, [_vm._m(27), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8629,7 +8639,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(27), _vm._v(" "), _c("div", {
+  }, [_vm._m(28), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8698,7 +8708,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(28), _vm._v(" "), _c("div", {
+  }, [_vm._m(29), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8720,7 +8730,33 @@ var render = function render() {
       staticClass: "col-md-12"
     }, [_c("p", [_vm._v("Project Start Date: " + _vm._s(value.project_start_date))])]), _vm._v(" "), _c("div", {
       staticClass: "col-md-12"
-    }, [_c("p", [_vm._v("Project Due Date: " + _vm._s(value.project_end_date))])])])]);
+    }, [_c("p", [_vm._v("Project Due Date: " + _vm._s(value.project_end_date))])])]), _vm._v(" "), value.template === "research_project" ? _c("div", {
+      staticClass: "row"
+    }, [_c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Study Title: " + _vm._s(value.study_title))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Duration: " + _vm._s(value.duration))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Budget for the month: " + _vm._s(value.budget_month))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Total Budget Released: " + _vm._s(value.total_budget_released))])])]) : _vm._e(), _vm._v(" "), value.template === "extension_project" ? _c("div", {
+      staticClass: "row"
+    }, [_c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Program Title: " + _vm._s(value.program_title))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Name of Activity: " + _vm._s(value.activity_name))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Location: " + _vm._s(value.location))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Type of Services Rendered: " + _vm._s(value.service_type))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("# of Participants: " + _vm._s(value.participant_no))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("# of Training/Consultation Hours: " + _vm._s(value.training_no))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Responsible Person/Department: " + _vm._s(value["responsible_person/department"]))])])]) : _vm._e()]);
   }), _vm._v(" "), _c("div", {
     staticClass: "row"
   }, [_c("div", {
@@ -8736,7 +8772,7 @@ var render = function render() {
     }, [_vm._v(_vm._s(value.name))])]);
   })], 2), _vm._v(" "), _c("div", {
     staticClass: "col-md-12 mt-3"
-  }, [_c("p", [_vm._v("Project Members:")]), _vm._v(" "), _vm.staff.length != 0 ? _c("div", _vm._l(_vm.staff, function (value, key, index) {
+  }, [_c("p", [_vm._v("Project Members:")]), _vm._v(" "), _vm.staff_inv.length != 0 ? _c("div", _vm._l(_vm.staff_inv, function (value, key, index) {
     return _c("div", {
       key: key,
       attrs: {
@@ -8755,7 +8791,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(29), _vm._v(" "), _c("div", {
+  }, [_vm._m(30), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8836,7 +8872,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(30), _vm._v(" "), _c("div", {
+  }, [_vm._m(31), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -8992,7 +9028,412 @@ var render = function render() {
     }
   }), _vm._v(" "), _vm.validationUpdateProjectError.project_end_date ? _c("span", {
     staticClass: "text text-danger"
-  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.project_end_date[0]))]) : _vm._e()])]), _vm._v(" "), _c("button", {
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.project_end_date[0]))]) : _vm._e()])]), _vm._v(" "), _vm.formEdit.template === "research_project" ? _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Study Title:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.study_title,
+      expression: "formEdit.study_title"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "study_title",
+      id: "study_title",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.study_title
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.study_title ? _vm.validationUpdateProjectError.study_title = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "study_title", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.study_title ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.study_title[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "description"
+    }
+  }, [_vm._v("Duration:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.duration,
+      expression: "formEdit.duration"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "duration",
+      id: "duration",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.duration
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.duration ? _vm.validationUpdateProjectError.duration = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "duration", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.duration ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.duration[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Budget for the Month:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.budget_month,
+      expression: "formEdit.budget_month"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "budget_month",
+      id: "budget_month",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.budget_month
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.budget_month ? _vm.validationUpdateProjectError.budget_month = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "budget_month", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.budget_month ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.budget_month[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "description"
+    }
+  }, [_vm._v("Total Budget Released:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.total_budget_released,
+      expression: "formEdit.total_budget_released"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "total_budget_released",
+      id: "total_budget_released",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.total_budget_released
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.total_budget_released ? _vm.validationUpdateProjectError.total_budget_released = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "total_budget_released", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.total_budget_released ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.total_budget_released[0]))]) : _vm._e()])]) : _vm._e(), _vm._v(" "), _vm.formEdit.template === "extension_project" ? _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Program Title:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.program_title,
+      expression: "formEdit.program_title"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "program_title",
+      id: "program_title",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.program_title
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.program_title ? _vm.validationUpdateProjectError.program_title = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "program_title", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.program_title ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.program_title[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "description"
+    }
+  }, [_vm._v("Name of Activity:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.activity_name,
+      expression: "formEdit.activity_name"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "activity_name",
+      id: "activity_name",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.activity_name
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.activity_name ? _vm.validationUpdateProjectError.activity_name = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "activity_name", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.activity_name ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.activity_name[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Location:")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.location,
+      expression: "formEdit.location"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.$set(_vm.formEdit, "location", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }, function ($event) {
+        _vm.validationUpdateProjectError.location ? _vm.validationUpdateProjectError.location = null : null;
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "local"
+    }
+  }, [_vm._v("Local")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "national"
+    }
+  }, [_vm._v("National")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "international"
+    }
+  }, [_vm._v("International")])]), _vm._v(" "), _vm.validationUpdateProjectError.location ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.location[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Type of Service Rendered:")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.service_type,
+      expression: "formEdit.service_type"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.$set(_vm.formEdit, "service_type", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }, function ($event) {
+        _vm.validationUpdateProjectError.service_type ? _vm.validationUpdateProjectError.service_type = null : null;
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "training"
+    }
+  }, [_vm._v("Training")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "consultation"
+    }
+  }, [_vm._v("Consultation")])]), _vm._v(" "), _vm.validationUpdateProjectError.service_type ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.service_type[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "description"
+    }
+  }, [_vm._v("# of Training/Consultancy Hours:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.training_no,
+      expression: "formEdit.training_no"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "training_no",
+      id: "training_no",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.training_no
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.training_no ? _vm.validationUpdateProjectError.training_no = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "training_no", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.training_no ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.training_no[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "description"
+    }
+  }, [_vm._v("# of Participants:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.participant_no,
+      expression: "formEdit.participant_no"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "participant_no",
+      id: "participant_no",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.participant_no
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.participant_no ? _vm.validationUpdateProjectError.participant_no = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "participant_no", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.participant_no ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.participant_no[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "description"
+    }
+  }, [_vm._v("Responsible Person/Department:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit["responsible_person/department"],
+      expression: "formEdit['responsible_person/department']"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "responsible_person",
+      id: "responsible_person",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit["responsible_person/department"]
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError["responsible_person/department"] ? _vm.validationUpdateProjectError["responsible_person/department"] = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "responsible_person/department", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError["responsible_person/department"] ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError["responsible_person/department"][0]))]) : _vm._e()])]) : _vm._e(), _vm._v(" "), _c("button", {
     staticClass: "btn btn-warning mt-2 float-end",
     on: {
       click: function click($event) {
@@ -9012,7 +9453,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(31), _vm._v(" "), _c("div", {
+  }, [_vm._m(32), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#242424"
@@ -9051,7 +9492,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(32), _vm._v(" "), _c("div", {
+  }, [_vm._m(33), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9155,7 +9596,7 @@ var render = function render() {
     return index < 1 ? _c("div", {
       key: _vm.item.id,
       staticClass: "col-md-6"
-    }, [_vm.item.create_subtask_status !== 0 ? _c("h3", [_vm._v("Subtask:")]) : _vm._e()]) : _vm._e();
+    }, [_c("h3", [_vm._v("Subtask:")])]) : _vm._e();
   }), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("button", {
@@ -9177,7 +9618,7 @@ var render = function render() {
     return index < 1 ? _c("div", {
       key: _vm.item.id,
       staticClass: "fs-1 m-0"
-    }, [_vm.item.create_subtask_status !== 0 ? _c("div", [_c("button", {
+    }, [_c("button", {
       staticClass: "btn btn-success float-end",
       attrs: {
         title: "Toggle Subtask Board"
@@ -9189,7 +9630,7 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-kanban"
-    })])]) : _vm._e()]) : _vm._e();
+    })])]) : _vm._e();
   })], 2), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
@@ -9321,7 +9762,7 @@ var render = function render() {
       }, [index === subtask.board_id ? _c("div", [_c("Subtask", {
         attrs: {
           id: subtask.id,
-          draggable: "true"
+          draggable: index === _vm.subtask_board_name.length - 1 && subtask.is_approved === 1 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm mt-2"
@@ -9365,7 +9806,21 @@ var render = function render() {
         staticClass: "text text-success"
       }, [_vm._v("*Subtask approved!")]) : _vm._e(), _vm._v(" "), subtask.board_id === 2 && subtask.is_approved !== 1 ? _c("small", {
         staticClass: "text text-danger"
-      }, [_vm._v("*Subtask not yet approved")]) : _vm._e()])])])], 1) : _vm._e()]);
+      }, [_vm._v("*Subtask not yet approved")]) : _vm._e()]), _vm._v(" "), subtask.board_id === 2 ? _c("div", {
+        staticClass: "card-footer"
+      }, [_c("div", {
+        staticClass: "row"
+      }, [subtask.board_id === 2 ? _c("button", {
+        "class": subtask.is_approved === 1 ? "btn btn-danger" : "btn btn-success",
+        attrs: {
+          type: "button"
+        },
+        on: {
+          click: function click($event) {
+            return _vm.approvedOrDisapproved(subtask.id);
+          }
+        }
+      }, [_vm._v("\n                                                                            " + _vm._s(subtask.is_approved === 1 ? "DISAPPROVED" : "APPROVED") + "\n                                                                        ")]) : _vm._e()])]) : _vm._e()])])], 1) : _vm._e()]);
     }), 0)], 1);
   }), 0)])])]), _vm._v(" "), _c("div", {
     directives: [{
@@ -9405,7 +9860,7 @@ var render = function render() {
       staticClass: "col-md-12"
     }, [_c("div", {
       staticClass: "row"
-    }, [_vm._m(33, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(34, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-9"
     }, [_c("p", {
       staticClass: "text-muted"
@@ -9497,7 +9952,7 @@ var render = function render() {
           return _vm.editComment(comment);
         }
       }
-    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(34, true), _vm._v(" "), _c("li", [_c("a", {
+    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(35, true), _vm._v(" "), _c("li", [_c("a", {
       staticClass: "dropdown-item",
       on: {
         click: function click($event) {
@@ -9558,7 +10013,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(35), _vm._v(" "), _c("div", {
+  }, [_vm._m(36), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9749,7 +10204,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(36), _vm._v(" "), _c("div", {
+  }, [_vm._m(37), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9764,7 +10219,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("table", {
     staticClass: "table table-primary table-bordered"
-  }, [_vm._m(37), _vm._v(" "), _c("tbody", {
+  }, [_vm._m(38), _vm._v(" "), _c("tbody", {
     attrs: {
       id: "board_list"
     }
@@ -9831,7 +10286,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(38), _vm._v(" "), _c("div", {
+  }, [_vm._m(39), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -9950,7 +10405,7 @@ var staticRenderFns = [function () {
     staticClass: "bx bx-collection"
   }), _vm._v(" "), _c("span", {
     staticClass: "link_name"
-  }, [_vm._v("Projects")])]), _c("i", {
+  }, [_vm._v("Create Project")])]), _c("i", {
     staticClass: "bx bxs-chevron-down arrow"
   })]);
 }, function () {
@@ -9961,7 +10416,7 @@ var staticRenderFns = [function () {
     attrs: {
       href: "/admin/project/"
     }
-  }, [_vm._v("Projects")])]);
+  }, [_vm._v("Create Project")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
@@ -10156,6 +10611,30 @@ var staticRenderFns = [function () {
   }, [_c("h1", {
     staticClass: "display-4 fs-4"
   }, [_vm._v("No Columns and Task Yet!")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("tr", {
+    staticStyle: {
+      "background-color": "#152238",
+      color: "white"
+    }
+  }, [_c("th", {
+    staticClass: "fw-normal",
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Task")]), _vm._v(" "), _c("th", {
+    staticClass: "fw-normal",
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Progress")]), _vm._v(" "), _c("th", {
+    staticClass: "fw-normal",
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Due Date")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
@@ -11068,7 +11547,7 @@ var render = function render() {
       }, [board.id === task.board_id ? _c("div", [_vm.is_head.is_project_head === 1 ? _c("div", [_c("Task", {
         attrs: {
           id: task.id,
-          draggable: board_index === _vm.boards.length - 1 ? "false" : "true"
+          draggable: board_index === _vm.boards.length - 1 && task.total_subtask_done.total_subtask_done === task.total_subtask.total_subtask && task.total_subtask.total_subtask !== 0 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm rounded-0 mt-2",
@@ -11079,12 +11558,12 @@ var render = function render() {
         return index < 1 ? _c("div", {
           key: _vm.item.id,
           staticClass: "col"
-        }, [_vm.item.create_subtask_status !== 0 ? _c("h5", {
+        }, [_c("h5", {
           staticClass: "display-5 fs-5 title-text",
           style: {
             color: task.color.task_color == "#673AB7" || task.color.task_color == "#424242" || task.color.task_color == "#E91E63" || task.color.task_color == "#F44336" ? "white" : "black"
           }
-        }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]) : _vm._e(), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
+        }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _c("div", {
           staticClass: "progress"
         }, [_c("div", {
           staticClass: "progress-bar bg-success text-light display-6 fs-6",
@@ -11097,7 +11576,7 @@ var render = function render() {
             "aria-valuemin": "0",
             "aria-valuemax": "100"
           }
-        })]) : _vm._e()]) : _vm._e();
+        })])]) : _vm._e();
       }), _vm._v(" "), _c("div", {
         staticClass: "dropdown text-end"
       }, [_c("i", {
@@ -11168,16 +11647,16 @@ var render = function render() {
         style: {
           color: _vm.currentTaskColor == "#673AB7" || _vm.currentTaskColor == "#424242" || _vm.currentTaskColor == "#E91E63" || _vm.currentTaskColor == "#F44336" ? "white" : "black"
         }
-      }, [_vm._v("\n                                                                                        " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                    ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
+      }, [_vm._v("\n                                                                                        " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                    ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date && board_index !== _vm.boards.length - 1 ? _c("i", {
         staticClass: "bx bx-alarm-exclamation text-danger float-end bx-sm",
         attrs: {
           rel: "tooltip",
           title: "Task is already overdue"
         }
-      }) : _vm._e()], 2)])])], 1) : _c("div", [_vm._v("\n                                                                        " + _vm._s(task.uid) + "\n                                                                        "), task.uid === _vm.logged.id ? _c("div", [_c("Task", {
+      }) : _vm._e()], 2)])])], 1) : _c("div", [task.uid === _vm.logged.id ? _c("div", [_c("Task", {
         attrs: {
           id: task.id,
-          draggable: board_index === _vm.boards.length - 1 ? "false" : "true"
+          draggable: board_index === _vm.boards.length - 1 && task.total_subtask_done.total_subtask_done === task.total_subtask.total_subtask && task.total_subtask.total_subtask !== 0 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm rounded-0 mt-2",
@@ -11188,12 +11667,12 @@ var render = function render() {
         return index < 1 ? _c("div", {
           key: _vm.item.id,
           staticClass: "col"
-        }, [_vm.item.create_subtask_status !== 0 ? _c("h5", {
+        }, [_c("h5", {
           staticClass: "display-5 fs-5 title-text",
           style: {
             color: _vm.currentTaskColor == "#673AB7" || _vm.currentTaskColor == "#424242" || _vm.currentTaskColor == "#E91E63" || _vm.currentTaskColor == "#F44336" ? "white" : "black"
           }
-        }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]) : _vm._e(), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
+        }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _c("div", {
           staticClass: "progress"
         }, [_c("div", {
           staticClass: "progress-bar bg-success text-light display-6 fs-6",
@@ -11206,7 +11685,7 @@ var render = function render() {
             "aria-valuemin": "0",
             "aria-valuemax": "100"
           }
-        })]) : _vm._e()]) : _vm._e();
+        })])]) : _vm._e();
       }), _vm._v(" "), _c("div", {
         staticClass: "dropdown text-end"
       }, [_c("i", {
@@ -11277,7 +11756,7 @@ var render = function render() {
         style: {
           color: task.color.task_color == "#673AB7" || task.color.task_color == "#424242" || task.color.task_color == "#E91E63" || task.color.task_color == "#F44336" ? "white" : "black"
         }
-      }, [_vm._v("\n                                                                                            " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                        ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
+      }, [_vm._v("\n                                                                                            " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                        ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date && board_index !== _vm.boards.length - 1 ? _c("i", {
         staticClass: "bx bx-alarm-exclamation text-danger float-end bx-sm",
         attrs: {
           rel: "tooltip",
@@ -11287,7 +11766,7 @@ var render = function render() {
         return _c("div", [_vm.logged.id === task_member.uid ? _c("div", [_c("Task", {
           attrs: {
             id: task.id,
-            draggable: board_index === _vm.boards.length - 1 ? "false" : "true"
+            draggable: board_index === _vm.boards.length - 1 && task.total_subtask_done.total_subtask_done === task.total_subtask.total_subtask && task.total_subtask.total_subtask !== 0 ? "false" : "true"
           }
         }, [_c("div", {
           staticClass: "card shadow-sm rounded-0 mt-2",
@@ -11298,12 +11777,12 @@ var render = function render() {
           return index < 1 ? _c("div", {
             key: _vm.item.id,
             staticClass: "col"
-          }, [_vm.item.create_subtask_status !== 0 ? _c("h5", {
+          }, [_c("h5", {
             staticClass: "display-5 fs-5 title-text",
             style: {
               color: task.color.task_color == "#673AB7" || task.color.task_color == "#424242" || task.color.task_color == "#E91E63" || task.color.task_color == "#F44336" ? "white" : "black"
             }
-          }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]) : _vm._e(), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
+          }, [_vm._v("Task Progress: " + _vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), _c("div", {
             staticClass: "progress"
           }, [_c("div", {
             staticClass: "progress-bar bg-success text-light display-6 fs-6",
@@ -11316,7 +11795,7 @@ var render = function render() {
               "aria-valuemin": "0",
               "aria-valuemax": "100"
             }
-          })]) : _vm._e()]) : _vm._e();
+          })])]) : _vm._e();
         }), _vm._v(" "), _c("div", {
           staticClass: "dropdown text-end"
         }, [_c("i", {
@@ -11387,7 +11866,7 @@ var render = function render() {
           style: {
             color: task.color.task_color == "#673AB7" || task.color.task_color == "#424242" || task.color.task_color == "#E91E63" || task.color.task_color == "#F44336" ? "white" : "black"
           }
-        }, [_vm._v("\n                                                                                                    " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                                ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date ? _c("i", {
+        }, [_vm._v("\n                                                                                                    " + _vm._s(task.description.substring(0, 50) + "...") + "\n                                                                                                ")]), _vm._v(" "), new Date().toJSON().slice(0, 10).replace(/-/g, "-") >= task.task_due_date && board_index !== _vm.boards.length - 1 ? _c("i", {
           staticClass: "bx bx-alarm-exclamation text-danger float-end bx-sm",
           attrs: {
             rel: "tooltip",
@@ -11425,27 +11904,7 @@ var render = function render() {
         staticClass: "container"
       }, [_c("table", {
         staticClass: "table table-bordered table-striped"
-      }, [_c("thead", [_c("tr", {
-        staticStyle: {
-          "background-color": "#152238",
-          color: "white"
-        }
-      }, [_c("th", {
-        staticClass: "fw-normal",
-        attrs: {
-          scope: "col"
-        }
-      }, [_vm._v("Task")]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("th", {
-        staticClass: "fw-normal",
-        attrs: {
-          scope: "col"
-        }
-      }, [_vm._v("Progress")]) : _vm._e(), _vm._v(" "), _c("th", {
-        staticClass: "fw-normal",
-        attrs: {
-          scope: "col"
-        }
-      }, [_vm._v("Due Date")])]), _vm._v(" "), _vm._l(_vm.tasks, function (task, index) {
+      }, [_c("thead", [_vm._m(11, true), _vm._v(" "), _vm._l(_vm.tasks, function (task, index) {
         return board.id === task.board_id ? _c("tr", {
           key: task.id,
           staticStyle: {
@@ -11472,7 +11931,7 @@ var render = function render() {
             "aria-expanded": "true",
             "aria-controls": "collapseOne"
           }
-        }, [_vm._v("\n                                                                                    " + _vm._s(task.name) + "\n                                                                                ")]) : _vm._e()]), _vm._v(" "), _vm.item.create_subtask_status !== 0 ? _c("div", {
+        }, [_vm._v("\n                                                                                    " + _vm._s(task.name) + "\n                                                                                ")]) : _vm._e()]), _vm._v(" "), _c("div", {
           staticClass: "accordion-collapse collapse",
           attrs: {
             id: "drop" + index,
@@ -11485,17 +11944,13 @@ var render = function render() {
           staticClass: "col-md-12"
         }, [_c("table", {
           staticClass: "table table-bordered table-striped"
-        }, [_vm._m(11, true), _vm._v(" "), _c("tbody", _vm._l(_vm.sortStatus(task.subtasks), function (subtask) {
+        }, [_vm._m(12, true), _vm._v(" "), _c("tbody", _vm._l(_vm.sortStatus(task.subtasks), function (subtask) {
           return _c("tr", [_c("th", [_vm._v("\n                                                                                                            " + _vm._s(subtask.subtask_name) + " \n                                                                                                        ")]), _vm._v(" "), _c("th", [_c("p", {
             "class": subtask.bid === 0 ? "text-dark" : subtask.bid === 1 ? "text-secondary" : subtask.bid === 2 ? "text-success" : "text-danger"
           }, [_vm._v("\n                                                                                                                " + _vm._s(subtask.bid === 0 ? "To do" : subtask.bid === 1 ? "In Progress" : subtask.bid === 2 ? "Done" : "No status yet") + "\n                                                                                                            ")])])]);
         }), 0)])]) : _c("div", [_c("p", {
           staticClass: "text-danger fw-bold"
-        }, [_vm._v("No Subtask Assigned Yet")])])])]) : _c("div", [_c("th", {
-          attrs: {
-            scope: "col"
-          }
-        }, [_vm._v(_vm._s(task.name))])])])])]), _vm._v(" "), task.subtasks.length !== 0 ? _c("th", [_vm._v(_vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]) : _vm._e(), _vm._v(" "), task.task_due_date ? _c("th", [_vm._v(_vm._s(task.task_due_date))]) : _c("th", {
+        }, [_vm._v("No Subtask Assigned Yet")])])])])])])]), _vm._v(" "), _c("th", [_vm._v(_vm._s(task.total_subtask_done.total_subtask_done) + " / " + _vm._s(task.total_subtask.total_subtask))]), _vm._v(" "), task.task_due_date ? _c("th", [_vm._v(_vm._s(task.task_due_date))]) : _c("th", {
           staticClass: "fw-normal",
           attrs: {
             scope: "col"
@@ -11519,7 +11974,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(12), _vm._v(" "), _c("div", {
+  }, [_vm._m(13), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11544,7 +11999,7 @@ var render = function render() {
         height: "180",
         width: "180"
       }
-    }), _vm._v(" "), _vm._m(13, true), _vm._v(" "), _c("div", {
+    }), _vm._v(" "), _vm._m(14, true), _vm._v(" "), _c("div", {
       staticClass: "form-group mt-3"
     }, [_c("p", [_c("b", {
       staticStyle: {
@@ -11556,19 +12011,19 @@ var render = function render() {
   }, _vm._l(_vm.logged, function (value, key, index) {
     return index < 1 ? _c("div", [_c("div", {
       staticClass: "row text-start mt-3"
-    }, [_vm._m(14, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(15, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-11"
     }, [_c("h6", {
       staticClass: "fw-bold"
     }, [_vm._v(_vm._s(_vm.logged.name))])])]), _vm._v(" "), _c("div", {
       staticClass: "row text-start mt-3"
-    }, [_vm._m(15, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(16, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-11"
     }, [_c("h6", {
       staticClass: "fw-bold"
     }, [_vm._v(_vm._s(_vm.logged.username))])])]), _vm._v(" "), _c("div", {
       staticClass: "row text-start mt-3"
-    }, [_vm._m(16, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(17, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-11"
     }, [_c("h6", {
       staticClass: "fw-bold"
@@ -11581,7 +12036,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(17), _vm._v(" "), _c("div", {
+  }, [_vm._m(18), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11669,7 +12124,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(18), _vm._v(" "), _c("div", {
+  }, [_vm._m(19), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11698,7 +12153,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(19), _vm._v(" "), _c("div", {
+  }, [_vm._m(20), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11720,7 +12175,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(20), _vm._v(" "), _c("select", {
+  }, [_vm._m(21), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11761,7 +12216,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.board_id[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(21), _vm._v(" "), _c("input", {
+  }, [_vm._m(22), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11790,7 +12245,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.name[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(22), _vm._v(" "), _c("textarea", {
+  }, [_vm._m(23), _vm._v(" "), _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11818,7 +12273,7 @@ var render = function render() {
     staticClass: "text text-danger"
   }, [_vm._v(_vm._s(_vm.validationTaskError.description[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-2"
-  }, [_vm._m(23), _vm._v(" "), _c("select", {
+  }, [_vm._m(24), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11871,7 +12326,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(24), _vm._v(" "), _c("div", {
+  }, [_vm._m(25), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11940,7 +12395,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(25), _vm._v(" "), _c("div", {
+  }, [_vm._m(26), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -11962,7 +12417,33 @@ var render = function render() {
       staticClass: "col-md-12"
     }, [_c("p", [_vm._v("Project Start Date: " + _vm._s(value.project_start_date))])]), _vm._v(" "), _c("div", {
       staticClass: "col-md-12"
-    }, [_c("p", [_vm._v("Project Due Date: " + _vm._s(value.project_end_date))])])])]);
+    }, [_c("p", [_vm._v("Project Due Date: " + _vm._s(value.project_end_date))])])]), _vm._v(" "), value.template === "research_project" ? _c("div", {
+      staticClass: "row"
+    }, [_c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Study Title: " + _vm._s(value.study_title))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Duration: " + _vm._s(value.duration))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Budget for the month: " + _vm._s(value.budget_month))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Total Budget Released: " + _vm._s(value.total_budget_released))])])]) : _vm._e(), _vm._v(" "), value.template === "extension_project" ? _c("div", {
+      staticClass: "row"
+    }, [_c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Program Title: " + _vm._s(value.program_title))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Name of Activity: " + _vm._s(value.activity_name))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Location: " + _vm._s(value.location))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Type of Services Rendered: " + _vm._s(value.service_type))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("# of Participants: " + _vm._s(value.participant_no))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("# of Training/Consultation Hours: " + _vm._s(value.training_no))])]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("p", [_vm._v("Responsible Person/Department: " + _vm._s(value["responsible_person/department"]))])])]) : _vm._e()]);
   }), _vm._v(" "), _c("div", {
     staticClass: "row"
   }, [_c("div", {
@@ -11978,7 +12459,7 @@ var render = function render() {
     }, [_vm._v(_vm._s(value.name))])]);
   })], 2), _vm._v(" "), _c("div", {
     staticClass: "col-md-12 mt-3"
-  }, [_c("p", [_vm._v("Project Members:")]), _vm._v(" "), _vm.staff.length != 0 ? _c("div", _vm._l(_vm.staff, function (value, key, index) {
+  }, [_c("p", [_vm._v("Project Members:")]), _vm._v(" "), _vm.staff_inv.length != 0 ? _c("div", _vm._l(_vm.staff_inv, function (value, key, index) {
     return _c("div", {
       key: key,
       attrs: {
@@ -11997,7 +12478,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(26), _vm._v(" "), _c("div", {
+  }, [_vm._m(27), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12078,7 +12559,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(27), _vm._v(" "), _c("div", {
+  }, [_vm._m(28), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12234,7 +12715,412 @@ var render = function render() {
     }
   }), _vm._v(" "), _vm.validationUpdateProjectError.project_end_date ? _c("span", {
     staticClass: "text text-danger"
-  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.project_end_date[0]))]) : _vm._e()])]), _vm._v(" "), _c("button", {
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.project_end_date[0]))]) : _vm._e()])]), _vm._v(" "), _vm.formEdit.template === "research_project" ? _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Study Title:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.study_title,
+      expression: "formEdit.study_title"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "study_title",
+      id: "study_title",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.study_title
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.study_title ? _vm.validationUpdateProjectError.study_title = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "study_title", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.study_title ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.study_title[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "description"
+    }
+  }, [_vm._v("Duration:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.duration,
+      expression: "formEdit.duration"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "duration",
+      id: "duration",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.duration
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.duration ? _vm.validationUpdateProjectError.duration = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "duration", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.duration ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.duration[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Budget for the Month:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.budget_month,
+      expression: "formEdit.budget_month"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "budget_month",
+      id: "budget_month",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.budget_month
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.budget_month ? _vm.validationUpdateProjectError.budget_month = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "budget_month", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.budget_month ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.budget_month[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "description"
+    }
+  }, [_vm._v("Total Budget Released:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.total_budget_released,
+      expression: "formEdit.total_budget_released"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "total_budget_released",
+      id: "total_budget_released",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.total_budget_released
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.total_budget_released ? _vm.validationUpdateProjectError.total_budget_released = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "total_budget_released", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.total_budget_released ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.total_budget_released[0]))]) : _vm._e()])]) : _vm._e(), _vm._v(" "), _vm.formEdit.template === "extension_project" ? _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Program Title:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.program_title,
+      expression: "formEdit.program_title"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "program_title",
+      id: "program_title",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.program_title
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.program_title ? _vm.validationUpdateProjectError.program_title = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "program_title", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.program_title ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.program_title[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "description"
+    }
+  }, [_vm._v("Name of Activity:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.activity_name,
+      expression: "formEdit.activity_name"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "activity_name",
+      id: "activity_name",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.activity_name
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.activity_name ? _vm.validationUpdateProjectError.activity_name = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "activity_name", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.activity_name ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.activity_name[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Location:")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.location,
+      expression: "formEdit.location"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.$set(_vm.formEdit, "location", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }, function ($event) {
+        _vm.validationUpdateProjectError.location ? _vm.validationUpdateProjectError.location = null : null;
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "local"
+    }
+  }, [_vm._v("Local")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "national"
+    }
+  }, [_vm._v("National")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "international"
+    }
+  }, [_vm._v("International")])]), _vm._v(" "), _vm.validationUpdateProjectError.location ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.location[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Type of Service Rendered:")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.service_type,
+      expression: "formEdit.service_type"
+    }],
+    staticClass: "form-select",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.$set(_vm.formEdit, "service_type", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }, function ($event) {
+        _vm.validationUpdateProjectError.service_type ? _vm.validationUpdateProjectError.service_type = null : null;
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "training"
+    }
+  }, [_vm._v("Training")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "consultation"
+    }
+  }, [_vm._v("Consultation")])]), _vm._v(" "), _vm.validationUpdateProjectError.service_type ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.service_type[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "description"
+    }
+  }, [_vm._v("# of Training/Consultancy Hours:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.training_no,
+      expression: "formEdit.training_no"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "training_no",
+      id: "training_no",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.training_no
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.training_no ? _vm.validationUpdateProjectError.training_no = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "training_no", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.training_no ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.training_no[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "description"
+    }
+  }, [_vm._v("# of Participants:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit.participant_no,
+      expression: "formEdit.participant_no"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "participant_no",
+      id: "participant_no",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit.participant_no
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError.participant_no ? _vm.validationUpdateProjectError.participant_no = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "participant_no", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError.participant_no ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError.participant_no[0]))]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12 mt-2"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "description"
+    }
+  }, [_vm._v("Responsible Person/Department:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formEdit["responsible_person/department"],
+      expression: "formEdit['responsible_person/department']"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "responsible_person",
+      id: "responsible_person",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formEdit["responsible_person/department"]
+    },
+    on: {
+      change: function change($event) {
+        _vm.validationUpdateProjectError["responsible_person/department"] ? _vm.validationUpdateProjectError["responsible_person/department"] = null : null;
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formEdit, "responsible_person/department", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _vm.validationUpdateProjectError["responsible_person/department"] ? _c("span", {
+    staticClass: "text text-danger"
+  }, [_vm._v(_vm._s(_vm.validationUpdateProjectError["responsible_person/department"][0]))]) : _vm._e()])]) : _vm._e(), _vm._v(" "), _c("button", {
     staticClass: "btn btn-warning mt-2 float-end",
     on: {
       click: function click($event) {
@@ -12254,7 +13140,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(28), _vm._v(" "), _c("div", {
+  }, [_vm._m(29), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#242424"
@@ -12293,7 +13179,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(29), _vm._v(" "), _c("div", {
+  }, [_vm._m(30), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -12397,7 +13283,7 @@ var render = function render() {
     return index < 1 ? _c("div", {
       key: _vm.item.id,
       staticClass: "col-md-6"
-    }, [_vm.item.create_subtask_status !== 0 ? _c("h3", [_vm._v("Subtask:")]) : _vm._e()]) : _vm._e();
+    }, [_c("h3", [_vm._v("Subtask:")])]) : _vm._e();
   }), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("button", {
@@ -12419,7 +13305,7 @@ var render = function render() {
     return index < 1 ? _c("div", {
       key: _vm.item.id,
       staticClass: "fs-1 m-0"
-    }, [_vm.item.create_subtask_status !== 0 ? _c("div", [_c("button", {
+    }, [_c("button", {
       staticClass: "btn btn-success float-end",
       attrs: {
         title: "Toggle Subtask Board"
@@ -12431,8 +13317,8 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "bi bi-kanban"
-    })])]) : _vm._e()]) : _vm._e();
-  })], 2), _vm._v(" "), _c("div", {
+    })])]) : _vm._e();
+  })], 2), _vm._v(" "), _vm.item.create_subtask_status !== 0 || _vm.is_head.is_project_head === 1 ? _c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -12519,7 +13405,7 @@ var render = function render() {
     }
   }, [_vm._v("Add / Update "), _c("i", {
     staticClass: "bi bi-plus"
-  })])])]), _vm._v(" "), _c("div", {
+  })])])]) : _vm._e(), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -12573,7 +13459,7 @@ var render = function render() {
         staticClass: "card shadow-sm mt-2"
       }, [_c("div", {
         staticClass: "card-body"
-      }, [_c("div", {
+      }, [item.create_subtask_status === 1 || _vm.is_head.is_project_head === 1 ? _c("div", {
         staticClass: "dropdown text-end"
       }, [_c("i", {
         staticClass: "bx bx-dots-horizontal-rounded bx-md",
@@ -12603,7 +13489,7 @@ var render = function render() {
             return _vm.deleteSubtask(subtask.id);
           }
         }
-      }, [_vm._v("Delete")])])])]), _vm._v(" "), _c("div", {
+      }, [_vm._v("Delete")])])])]) : _vm._e(), _vm._v(" "), _c("div", {
         staticClass: "card-title"
       }, [_c("h3", {
         staticClass: "lead font-weight-light text-primary"
@@ -12611,7 +13497,7 @@ var render = function render() {
         staticClass: "text text-success"
       }, [_vm._v("*Subtask approved!")]) : _vm._e(), _vm._v(" "), subtask.board_id === 2 && subtask.is_approved !== 1 ? _c("small", {
         staticClass: "text text-danger"
-      }, [_vm._v("*Subtask not yet approved")]) : _vm._e()]), _vm._v(" "), _vm.is_head.is_project_head === 1 && subtask.board_id === 2 ? _c("div", {
+      }, [_vm._v("*Subtask not yet approved")]) : _vm._e()]), _vm._v(" "), subtask.board_id === 2 ? _c("div", {
         staticClass: "card-footer"
       }, [_c("div", {
         staticClass: "row"
@@ -12665,7 +13551,7 @@ var render = function render() {
       staticClass: "col-md-12"
     }, [_c("div", {
       staticClass: "row"
-    }, [_vm._m(30, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(31, true), _vm._v(" "), _c("div", {
       staticClass: "col-md-9"
     }, [_c("p", {
       staticClass: "text-muted"
@@ -12757,7 +13643,7 @@ var render = function render() {
           return _vm.editComment(comment);
         }
       }
-    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(31, true), _vm._v(" "), _c("li", [_c("a", {
+    }, [_vm._v("Edit Comment")])]), _vm._v(" "), _vm._m(32, true), _vm._v(" "), _c("li", [_c("a", {
       staticClass: "dropdown-item",
       on: {
         click: function click($event) {
@@ -12818,7 +13704,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(32), _vm._v(" "), _c("div", {
+  }, [_vm._m(33), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -13009,7 +13895,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(33), _vm._v(" "), _c("div", {
+  }, [_vm._m(34), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -13024,7 +13910,7 @@ var render = function render() {
     staticClass: "form-group"
   }, [_c("table", {
     staticClass: "table table-primary table-bordered"
-  }, [_vm._m(34), _vm._v(" "), _c("tbody", {
+  }, [_vm._m(35), _vm._v(" "), _c("tbody", {
     attrs: {
       id: "board_list"
     }
@@ -13091,7 +13977,7 @@ var render = function render() {
       "data-bs-scroll": "true",
       tabindex: "-1"
     }
-  }, [_vm._m(35), _vm._v(" "), _c("div", {
+  }, [_vm._m(36), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -13165,7 +14051,7 @@ var render = function render() {
       id: "offcanvasInvitation",
       "aria-labelledby": "offcanvasWithBothOptionsLabel"
     }
-  }, [_vm._m(36), _vm._v(" "), _c("div", {
+  }, [_vm._m(37), _vm._v(" "), _c("div", {
     staticClass: "offcanvas-body",
     staticStyle: {
       "background-color": "#E4E9F7"
@@ -13248,7 +14134,7 @@ var staticRenderFns = [function () {
     staticClass: "bx bx-collection"
   }), _vm._v(" "), _c("span", {
     staticClass: "link_name"
-  }, [_vm._v("Projects")])]), _c("i", {
+  }, [_vm._v("Create Project")])]), _c("i", {
     staticClass: "bx bxs-chevron-down arrow"
   })]);
 }, function () {
@@ -13259,7 +14145,7 @@ var staticRenderFns = [function () {
     attrs: {
       href: "/head/project/store"
     }
-  }, [_vm._v("Projects")])]);
+  }, [_vm._v("Create Project")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
@@ -13399,6 +14285,30 @@ var staticRenderFns = [function () {
   }, [_c("h1", {
     staticClass: "display-4 fs-4"
   }, [_vm._v("No Columns and Task Yet!")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("tr", {
+    staticStyle: {
+      "background-color": "#152238",
+      color: "white"
+    }
+  }, [_c("th", {
+    staticClass: "fw-normal",
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Task")]), _vm._v(" "), _c("th", {
+    staticClass: "fw-normal",
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Progress")]), _vm._v(" "), _c("th", {
+    staticClass: "fw-normal",
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Due Date")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;

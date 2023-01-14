@@ -186,13 +186,13 @@ class SubtaskController extends Controller
                     $notifyAllSubtaskUser = Subtask::where('task_id', $task_id)->get();
                     $oldBoard = "";
                     $oldBoardId = $subtask->board_id;
-                    if($subtask->board_id == 0) 
+                    if ($subtask->board_id == 0)
                         $oldBoard = 'To do';
                     else if ($subtask->board_id == 1)
                         $oldBoard = 'In Progress';
                     else
                         $oldBoard = 'Done';
-                    
+
                     // Update Subtask
                     $subtask->board_id = $request->input('board_id');
                     $subtask->subtask_name = $request->input('subtask_name');
@@ -202,12 +202,12 @@ class SubtaskController extends Controller
                     $projectFirst = Project::firstWhere('id', $project->id);
 
                     if ($subtask->save()) {
-                        if($oldBoardId != $subtask->board_id) {
+                        if ($oldBoardId != $subtask->board_id) {
                             $newBoardName = "";
                             $task = Task::firstWhere('id', $task_id);
-                            if($subtask->board_id == 0) 
+                            if ($subtask->board_id == 0)
                                 $newBoardName = 'To do';
-                            else if($subtask->board_id == 1)
+                            else if ($subtask->board_id == 1)
                                 $newBoardName = 'In Progress';
                             else
                                 $newBoardName = 'Done';
@@ -223,8 +223,7 @@ class SubtaskController extends Controller
                                     ]);
                                 }
                             }
-                        }
-                        else { 
+                        } else {
                             $task = Task::firstWhere('id', $task_id);
                             Report::create(['user_id' => $user_id, 'project_id' => $task->project_id, 'message' => ' updated a subtask in ' . $task->name . ' in project: ' . $projectFirst->project_title]);
 
@@ -254,7 +253,7 @@ class SubtaskController extends Controller
                             'total_task_done' => $totalTaskDone
                         ]);
 
-                        
+
 
                         return new SubtaskResource($subtask);
                     }
@@ -267,7 +266,7 @@ class SubtaskController extends Controller
                     $notifyAllSubtaskUser = Subtask::where('task_id', $task_id)->get();
                     $oldBoard = "";
                     $oldBoardId = $subtask->board_id;
-                    if($subtask->board_id == 0) 
+                    if ($subtask->board_id == 0)
                         $oldBoard = 'To do';
                     else if ($subtask->board_id == 1)
                         $oldBoard = 'In Progress';
@@ -282,9 +281,9 @@ class SubtaskController extends Controller
                     $project = Task::firstWhere('id', $subtask->task_id);
 
                     if ($subtask->save()) {
-                        if($oldBoardId != $subtask->board_id) {
+                        if ($oldBoardId != $subtask->board_id) {
                             $newBoardName = "";
-                            if($subtask->board_id == 0) 
+                            if ($subtask->board_id == 0)
                                 $newBoardName = 'To do';
                             else if ($subtask->board_id == 1)
                                 $newBoardName = 'In Progress';
@@ -303,8 +302,7 @@ class SubtaskController extends Controller
                                     ]);
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             $task = Task::firstWhere('id', $task_id);
 
                             Report::create(['user_id' => $user_id, 'project_id' => $task->project_id, 'message' => ' updated a subtask in ' . $task->name . ' in project: ' . $projectFirst->project_title]);
@@ -344,48 +342,64 @@ class SubtaskController extends Controller
         }
     }
 
-    public function subtaskApproval($id) {
-        try{
+    public function subtaskApproval($id)
+    {
+        try {
             $subtask = Subtask::findOrFail($id);
-            // if subtask not yet approved
-            if($subtask->is_approved === 1) {
-                $notifyUser = Subtask::where('task_id', $subtask->task_id)->where('user_id', $subtask->user_id)->first();
+            // if subtask approved
+            if ($subtask->is_approved === 1) {
+                // $notifyUser = Subtask::where('task_id', $subtask->task_id)->where('user_id', $subtask->user_id)->first();
+                $notifyUser = TaskMember::where('task_id', $subtask->task_id)->get();
                 $task = Task::firstWhere('id', $subtask->task_id);
+                $project = Project::firstWhere('project_id', $task->project_id);
                 Subtask::firstWhere('id', $id)->update(['is_approved' => 0]);
                 $countApproved = Subtask::where('task_id', $subtask->task_id)->where('board_id', 2)
-                            ->where('is_approved', 1)
-                            ->get()->count();
+                    ->where('is_approved', 1)
+                    ->get()->count();
                 TaskProgress::where('task_id', $subtask->task_id)
                     ->update(['total_subtask_done' => $countApproved]);
-                $user = User::where('id', $notifyUser->user_id)->first();
-                Notification::create([
-                    'user_id' => $user->id,
-                    'notification_message' =>  auth()->user()->name . ' disapproved your subtask:  ' . $subtask->subtask_name . ' in task: ' . $task->name,
+                foreach ($notifyUser as $notify) {
+                    $user = User::where('id', $notify->user_id)->first();
+                    Notification::create([
+                        'user_id' => $notify->user_id,
+                        'notification_message' =>  auth()->user()->name . ' disapproved the subtask:  ' . $subtask->subtask_name . ' in task: ' . $task->name,
+                    ]);
+                }
+                Report::create([
+                    'user_id' => auth()->user()->id,
+                    'project_id' => $project->project_id,
+                    'message' => ' disapproved the subtask:  ' . $subtask->subtask_name . ' in task: ' . $task->name
                 ]);
             }
-            // if subtask is already approved
+            // if subtask is not yet approved
             else {
-                $notifyUser = Subtask::where('task_id', $subtask->task_id)->where('user_id', $subtask->user_id)->first();
+                // $notifyUser = Subtask::where('task_id', $subtask->task_id)->where('user_id', $subtask->user_id)->first();
+                $notifyUser = TaskMember::where('task_id', $subtask->task_id)->get();
                 $task = Task::firstWhere('id', $subtask->task_id);
+                $project = Project::firstWhere('project_id', $task->project_id);
                 Subtask::firstWhere('id', $id)->update(['is_approved' => 1]);
-
                 $countApproved = Subtask::where('task_id', $subtask->task_id)->where('board_id', 2)
-                            ->where('is_approved', 1)
-                            ->get()->count();
+                    ->where('is_approved', 1)
+                    ->get()->count();
                 TaskProgress::where('task_id', $subtask->task_id)
                     ->update(['total_subtask_done' => $countApproved]);
-                $user = User::where('id', $notifyUser->user_id)->first();
-                Notification::create([
-                    'user_id' => $user->id,
-                    'notification_message' =>  auth()->user()->name . ' approved your subtask:  ' . $subtask->subtask_name . ' in task: ' . $task->name,
+                foreach ($notifyUser as $notify) {
+                    $user = User::where('id', $notify->user_id)->first();
+                    Notification::create([
+                        'user_id' => $notify->user_id,
+                        'notification_message' =>  auth()->user()->name . ' approved the subtask:  ' . $subtask->subtask_name . ' in task: ' . $task->name,
+                    ]);
+                }
+                Report::create([
+                    'user_id' => auth()->user()->id,
+                    'project_id' => $project->project_id,
+                    'message' => ' approved the subtask:  ' . $subtask->subtask_name . ' in task: ' . $task->name
                 ]);
                 Subtask::firstWhere('id', $id)->update(['is_approved' => 1]);
             }
-        }
-        catch(ModelNotFoundException $e){
+        } catch (ModelNotFoundException $e) {
             abort(404);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             abort(500);
         }
     }

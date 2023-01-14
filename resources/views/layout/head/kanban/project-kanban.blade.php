@@ -478,7 +478,7 @@
     </style>
 </head>
 
-<body>
+<body oncontextmenu="return false;">
     <div id="app">
         <main class="py-4">
             @yield('content')

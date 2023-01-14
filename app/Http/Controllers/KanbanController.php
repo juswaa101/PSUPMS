@@ -48,6 +48,22 @@ class KanbanController extends Controller
                 ->select(['*', 'users.id as user_id'])
                 ->get();
 
+            $staffInvitation = DB::table('projects')
+                ->join('users', 'projects.id', '=', 'users.id')
+                ->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
+                ->where('projects.project_title', '=', $project->project_title)
+                ->where('projects.is_project_head', '=', 0)
+                ->whereNull('users.deleted_at')
+                ->select(['*', 'users.id as user_id'])
+                ->get();$staffInvitation = DB::table('projects')
+                ->join('users', 'projects.id', '=', 'users.id')
+                ->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
+                ->where('projects.project_title', '=', $project->project_title)
+                ->where('projects.is_project_head', '=', 0)
+                ->whereNull('users.deleted_at')
+                ->select(['*', 'users.id as user_id'])
+                ->get();
+
             $users = User::where('users.role', '!=', 'admin')->get();
             $user_head = User::join('projects', 'projects.id', '=', 'users.id')
                 ->where('projects.project_title', '=', $project->project_title)
@@ -117,6 +133,7 @@ class KanbanController extends Controller
             return view('admin.kanban', compact('project'))
                 ->with('users', $users)
                 ->with(compact('projects'))
+                ->with(compact('staffInvitation'))
                 ->with(compact('notification'))
                 ->with(compact('user_head'))
                 ->with(compact('userAssignedProject'))
@@ -165,6 +182,15 @@ class KanbanController extends Controller
                 ->where('projects.project_title', '=', $project->project_title)
                 ->where('projects.is_project_head', '=', 0)
                 ->where('invitations.status', 1)
+                ->whereNull('users.deleted_at')
+                ->select(['*', 'users.id as user_id'])
+                ->get();
+
+            $staffInvitation = DB::table('projects')
+                ->join('users', 'projects.id', '=', 'users.id')
+                ->join('invitations', 'invitations.project_id', '=', 'projects.project_id')
+                ->where('projects.project_title', '=', $project->project_title)
+                ->where('projects.is_project_head', '=', 0)
                 ->whereNull('users.deleted_at')
                 ->select(['*', 'users.id as user_id'])
                 ->get();
@@ -307,6 +333,7 @@ class KanbanController extends Controller
                 ->with(compact('projects'))
                 ->with(compact('notification'))
                 ->with(compact('isProjectHead'))
+                ->with(compact('staffInvitation'))
                 ->with(compact('user_head'))
                 ->with(compact('userAssignedProject'))
                 ->with(compact('fetch'))
