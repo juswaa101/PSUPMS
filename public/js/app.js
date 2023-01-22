@@ -13497,7 +13497,7 @@ var render = function render() {
         staticClass: "text text-success"
       }, [_vm._v("*Subtask approved!")]) : _vm._e(), _vm._v(" "), subtask.board_id === 2 && subtask.is_approved !== 1 ? _c("small", {
         staticClass: "text text-danger"
-      }, [_vm._v("*Subtask not yet approved")]) : _vm._e()]), _vm._v(" "), subtask.board_id === 2 ? _c("div", {
+      }, [_vm._v("*Subtask not yet approved")]) : _vm._e()]), _vm._v(" "), subtask.board_id === 2 && _vm.is_head.is_project_head === 1 ? _c("div", {
         staticClass: "card-footer"
       }, [_c("div", {
         staticClass: "row"

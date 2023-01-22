@@ -1196,7 +1196,7 @@
                                                                             <small v-if="subtask.board_id === 2 && subtask.is_approved !== 1" class="text text-danger">*Subtask not yet approved</small>
                                                                         </div>
                                                                         <!-- to do pa, implement approve and disapprove -->
-                                                                        <div class="card-footer" v-if="subtask.board_id === 2">
+                                                                        <div class="card-footer" v-if="subtask.board_id === 2 && is_head.is_project_head === 1">
                                                                             <div class="row">
                                                                                 <button type="button" :class="subtask.is_approved === 1 ? 'btn btn-danger' : 'btn btn-success'" @click="approvedOrDisapproved(subtask.id)"
                                                                                     v-if="subtask.board_id === 2"
