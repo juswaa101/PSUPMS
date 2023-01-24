@@ -13426,7 +13426,7 @@ var render = function render() {
       staticClass: "col-4 text-uppercase"
     }, [_vm._v(_vm._s(subtask.name))]), _vm._v(" "), index === _vm.subtask_board_name.length - 1 && _vm.subtask_board_name.length > 1 && _vm.is_head.is_project_head === 0 ? _c("p", {
       staticClass: "text-danger mt-2"
-    }, [_vm._v("* Project Leader is only allowed to drop here")]) : _vm._e()]);
+    }, [_vm._v("* Once drag here in this column, project leader needs approval first and you can't move it back")]) : _vm._e()]);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "row"
   }, _vm._l(_vm.subtask_board_name, function (item, index) {
@@ -13440,9 +13440,7 @@ var render = function render() {
       domProps: {
         value: _vm.show.id
       }
-    }), _vm._v(" "), _c("div", {
-      "class": [index === _vm.subtask_board_name.length - 1 && _vm.is_head.is_project_head === 0 ? "overlay-board" : ""]
-    }, [_c("SubtaskHeadBoard", {
+    }), _vm._v(" "), _c("SubtaskHeadBoard", {
       attrs: {
         id: index
       }
@@ -13453,7 +13451,7 @@ var render = function render() {
       }, [index === subtask.board_id ? _c("div", [_c("SubtaskHeadTask", {
         attrs: {
           id: subtask.id,
-          draggable: index === _vm.subtask_board_name.length - 1 && subtask.is_approved === 1 ? "false" : "true"
+          draggable: index === (_vm.subtask_board_name.length - 1 && subtask.is_approved === 1) || _vm.is_head.is_project_head === 0 && index === _vm.subtask_board_name.length - 1 ? "false" : "true"
         }
       }, [_c("div", {
         staticClass: "card shadow-sm mt-2"
@@ -13512,7 +13510,7 @@ var render = function render() {
           }
         }
       }, [_vm._v("\n                                                                                " + _vm._s(subtask.is_approved === 1 ? "DISAPPROVED" : "APPROVED") + "\n                                                                            ")]) : _vm._e()])]) : _vm._e()])])], 1) : _vm._e()]);
-    }), 0)], 1)]);
+    }), 0)], 1);
   }), 0)])])]), _vm._v(" "), _c("div", {
     directives: [{
       name: "show",

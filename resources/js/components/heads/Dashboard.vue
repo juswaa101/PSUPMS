@@ -1164,17 +1164,17 @@
                                             <div class="col-4 text-uppercase" v-for="(subtask, index) in subtask_board_name">
                                                 <div class="col-4 text-uppercase">{{ subtask.name }}</div>
                                                 <p v-if="((index === subtask_board_name.length-1 && subtask_board_name.length > 1) && 
-                                                                is_head.is_project_head === 0)" class="text-danger mt-2">* Project Leader is only allowed to drop here</p>
+                                                                is_head.is_project_head === 0)" class="text-danger mt-2">* Once drag here in this column, project leader needs approval first and you can't move it back</p>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-4" v-for="(item, index) in subtask_board_name">
                                                 <input type="hidden" :value="show.id" name="task_id">
-                                                <div :class="[(index === subtask_board_name.length-1 && is_head.is_project_head === 0) ? 'overlay-board' : '' ]">
+                                                <!-- <div :class="[(index === subtask_board_name.length-1 && is_head.is_project_head === 0) ? 'overlay-board' : '' ]"> -->
                                                     <SubtaskHeadBoard :id="index">
                                                         <div v-for="subtask in subtasks" v-bind:key="subtask.id">
                                                             <div v-if="index === subtask.board_id">
-                                                                <SubtaskHeadTask :id="subtask.id" :draggable="index === subtask_board_name.length-1 && subtask.is_approved === 1 ? 'false' : 'true'">
+                                                                <SubtaskHeadTask :id="subtask.id" :draggable="index === (subtask_board_name.length-1 && subtask.is_approved === 1) || (is_head.is_project_head === 0 && index === subtask_board_name.length-1) ? 'false' : 'true'">
                                                                     <div class="card shadow-sm mt-2">
                                                                         <div class="card-body">
                                                                             <div class="dropdown text-end"  v-if="item.create_subtask_status === 1 || is_head.is_project_head === 1">
@@ -1210,7 +1210,7 @@
                                                             </div>
                                                         </div>
                                                     </SubtaskHeadBoard>
-                                                </div>
+                                                <!-- </div> -->
                                             </div>
                                         </div>
                                     </main>
